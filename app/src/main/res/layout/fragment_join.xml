@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent">
+
+	<ImageView
+		android:id="@+id/imageView3"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="64dp"
+		android:src="@mipmap/ic_launcher_round"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent" />
+
+	<Button
+		android:id="@+id/buttonJoinWithPhone"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_marginStart="64dp"
+		android:layout_marginLeft="64dp"
+		android:layout_marginTop="64dp"
+		android:layout_marginEnd="64dp"
+		android:layout_marginRight="64dp"
+		android:text="@string/join_with_phone"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintHorizontal_bias="0.0"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@+id/imageView3" />
+
+	<Button
+		android:id="@+id/buttonJoinWithEmail"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_marginStart="64dp"
+		android:layout_marginLeft="64dp"
+		android:layout_marginTop="32dp"
+		android:layout_marginEnd="64dp"
+		android:layout_marginRight="64dp"
+		android:text="@string/join_with_email"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintHorizontal_bias="0.0"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@+id/buttonJoinWithPhone" />
+
+	<Button
+		android:id="@+id/buttonJoinWithKakao"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_marginStart="64dp"
+		android:layout_marginLeft="64dp"
+		android:layout_marginTop="32dp"
+		android:layout_marginEnd="64dp"
+		android:layout_marginRight="64dp"
+		android:text="@string/join_with_kakao"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@+id/buttonJoinWithEmail" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
