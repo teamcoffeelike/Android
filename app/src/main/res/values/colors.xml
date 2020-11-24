@@ -7,4 +7,14 @@
 	<color name="teal_700">#FF018786</color>
 	<color name="black">#FF000000</color>
 	<color name="white">#FFFFFFFF</color>
+	<color name="Almond">#E8D0B6</color>
+	<color name="VanDykeBrown">#6C3F21</color>
+	<color name="Sunglow">#FEC800</color>
+	<color name="Sinopia">#D94916</color>
+	<color name="ArmyGreen">#43430E</color>
+	<color name="Olive">#75760D</color>
+	<color name="Straw">#CDCD6D</color>
+	<color name="OliveGreen">#AAA641</color>
+	<color name="AlloyOrange">#C45E08</color>
+	<color name="ChocolateTraditional">#7A3804</color>
 </resources>
