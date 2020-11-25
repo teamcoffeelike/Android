@@ -36,9 +36,9 @@ public class MainActivity extends AppCompatActivity{
 		recentFragment = new RecentFragment();
 		profileFragment = new ProfileFragment();
 
-		mainFrame = findViewById(R.id.main_frame);
+		mainFrame = findViewById(R.id.MainFrame);
 
-		BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
+		BottomNavigationView bottomNav = findViewById(R.id.BottomNavigation);
 		bottomNav.setOnNavigationItemSelectedListener(item -> {
 			int id = item.getItemId();
 			if(id==R.id.topPosts) show(popularPostFragment);
@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity{
 	private void show(Fragment f){
 		getSupportFragmentManager()
 				.beginTransaction()
-				.replace(R.id.main_frame, f)
+				.replace(R.id.MainFrame, f)
 				.commit();
 	}
 }
