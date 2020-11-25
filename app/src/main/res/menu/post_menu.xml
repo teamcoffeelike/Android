@@ -6,7 +6,6 @@
 		android:id="@+id/postModify"
 		android:title="수정"
 		app:showAsAction="never"/>
-
 	<item
 		android:id="@+id/postDelete"
 		android:title="삭제"
