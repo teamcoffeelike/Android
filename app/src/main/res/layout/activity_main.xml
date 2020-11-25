@@ -6,15 +6,16 @@
 	android:layout_height="match_parent"
 	tools:context=".MainActivity">
 
+	<!-- 상단 액션바 색상 변경 -->
 	<com.google.android.material.appbar.AppBarLayout
-		android:id="@+id/AppBar"
+		android:id="@+id/appBar"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:background="@color/white"
 		app:layout_constraintTop_toTopOf="parent">
 
 		<androidx.appcompat.widget.Toolbar
-			android:id="@+id/Toolbar"
+			android:id="@+id/toolbar"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			app:title="Caramel HOMEcchiato"
@@ -22,21 +23,27 @@
 
 	</com.google.android.material.appbar.AppBarLayout>
 
-
+	<!-- 상단바/바텀네비 사이 RecyclerView -->
 	<FrameLayout
-		android:id="@+id/MainFrame"
+		android:id="@+id/mainFrame"
 		android:layout_width="match_parent"
 		android:layout_height="0dp"
 		app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
-		app:layout_constraintBottom_toTopOf="@+id/BottomNavigation"
+		app:layout_constraintBottom_toTopOf="@+id/bottomNavigation"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@+id/AppBar">
+		app:layout_constraintTop_toBottomOf="@+id/appBar">
+
+		<androidx.recyclerview.widget.RecyclerView
+			android:id="@+id/recyclerView"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent" />
 
 	</FrameLayout>
 
+	<!-- 바텀네비 설정 -->
 	<com.google.android.material.bottomnavigation.BottomNavigationView
-		android:id="@+id/BottomNavigation"
+		android:id="@+id/bottomNavigation"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		app:layout_constraintBottom_toBottomOf="parent"
