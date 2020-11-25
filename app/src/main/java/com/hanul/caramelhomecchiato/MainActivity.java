@@ -17,8 +17,6 @@ import com.hanul.caramelhomecchiato.fragment.TimerFragment;
 public class MainActivity extends AppCompatActivity{
 	private static final String TAG = "MainActivity";
 
-	private FrameLayout mainFrame;
-
 	private Fragment popularPostFragment;
 	private Fragment recipeCategoryFragment;
 	private Fragment timerFragment;
@@ -36,9 +34,7 @@ public class MainActivity extends AppCompatActivity{
 		recentFragment = new RecentFragment();
 		profileFragment = new ProfileFragment();
 
-		mainFrame = findViewById(R.id.MainFrame);
-
-		BottomNavigationView bottomNav = findViewById(R.id.BottomNavigation);
+		BottomNavigationView bottomNav = findViewById(R.id.bottomNavigation);
 		bottomNav.setOnNavigationItemSelectedListener(item -> {
 			int id = item.getItemId();
 			if(id==R.id.topPosts) show(popularPostFragment);
@@ -59,7 +55,7 @@ public class MainActivity extends AppCompatActivity{
 	private void show(Fragment f){
 		getSupportFragmentManager()
 				.beginTransaction()
-				.replace(R.id.MainFrame, f)
+				.replace(R.id.mainFrame, f)
 				.commit();
 	}
 }
