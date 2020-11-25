@@ -1,17 +1,161 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-	xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
-	android:layout_height="match_parent">
+	android:layout_height="match_parent"
+	android:orientation="vertical">
 
-	<TextView
-		android:layout_width="wrap_content"
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="50dp"
+		android:orientation="horizontal"
+		android:background="@color/TerraCotta">
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center"
+			android:layout_weight="1"
+			android:gravity="center_horizontal"
+			android:padding="10dp"
+			android:text="Recipe Category"
+			android:textColor="#ffffff"
+			android:textSize="25dp" />
+	</LinearLayout>
+
+	<TableLayout
+		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:text="당신은 Recipe Category를 보고계십니다"
-		app:layout_constraintBottom_toBottomOf="parent"
-		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toTopOf="parent" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+		android:layout_marginTop="50dp"
+		android:layout_marginLeft="10dp"
+		android:layout_marginRight="10dp"
+		android:stretchColumns="0,1,2"
+		android:paddingVertical="10dp">
+
+		<!--첫번째 Row -->
+		<TableRow>
+			<TableLayout android:layout_width="120dp"
+				android:paddingHorizontal="4dp">
+
+				<ImageButton
+					android:id="@+id/hotCoffee"
+					android:padding="25dp"
+					android:layout_width="120dp"
+					android:layout_height="120dp"
+					android:layout_weight="1"
+					android:background="@drawable/hot_coffee"
+					android:gravity="center"/>
+
+				<TextView
+					android:layout_height="match_parent"
+					android:layout_width="wrap_content"
+					android:layout_marginTop="10dp"
+					android:text="HOT Coffee"
+					android:gravity="center"
+					android:textSize="15dp"/>
+			</TableLayout>
+
+			<TableLayout
+				android:layout_width="120dp"
+				android:paddingHorizontal="4dp">
+
+				<ImageButton
+					android:id="@+id/iceCoffee"
+					android:layout_width="120dp"
+					android:layout_height="120dp"
+					android:layout_weight="1"
+					android:background="@drawable/ice_coffee"
+					android:gravity="center"
+					android:padding="25dp" />
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="match_parent"
+					android:gravity="center"
+					android:text="ICE Coffee"
+					android:layout_marginTop="10dp"
+					android:textSize="15dp" />
+			</TableLayout>
+
+			<TableLayout android:layout_width="120dp"
+				android:paddingHorizontal="4dp">
+				<ImageButton
+					android:id="@+id/tea"
+					android:padding="25dp"
+					android:layout_width="120dp"
+					android:layout_height="120dp"
+					android:layout_weight="1"
+					android:background="@drawable/tea"
+					android:gravity="center"/>
+				<TextView
+					android:layout_height="match_parent"
+					android:layout_width="wrap_content"
+					android:text="Tea"
+					android:layout_marginTop="10dp"
+					android:gravity="center"
+					android:textSize="15dp"/>
+			</TableLayout>
+		</TableRow>
+
+		<!--두번쨰 Row-->
+		<TableRow
+			android:layout_marginTop="20dp">
+			<TableLayout android:layout_width="120dp"
+				android:paddingHorizontal="4dp">
+				<ImageButton
+					android:id="@+id/ade"
+					android:padding="20dp"
+					android:layout_width="120dp"
+					android:layout_height="120dp"
+					android:layout_weight="1"
+					android:background="@drawable/ade"
+					android:gravity="center"/>
+				<TextView
+					android:layout_height="match_parent"
+					android:layout_width="wrap_content"
+					android:text="Ade"
+					android:gravity="center"
+					android:layout_marginTop="10dp"
+					android:textSize="15dp"/>
+			</TableLayout>
+
+			<TableLayout android:layout_width="120dp"
+				android:paddingHorizontal="4dp">
+				<ImageButton
+					android:id="@+id/smoothie"
+					android:padding="20dp"
+					android:layout_width="match_parent"
+					android:layout_height="120dp"
+					android:layout_weight="1"
+					android:background="@drawable/smoothie"
+					android:gravity="center"/>
+				<TextView
+					android:layout_height="match_parent"
+					android:layout_width="wrap_content"
+					android:text="Smoothie"
+					android:gravity="center"
+					android:layout_marginTop="10dp"
+					android:textSize="15dp"/>
+			</TableLayout>
+
+			<TableLayout android:layout_width="120dp"
+				android:paddingHorizontal="4dp">
+				<ImageButton
+					android:id="@+id/etc"
+					android:padding="20dp"
+					android:layout_width="match_parent"
+					android:layout_height="120dp"
+					android:layout_weight="1"
+					android:background="@drawable/etc"
+					android:gravity="center"/>
+				<TextView
+					android:layout_height="match_parent"
+					android:layout_width="wrap_content"
+					android:text="etc"
+					android:gravity="center"
+					android:layout_marginTop="10dp"
+					android:textSize="15dp"/>
+			</TableLayout>
+		</TableRow>
+	</TableLayout>
+</LinearLayout>
