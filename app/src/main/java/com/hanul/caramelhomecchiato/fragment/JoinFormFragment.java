@@ -1,4 +1,4 @@
-package com.hanul.caramelhomecchiato;
+package com.hanul.caramelhomecchiato.fragment;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.hanul.caramelhomecchiato.JoinActivity.JoinType;
+import com.hanul.caramelhomecchiato.R;
 
 public class JoinFormFragment extends Fragment{
 	private EditText editTextEmailPhone;

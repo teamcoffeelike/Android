@@ -1,4 +1,4 @@
-package com.hanul.caramelhomecchiato;
+package com.hanul.caramelhomecchiato.widget;
 
 import android.annotation.SuppressLint;
 import android.content.Context;

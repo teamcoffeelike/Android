@@ -10,6 +10,9 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import com.hanul.caramelhomecchiato.fragment.JoinFormFragment;
+import com.hanul.caramelhomecchiato.fragment.JoinFragment;
+
 public class JoinActivity extends AppCompatActivity{
 	private ViewPager viewPager;
 	private PagerAdapter adapter;
