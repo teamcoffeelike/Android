@@ -27,7 +27,7 @@ public abstract class Notification implements Parcelable{
 		this.notifyingUser = notifyingUser;
 	}
 
-	public abstract void visit(NotificationVisitor visitor);
+	public abstract void accept(NotificationVisitor visitor);
 
 	public static final class Reaction extends Notification{
 		public static final Creator<Reaction> CREATOR = new Creator<Reaction>(){
@@ -51,7 +51,7 @@ public abstract class Notification implements Parcelable{
 			reactionId = parcel.readInt();
 		}
 
-		@Override public void visit(NotificationVisitor visitor){
+		@Override public void accept(NotificationVisitor visitor){
 			visitor.visit(this);
 		}
 
@@ -85,7 +85,7 @@ public abstract class Notification implements Parcelable{
 			super(parcel);
 		}
 
-		@Override public void visit(NotificationVisitor visitor){
+		@Override public void accept(NotificationVisitor visitor){
 			visitor.visit(this);
 		}
 	}
@@ -107,7 +107,7 @@ public abstract class Notification implements Parcelable{
 			super(parcel);
 		}
 
-		@Override public void visit(NotificationVisitor visitor){
+		@Override public void accept(NotificationVisitor visitor){
 			visitor.visit(this);
 		}
 	}

@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
-
 	private final List<Post> posts = new ArrayList<>();
 	private final Context ctx;
 
