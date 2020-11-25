@@ -13,7 +13,6 @@ public class Post implements Parcelable{
 		@Override public Post createFromParcel(Parcel in){
 			return new Post(in);
 		}
-
 		@Override public Post[] newArray(int size){
 			return new Post[size];
 		}
