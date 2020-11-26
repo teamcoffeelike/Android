@@ -79,16 +79,16 @@
 	-->
 	<androidx.constraintlayout.widget.ConstraintLayout
 		android:id="@+id/nav"
-		android:layout_width="wrap_content"
+		android:layout_width="250dp"
 		android:layout_height="match_parent"
 		android:layout_gravity="end|top"
-		android:background="@color/white"
-		android:padding="20dp">
+		android:background="@color/white">
 
 		<androidx.constraintlayout.widget.ConstraintLayout
 			android:id="@+id/constraintLayout"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
+			android:layout_width="match_parent"
+			android:layout_height="200dp"
+			android:background="@color/VanDykeBrown"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toTopOf="parent">
@@ -98,8 +98,9 @@
 				android:id="@+id/imageViewProfile"
 				android:layout_width="100dp"
 				android:layout_height="100dp"
-				android:src="@drawable/ic_menu_profile"
-				app:layout_constraintBottom_toBottomOf="parent"
+				android:layout_marginTop="50dp"
+				android:layout_marginRight="15dp"
+				android:src="@drawable/test_user"
 				app:layout_constraintEnd_toEndOf="parent"
 				app:layout_constraintTop_toTopOf="parent" />
 
@@ -107,8 +108,11 @@
 				android:id="@+id/textViewProfileName"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:layout_marginRight="10dp"
-				android:text="아씨발"
+				android:layout_marginBottom="50dp"
+				android:layout_marginLeft="25dp"
+				android:text="user name"
+				android:textColor="@color/Almond"
+				android:textSize="20sp"
 				app:layout_constraintBottom_toBottomOf="parent"
 				app:layout_constraintEnd_toStartOf="@+id/imageViewProfile"
 				app:layout_constraintStart_toStartOf="parent" />
@@ -118,8 +122,10 @@
 			android:id="@+id/myRecipesMenu"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:layout_marginTop="25dp"
+			android:layout_marginTop="30dp"
+			android:layout_marginRight="15dp"
 			android:text="@string/my_recipe"
+			android:textSize="20dp"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
 
@@ -127,7 +133,10 @@
 			android:id="@+id/followsMenu"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
+			android:layout_marginTop="15dp"
+			android:layout_marginRight="15dp"
 			android:text="@string/follows"
+			android:textSize="20dp"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintTop_toBottomOf="@+id/myRecipesMenu" />
 
@@ -135,7 +144,10 @@
 			android:id="@+id/likesMenu"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
+			android:layout_marginTop="15dp"
+			android:layout_marginRight="15dp"
 			android:text="@string/likes"
+			android:textSize="20dp"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintTop_toBottomOf="@+id/followsMenu" />
 
@@ -143,7 +155,10 @@
 			android:id="@+id/recentActivityMenu"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
+			android:layout_marginTop="15dp"
+			android:layout_marginRight="15dp"
 			android:text="@string/recent"
+			android:textSize="20dp"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintTop_toBottomOf="@+id/likesMenu" />
 
@@ -151,7 +166,10 @@
 			android:id="@+id/searchFriendsMenu"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
+			android:layout_marginTop="15dp"
+			android:layout_marginRight="15dp"
 			android:text="@string/search"
+			android:textSize="20dp"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintTop_toBottomOf="@+id/recentActivityMenu" />
 
@@ -159,7 +177,10 @@
 			android:id="@+id/settingsMenu"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
+			android:layout_marginRight="10dp"
+			android:layout_marginBottom="15dp"
 			android:text="@string/settings"
+			android:textSize="20dp"
 			app:layout_constraintBottom_toBottomOf="parent"
 			app:layout_constraintEnd_toEndOf="parent" />
 	</androidx.constraintlayout.widget.ConstraintLayout>
