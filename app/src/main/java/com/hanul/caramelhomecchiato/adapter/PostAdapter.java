@@ -46,7 +46,7 @@ public class PostAdapter extends BaseAdapter<Post>{
 			textViewPostUser.setText(post.getUser().getName());
 			textViewPost.setText(post.getText());
 
-			textViewLikes.setText(itemView.getContext().getString(R.string.likes, post.getLikes()));
+			textViewLikes.setText(itemView.getContext().getString(R.string.n_likes, post.getLikes()));
 			// TODO 댓글이 없을 시에는 댓글보기 없어야 함
 		}
 	}

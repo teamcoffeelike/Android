@@ -9,6 +9,18 @@
 	<string name="join_with_phone">핸드폰 번호로 회원가입</string>
 	<string name="join_with_email">이메일로 회원가입</string>
 	<string name="join_with_kakao">카카오톡 계정으로 회원가입</string>
-	<string name="likes">%d Likes</string>
+	<string name="n_likes">%d Likes</string>
 	<string name="comments">댓글보기</string>
+	<string name="popular_post">인기포스트</string>
+	<string name="recipe">레시피</string>
+	<string name="timer">타이머</string>
+	<string name="recent">최근 활동</string>
+	<string name="my_page">마이페이지</string>
+	<string name="drawer_open">열기</string>
+	<string name="drawer_close">닫기</string>
+	<string name="my_recipe">마이레시피</string>
+	<string name="follows">팔로워/팔로우</string>
+	<string name="likes">좋아요</string>
+	<string name="search">친구찾기</string>
+	<string name="settings">설정</string>
 </resources>
