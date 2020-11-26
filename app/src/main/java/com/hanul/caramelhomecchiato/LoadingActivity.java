@@ -31,12 +31,21 @@ public class LoadingActivity extends AppCompatActivity{
 		}
 
 		@Override protected Void doInBackground(Void... voids){
+			try{
+				Thread.sleep(3000);
+			}catch(InterruptedException e){
+				e.printStackTrace();
+				Thread.currentThread().interrupt();
+			}
 			return null;
 		}
 
 		@Override protected void onPostExecute(Void aVoid){
 			LoadingActivity activity = this.activity.get();
-			if(activity!=null) activity.startActivity(new Intent(activity, LoginActivity.class));
+			if(activity!=null){
+				activity.startActivity(new Intent(activity, LoginActivity.class));
+				activity.finish();
+			}
 		}
 	}
 }

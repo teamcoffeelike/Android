@@ -13,6 +13,7 @@ public class LoginActivity extends AppCompatActivity{
 
 		findViewById(R.id.buttonLogin).setOnClickListener(v -> {
 			startActivity(new Intent(this, MainActivity.class));
+			finish();
 		});
 		findViewById(R.id.buttonJoin).setOnClickListener(v -> {
 			startActivity(new Intent(this, JoinActivity.class));

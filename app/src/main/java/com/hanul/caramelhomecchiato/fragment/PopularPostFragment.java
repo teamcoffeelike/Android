@@ -30,9 +30,9 @@ public class PopularPostFragment extends Fragment{
 			RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
 			recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
 
-			PostAdapter adapter = new PostAdapter(context);
+			PostAdapter adapter = new PostAdapter();
 
-			List<Post> posts = adapter.posts();
+			List<Post> posts = adapter.elements();
 			posts.add(new Post(1, new User(1, "A", null), Collections.emptyList(), "가나다", 3));
 			posts.add(new Post(2, new User(2, "B", null), Collections.emptyList(), "가나다", 3));
 			posts.add(new Post(3, new User(3, "C", null), Collections.emptyList(), "가나다", 3));

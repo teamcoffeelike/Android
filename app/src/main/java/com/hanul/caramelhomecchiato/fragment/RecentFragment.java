@@ -29,8 +29,8 @@ public class RecentFragment extends Fragment{
 		if(context!=null){
 			recyclerView.setLayoutManager(new LinearLayoutManager(context, RecyclerView.VERTICAL, false));
 
-			NotificationAdapter adapter = new NotificationAdapter(context);
-			List<Notification> notifications = adapter.notifications();
+			NotificationAdapter adapter = new NotificationAdapter();
+			List<Notification> notifications = adapter.elements();
 			notifications.add(new Notification.Reaction(new User(1, "가나다", null), 15));
 			notifications.add(new Notification.Like(new User(1, "가나다", null)));
 			notifications.add(new Notification.Follow(new User(1, "가나다", null)));

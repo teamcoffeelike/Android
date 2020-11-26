@@ -112,6 +112,7 @@ obj/
 .idea/gradle.xml
 .idea/jarRepositories.xml
 .idea/navEditor.xml
+.idea/render.experimental.xml
 
 # OS-specific files
 .DS_Store
