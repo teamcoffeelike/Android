@@ -11,38 +11,49 @@
 		android:layout_height="wrap_content"
 		android:orientation="vertical">
 
-		<LinearLayout
+		<androidx.constraintlayout.widget.ConstraintLayout
 			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:orientation="horizontal">
+			android:layout_height="wrap_content">
 
 			<ImageView
 				android:id="@+id/imageViewPostUserProfile"
 				android:layout_width="50dp"
 				android:layout_height="50dp"
-				android:layout_margin="10dp"
-				android:src="@drawable/ic_menu_profile" />
+				android:layout_marginStart="8dp"
+				android:layout_marginLeft="16dp"
+				android:src="@drawable/ic_menu_profile"
+				app:layout_constraintBottom_toBottomOf="parent"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintTop_toTopOf="parent" />
 
 			<TextView
 				android:id="@+id/textViewPostUser"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:layout_gravity="center_vertical"
+				android:layout_marginTop="15dp"
+				android:textColor="@color/VanDykeBrown"
 				android:textSize="16sp"
 				android:textStyle="bold"
-				android:textColor="@color/VanDykeBrown"/>
+				app:layout_constraintEnd_toStartOf="@+id/buttonPostOption"
+				app:layout_constraintHorizontal_bias="0.0"
+				app:layout_constraintStart_toEndOf="@+id/imageViewPostUserProfile"
+				app:layout_constraintTop_toTopOf="parent" />
 
 			<ImageButton
 				android:id="@+id/buttonPostOption"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:layout_marginLeft="240dp"
-				android:layout_marginTop="20dp"
+				android:layout_marginTop="13dp"
 				android:background="@color/white"
 				android:src="@drawable/ic_button"
-				android:tint="@color/VanDykeBrown" />
+				android:tint="@color/VanDykeBrown"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintHorizontal_bias="0.985"
+				app:layout_constraintStart_toEndOf="@+id/imageViewPostUserProfile"
+				app:layout_constraintTop_toTopOf="parent" />
 
-		</LinearLayout>
+		</androidx.constraintlayout.widget.ConstraintLayout>
 
 		<androidx.viewpager.widget.ViewPager
 			android:id="@+id/images"
@@ -56,6 +67,7 @@
 			android:layout_height="wrap_content"
 			android:layout_marginLeft="8dp"
 			android:layout_marginRight="8dp"
+			android:layout_marginTop="5dp"
 			android:text="글 내용"
 			android:textColor="@color/VanDykeBrown" />
 
