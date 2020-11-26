@@ -1,17 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<LinearLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
-	android:layout_height="match_parent">
+	android:layout_height="match_parent"
+	android:orientation="vertical"
+
+	android:weightSum="3">
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="0dp"
+		android:orientation="horizontal"
+		android:layout_weight="1"
+		android:weightSum="3">
+
+		<Button
+			android:id="@+id/timer_fivemin"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="+5MIN"
+			android:layout_weight="1"
+			android:layout_gravity="center"
+			android:backgroundTint="@color/CadetBlueCrayola"
+			android:layout_margin="10dp"/>
+
+		<Button
+			android:id="@+id/timer_onemin"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="+1MIN"
+			android:layout_weight="1"
+			android:layout_gravity="center"
+			android:backgroundTint="@color/CadetBlueCrayola"/>
+
+		<Button
+			android:id="@+id/timer_sec"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="+15SEC"
+			android:layout_weight="1"
+			android:layout_gravity="center"
+			android:backgroundTint="@color/CadetBlueCrayola"
+			android:layout_margin="10dp"/>
+
+	</LinearLayout>
+
 
 	<TextView
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:text="당신은 Timer를 보고계십니다"
-		app:layout_constraintBottom_toBottomOf="parent"
-		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toTopOf="parent" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+		android:id="@+id/timer_countdown"
+		android:layout_width="match_parent"
+		android:layout_height="0dp"
+		android:text="00:00"
+		android:textSize="110dp"
+		android:gravity="center"
+		android:textColor="@color/CadetBlueCrayola"
+		android:layout_weight="1"/>
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="0dp"
+		android:orientation="horizontal"
+		android:layout_weight="1"
+		android:weightSum="2">
+
+		<Button
+			android:id="@+id/timer_startpause"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center"
+			android:layout_margin="10dp"
+			android:layout_weight="1"
+			android:backgroundTint="@color/deepChampagne"
+			android:text="▶"
+			android:textSize="18sp" />
+
+
+		<Button
+			android:id="@+id/timer_stop"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center"
+			android:layout_margin="10dp"
+			android:layout_weight="1"
+			android:backgroundTint="@color/deepChampagne"
+			android:text="■"
+			android:textSize="18sp" />
+
+	</LinearLayout>
+
+</LinearLayout>

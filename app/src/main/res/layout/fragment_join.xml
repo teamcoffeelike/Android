@@ -26,6 +26,7 @@
 		android:layout_marginEnd="64dp"
 		android:layout_marginRight="64dp"
 		android:text="@string/join_with_phone"
+		android:backgroundTint="@color/TerraCotta"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintHorizontal_bias="0.0"
 		app:layout_constraintStart_toStartOf="parent"
@@ -41,6 +42,7 @@
 		android:layout_marginEnd="64dp"
 		android:layout_marginRight="64dp"
 		android:text="@string/join_with_email"
+		android:backgroundTint="@color/TerraCotta"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintHorizontal_bias="0.0"
 		app:layout_constraintStart_toStartOf="parent"
@@ -56,6 +58,7 @@
 		android:layout_marginEnd="64dp"
 		android:layout_marginRight="64dp"
 		android:text="@string/join_with_kakao"
+		android:backgroundTint="@color/MinionYellow"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toBottomOf="@+id/buttonJoinWithEmail" />

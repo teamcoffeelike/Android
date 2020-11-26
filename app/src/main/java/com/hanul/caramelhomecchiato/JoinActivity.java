@@ -45,24 +45,16 @@ public class JoinActivity extends AppCompatActivity{
 
 	}
 
-	//
+	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
-
-
 		if ((keyCode == KeyEvent.KEYCODE_BACK)) {
-
 			if(viewPager.getCurrentItem()==1){
-
 				viewPager.setCurrentItem(0);
 				return true;
-
 			}
 		}
-
 		return super.onKeyDown(keyCode, event);
-
 	}
-
 
 	private static final class PagerAdapter extends FragmentStatePagerAdapter{
 		public final JoinFragment join = new JoinFragment();
@@ -86,10 +78,7 @@ public class JoinActivity extends AppCompatActivity{
 		@Override public int getCount(){
 			return 2;
 		}
-
-
 	}
-
 
 	public enum JoinType{
 		WITH_PHONE,
