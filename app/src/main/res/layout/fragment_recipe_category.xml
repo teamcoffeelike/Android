@@ -1,193 +1,167 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<androidx.constraintlayout.widget.ConstraintLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
-	android:layout_height="match_parent"
-	android:orientation="vertical">
+	android:layout_height="match_parent">
 
 	<LinearLayout
 		android:layout_width="match_parent"
-		android:layout_height="50dp"
-		android:orientation="horizontal"
-		android:background="@color/TerraCotta">
+		android:layout_height="match_parent"
+		android:orientation="vertical"
+		android:weightSum="60">
 
-		<TextView
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_gravity="center"
-			android:layout_weight="1"
-			android:gravity="center_horizontal"
-			android:padding="10dp"
-			android:text="Recipe Category"
-			android:textColor="#ffffff"
-			android:textSize="25dp" />
+		<!-- HOT Coffee 레이아웃 -->
+		<LinearLayout
+			android:id="@+id/hotCoffee"
+			android:layout_width="match_parent"
+			android:layout_height="0dp"
+			android:layout_weight="10"
+			android:background="@color/camel">
+
+			<ImageView
+				android:layout_width="80dp"
+				android:layout_height="80dp"
+				android:layout_gravity="center_vertical"
+				android:layout_marginLeft="40dp"
+				android:src="@drawable/hot_coffee" />
+
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="match_parent"
+				android:text="HOT Coffee"
+				android:textColor="#ffffff"
+				android:textSize="24sp"
+				android:gravity="center"
+				android:layout_marginLeft="40dp"/>
+		</LinearLayout>
+
+		<!-- ICE Coffee 레이아웃 -->
+		<LinearLayout
+			android:id="@+id/iceCoffee"
+			android:layout_width="match_parent"
+			android:layout_height="0dp"
+			android:layout_weight="10"
+			android:background="@color/CadetBlueCrayola">
+
+			<ImageView
+				android:layout_width="80dp"
+				android:layout_height="80dp"
+				android:layout_gravity="center_vertical"
+				android:layout_marginLeft="40dp"
+				android:src="@drawable/ice_coffee" />
+
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="match_parent"
+				android:text="ICE Coffee"
+				android:textColor="#ffffff"
+				android:textSize="24sp"
+				android:gravity="center"
+				android:layout_marginLeft="40dp"/>
+		</LinearLayout>
+
+		<!-- Tea 레이아웃 -->
+		<LinearLayout
+			android:id="@+id/tea"
+			android:layout_width="match_parent"
+			android:layout_height="0dp"
+			android:layout_weight="10"
+			android:background="@color/Asparagus">
+
+			<ImageView
+				android:layout_width="80dp"
+				android:layout_height="80dp"
+				android:layout_gravity="center_vertical"
+				android:layout_marginLeft="40dp"
+				android:src="@drawable/tea" />
+
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="match_parent"
+				android:text="Tea"
+				android:textColor="#ffffff"
+				android:textSize="24sp"
+				android:gravity="center"
+				android:layout_marginLeft="40dp"/>
+		</LinearLayout>
+
+		<!-- Ade 레이아웃 -->
+		<LinearLayout
+			android:id="@+id/ade"
+			android:layout_width="match_parent"
+			android:layout_height="0dp"
+			android:layout_weight="10"
+			android:background="@color/OrangeYellowCrayola">
+
+			<ImageView
+				android:layout_width="80dp"
+				android:layout_height="80dp"
+				android:layout_gravity="center_vertical"
+				android:layout_marginLeft="40dp"
+				android:src="@drawable/ade" />
+
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="match_parent"
+				android:text="Ade"
+				android:textColor="#ffffff"
+				android:textSize="24sp"
+				android:gravity="center"
+				android:layout_marginLeft="40dp"/>
+		</LinearLayout>
+
+		<!-- Smoothie 레이아웃 -->
+		<LinearLayout
+			android:id="@+id/smoothie"
+			android:layout_width="match_parent"
+			android:layout_height="0dp"
+			android:layout_weight="10"
+			android:background="@color/NewYorkPink">
+
+			<ImageView
+				android:layout_width="80dp"
+				android:layout_height="80dp"
+				android:layout_gravity="center_vertical"
+				android:layout_marginLeft="40dp"
+				android:src="@drawable/smoothie" />
+
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="match_parent"
+				android:text="Smoothie"
+				android:textColor="#ffffff"
+				android:textSize="24sp"
+				android:gravity="center"
+				android:layout_marginLeft="40dp"/>
+		</LinearLayout>
+
+		<!-- Etc 레이아웃 -->
+		<LinearLayout
+			android:id="@+id/etc"
+			android:layout_width="match_parent"
+			android:layout_height="0dp"
+			android:layout_weight="10"
+			android:background="@color/ShinyShamrock">
+
+			<ImageView
+				android:layout_width="80dp"
+				android:layout_height="80dp"
+				android:layout_gravity="center_vertical"
+				android:layout_marginLeft="40dp"
+				android:src="@drawable/etc" />
+
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="match_parent"
+				android:text="Etc"
+				android:textColor="#ffffff"
+				android:textSize="24sp"
+				android:gravity="center"
+				android:layout_marginLeft="40dp"/>
+		</LinearLayout>
+
 	</LinearLayout>
 
-	<TableLayout
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_marginLeft="30dp"
-		android:layout_marginRight="30dp"
-		android:layout_marginTop="30dp"
-		android:paddingVertical="50dp"
-		android:stretchColumns="0,1">
-
-		<!-- 첫번째 Row -->
-		<TableRow>
-			<TableLayout
-				android:layout_width="50dp"
-				android:paddingHorizontal="5dp">
-
-				<ImageButton
-					android:id="@+id/hotCoffee"
-					android:layout_width="50dp"
-					android:layout_height="80dp"
-					android:layout_weight="1"
-					android:layout_margin="10dp"
-					android:background="@drawable/hot_coffee"
-					android:gravity="center"
-					android:padding="25dp" />
-
-				<TextView
-					android:layout_width="wrap_content"
-					android:layout_height="match_parent"
-					android:layout_marginBottom="10dp"
-					android:gravity="center"
-					android:text="HOT Coffee"
-					android:textSize="15dp"
-					android:textColor="@color/TerraCotta"/>
-			</TableLayout>
-
-			<TableLayout
-				android:layout_width="50dp"
-				android:paddingHorizontal="5dp">
-
-				<ImageButton
-					android:id="@+id/iceCoffee"
-					android:layout_width="50dp"
-					android:layout_height="80dp"
-					android:layout_weight="1"
-					android:layout_margin="10dp"
-					android:background="@drawable/ice_coffee"
-					android:gravity="center"
-					android:padding="25dp" />
-
-				<TextView
-					android:layout_width="wrap_content"
-					android:layout_height="match_parent"
-					android:layout_marginBottom="10dp"
-					android:gravity="center"
-					android:text="ICE Coffee"
-					android:textSize="15dp"
-					android:textColor="@color/CadetBlueCrayola"/>
-			</TableLayout>
-		</TableRow>
-
-		<!-- 두번째 Row -->
-		<TableRow>
-			<TableLayout
-				android:layout_width="50dp"
-				android:paddingHorizontal="5dp"
-				android:layout_marginTop="10dp">
-
-				<ImageButton
-					android:id="@+id/tea"
-					android:layout_width="50dp"
-					android:layout_height="80dp"
-					android:layout_weight="1"
-					android:layout_margin="10dp"
-					android:background="@drawable/tea"
-					android:gravity="center"
-					android:padding="25dp" />
-
-				<TextView
-					android:layout_width="wrap_content"
-					android:layout_height="match_parent"
-					android:layout_marginBottom="10dp"
-					android:gravity="center"
-					android:text="Tea"
-					android:textSize="15dp"
-					android:textColor="@color/DarkOliveGreen"/>
-			</TableLayout>
-
-			<TableLayout
-				android:layout_width="50dp"
-				android:paddingHorizontal="5dp"
-				android:layout_marginTop="10dp">
-
-				<ImageButton
-					android:id="@+id/ade"
-					android:layout_width="50dp"
-					android:layout_height="80dp"
-					android:layout_weight="1"
-					android:layout_margin="10dp"
-					android:background="@drawable/ade"
-					android:gravity="center"
-					android:padding="25dp" />
-
-				<TextView
-					android:layout_width="wrap_content"
-					android:layout_height="match_parent"
-					android:layout_marginBottom="10dp"
-					android:gravity="center"
-					android:text="Ade"
-					android:textSize="15dp"
-					android:textColor="@color/MinionYellow"/>
-			</TableLayout>
-		</TableRow>
-
-		<!-- 세번째 Row -->
-		<TableRow>
-			<TableLayout
-				android:layout_width="50dp"
-				android:paddingHorizontal="5dp"
-				android:layout_marginTop="10dp">
-
-				<ImageButton
-					android:id="@+id/smoothie"
-					android:layout_width="50dp"
-					android:layout_height="80dp"
-					android:layout_weight="1"
-					android:layout_margin="10dp"
-					android:background="@drawable/smoothie"
-					android:gravity="center"
-					android:padding="25dp" />
-
-				<TextView
-					android:layout_width="wrap_content"
-					android:layout_height="match_parent"
-					android:layout_marginBottom="10dp"
-					android:gravity="center"
-					android:text="Smoothie"
-					android:textSize="15dp"
-					android:textColor="@color/NewYorkPink"/>
-			</TableLayout>
-
-			<TableLayout
-				android:layout_width="50dp"
-				android:layout_marginTop="10dp"
-				android:paddingHorizontal="5dp">
-
-				<ImageButton
-					android:id="@+id/etc"
-					android:layout_width="50dp"
-					android:layout_height="80dp"
-					android:layout_weight="1"
-					android:layout_margin="10dp"
-					android:background="@drawable/etc"
-					android:gravity="center"
-					android:padding="25dp" />
-
-				<TextView
-					android:layout_width="wrap_content"
-					android:layout_height="match_parent"
-					android:layout_marginBottom="10dp"
-					android:gravity="center"
-					android:text="Etc"
-					android:textSize="15dp"
-					android:textColor="@color/ShinyShamrock"/>
-			</TableLayout>
-		</TableRow>
-
-	</TableLayout>
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
