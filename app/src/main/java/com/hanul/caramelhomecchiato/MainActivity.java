@@ -1,9 +1,15 @@
 package com.hanul.caramelhomecchiato;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -22,6 +28,8 @@ public class MainActivity extends AppCompatActivity{
 	private Fragment recentFragment;
 	private Fragment profileFragment;
 
+	private DrawerLayout drawerLayout;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
@@ -33,6 +41,41 @@ public class MainActivity extends AppCompatActivity{
 		recentFragment = new RecentFragment();
 		profileFragment = new ProfileFragment();
 
+		// 툴바 셋업
+		Toolbar toolbar = findViewById(R.id.toolbar);
+		setSupportActionBar(toolbar);
+
+		drawerLayout = findViewById(R.id.drawerLayout);
+		ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+				this,
+				drawerLayout,
+				toolbar,
+				R.string.drawer_open,
+				R.string.drawer_close);
+		toggle.setDrawerIndicatorEnabled(false);
+		drawerLayout.addDrawerListener(toggle);
+		toggle.syncState();
+
+		findViewById(R.id.imageViewAppBarUserProfile).setOnClickListener(v -> {
+			if(drawerLayout.isDrawerVisible(GravityCompat.END)) drawerLayout.closeDrawer(GravityCompat.END);
+			else drawerLayout.openDrawer(GravityCompat.END);
+		});
+
+		// 내비
+		findViewById(R.id.nav).setClickable(true);
+
+		findViewById(R.id.myRecipesMenu).setOnClickListener(v -> startActivity(new Intent(this, MyRecipeActivity.class)));
+		findViewById(R.id.followsMenu).setOnClickListener(v -> startActivity(new Intent(this, FollowsActivity.class)));
+		findViewById(R.id.likesMenu).setOnClickListener(v -> startActivity(new Intent(this, LikesActivity.class)));
+		findViewById(R.id.recentActivityMenu).setOnClickListener(v -> {
+			drawerLayout.closeDrawer(GravityCompat.END);
+			show(recentFragment);
+		});
+		findViewById(R.id.searchFriendsMenu).setOnClickListener(v -> startActivity(new Intent(this, SearchFriendActivity.class)));
+		findViewById(R.id.settingsMenu).setOnClickListener(v -> startActivity(new Intent(this, SettingsActivity.class)));
+
+
+		// BottomNavigation & 프래그먼트 셋업
 		BottomNavigationView bottomNav = findViewById(R.id.bottomNavigation);
 		bottomNav.setOnNavigationItemSelectedListener(item -> {
 			int id = item.getItemId();
@@ -49,6 +92,13 @@ public class MainActivity extends AppCompatActivity{
 		});
 
 		show(popularPostFragment);
+	}
+
+	@Override public boolean onKeyDown(int keyCode, KeyEvent event){
+		if(keyCode==KeyEvent.KEYCODE_BACK&&drawerLayout.isDrawerVisible(GravityCompat.END)){
+			drawerLayout.closeDrawer(GravityCompat.END);
+			return true;
+		}else return super.onKeyDown(keyCode, event);
 	}
 
 	private void show(Fragment f){

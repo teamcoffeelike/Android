@@ -4,26 +4,26 @@
     <item
         android:id="@+id/topPosts"
         android:icon="@drawable/ic_menu_topposts"
-        android:title="인기포스트"/>
+        android:title="@string/popular_post"/>
 
     <item
         android:id="@+id/recipe"
         android:icon="@drawable/ic_menu_recipe"
-        android:title="레시피" />
+        android:title="@string/recipe" />
 
     <item
         android:id="@+id/timer"
         android:icon="@drawable/ic_menu_timer"
-        android:title="타이머" />
+        android:title="@string/timer" />
 
     <item
         android:id="@+id/recent"
         android:icon="@drawable/ic_menu_recent"
-        android:title="최근활동" />
+        android:title="@string/recent" />
 
     <item
         android:id="@+id/profile"
         android:icon="@drawable/ic_menu_profile"
-        android:title="마이페이지" />
+        android:title="@string/my_page" />
 
 </menu>
