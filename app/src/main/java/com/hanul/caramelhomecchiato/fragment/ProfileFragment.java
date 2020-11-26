@@ -18,7 +18,7 @@ import com.hanul.caramelhomecchiato.R;
 import com.hanul.caramelhomecchiato.adapter.ProfilePostAdapter;
 import com.hanul.caramelhomecchiato.data.Post;
 import com.hanul.caramelhomecchiato.data.User;
-import com.hanul.caramelhomecchiato.widget.EditProfileActivity;
+import com.hanul.caramelhomecchiato.EditProfileActivity;
 
 import java.util.Collections;
 import java.util.List;

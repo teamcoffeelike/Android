@@ -1,4 +1,4 @@
-package com.hanul.caramelhomecchiato.widget;
+package com.hanul.caramelhomecchiato;
 
 import androidx.appcompat.app.AppCompatActivity;
 
