@@ -11,7 +11,7 @@
 		android:id="@+id/appBar"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:background="@color/white"
+		android:background="?android:attr/windowBackground"
 		app:layout_constraintTop_toTopOf="parent">
 
 		<androidx.appcompat.widget.Toolbar
@@ -19,7 +19,18 @@
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			app:title="Caramel HOMEcchiato"
-			app:titleTextColor="@color/VanDykeBrown" />
+			app:titleTextColor="@color/VanDykeBrown"
+			android:background="?android:attr/windowBackground">
+
+			<ImageView
+				android:id="@+id/imageViewAppBarUserProfile"
+				android:layout_width="50dp"
+				android:layout_height="50dp"
+				android:src="@drawable/ic_menu_profile"
+				android:layout_marginLeft="130dp" />
+
+		</androidx.appcompat.widget.Toolbar>
+
 
 	</com.google.android.material.appbar.AppBarLayout>
 
