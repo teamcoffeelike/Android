@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
-
 	private final List<Post> posts = new ArrayList<>();
 	private final Context ctx;
 
@@ -49,9 +48,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
 		private final ViewPager images;
 		private final TextView textViewPost;
 
-		private final ImageView imageViewReactionUserProfile;
-		private final TextView textViewReactionUser;
-		private final TextView textViewReaction;
+		private final TextView textViewLikes;
+		private final TextView textViewComments;
 
 		public ViewHolder(@NonNull View itemView){
 			super(itemView);
@@ -59,9 +57,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
 			textViewPostUser = itemView.findViewById(R.id.textViewPostUser);
 			images = itemView.findViewById(R.id.images);
 			textViewPost = itemView.findViewById(R.id.textViewPost);
-			imageViewReactionUserProfile = itemView.findViewById(R.id.imageViewReactionUserProfile);
-			textViewReactionUser = itemView.findViewById(R.id.textViewReactionUser);
-			textViewReaction = itemView.findViewById(R.id.textViewReaction);
+			textViewLikes = itemView.findViewById(R.id.textViewLikes);
+			textViewComments = itemView.findViewById(R.id.textViewComments);
 
 			itemView.findViewById(R.id.buttonLike).setOnClickListener(v -> {
 				Toast.makeText(ctx, ";)", Toast.LENGTH_SHORT).show();
@@ -73,11 +70,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>{
 			textViewPostUser.setText(post.getUser().getName());
 			textViewPost.setText(post.getText());
 
-			Reaction r = post.getFirstReaction();
-			if(r!=null){
-				textViewReactionUser.setText(r.getUser().getName());
-				textViewReaction.setText(r.getText());
-			}// TODO 댓글이 없을 시에는 보이지 않아야 함
+			textViewLikes.setText(ctx.getString(R.string.likes, post.getLikes()));
+
+			// TODO 댓글이 없을 시에는 댓글보기 없어야 함
 		}
 	}
 }

@@ -9,4 +9,6 @@
 	<string name="join_with_phone">핸드폰 번호로 회원가입</string>
 	<string name="join_with_email">이메일로 회원가입</string>
 	<string name="join_with_kakao">카카오톡 계정으로 회원가입</string>
+	<string name="likes">%d Likes</string>
+	<string name="comments">댓글보기</string>
 </resources>
