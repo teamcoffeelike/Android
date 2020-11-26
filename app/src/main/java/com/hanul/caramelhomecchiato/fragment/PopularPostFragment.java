@@ -33,11 +33,11 @@ public class PopularPostFragment extends Fragment{
 			PostAdapter adapter = new PostAdapter(context);
 
 			List<Post> posts = adapter.posts();
-			posts.add(new Post(1, new User(1, "A", null), Collections.emptyList(), "가나다", 3, new Reaction(new User(2, "나", null), "ㅁㄴㅇㄹ")));
-			posts.add(new Post(2, new User(2, "B", null), Collections.emptyList(), "가나다", 3, new Reaction(new User(2, "나", null), "ㅁㄴㅇㄹ")));
-			posts.add(new Post(3, new User(3, "C", null), Collections.emptyList(), "가나다", 3, new Reaction(new User(2, "나", null), "ㅁㄴㅇㄹ")));
-			posts.add(new Post(4, new User(4, "D", null), Collections.emptyList(), "가나다", 3, new Reaction(new User(2, "나", null), "ㅁㄴㅇㄹ")));
-			posts.add(new Post(5, new User(5, "E", null), Collections.emptyList(), "가나다", 3, new Reaction(new User(2, "나", null), "ㅁㄴㅇㄹ")));
+			posts.add(new Post(1, new User(1, "A", null), Collections.emptyList(), "가나다", 3));
+			posts.add(new Post(2, new User(2, "B", null), Collections.emptyList(), "가나다", 3));
+			posts.add(new Post(3, new User(3, "C", null), Collections.emptyList(), "가나다", 3));
+			posts.add(new Post(4, new User(4, "D", null), Collections.emptyList(), "가나다", 3));
+			posts.add(new Post(5, new User(5, "E", null), Collections.emptyList(), "가나다", 3));
 
 			recyclerView.setAdapter(adapter);
 		}

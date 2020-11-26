@@ -3,8 +3,6 @@ package com.hanul.caramelhomecchiato.data;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import androidx.annotation.Nullable;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,15 +21,13 @@ public class Post implements Parcelable{
 	private List<String> images;
 	private String text;
 	private int likes;
-	@Nullable private Reaction firstReaction;
 
-	public Post(int id, User user, List<String> images, String text, int likes, @Nullable Reaction firstReaction){
+	public Post(int id, User user, List<String> images, String text, int likes){
 		this.id = id;
 		this.user = user;
 		this.images = images;
 		this.text = text;
 		this.likes = likes;
-		this.firstReaction = firstReaction;
 	}
 
 	protected Post(Parcel parcel){
@@ -40,7 +36,6 @@ public class Post implements Parcelable{
 		parcel.readStringList(images = new ArrayList<>());
 		text = parcel.readString();
 		likes = parcel.readInt();
-		firstReaction = parcel.readParcelable(Reaction.class.getClassLoader());
 	}
 
 	@Override public int describeContents(){
@@ -52,7 +47,6 @@ public class Post implements Parcelable{
 		dest.writeStringList(images);
 		dest.writeString(text);
 		dest.writeInt(likes);
-		dest.writeParcelable(firstReaction, flags);
 	}
 
 	public int getId(){
@@ -84,11 +78,5 @@ public class Post implements Parcelable{
 	}
 	public void setLikes(int likes){
 		this.likes = likes;
-	}
-	@Nullable public Reaction getFirstReaction(){
-		return firstReaction;
-	}
-	public void setFirstReaction(@Nullable Reaction firstReaction){
-		this.firstReaction = firstReaction;
 	}
 }
