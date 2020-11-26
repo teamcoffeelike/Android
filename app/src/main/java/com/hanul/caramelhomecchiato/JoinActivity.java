@@ -1,6 +1,7 @@
 package com.hanul.caramelhomecchiato;
 
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -26,6 +27,7 @@ public class JoinActivity extends AppCompatActivity{
 		adapter = new PagerAdapter(getSupportFragmentManager());
 
 		viewPager.setAdapter(adapter);
+
 	}
 
 	public void openJoinForm(JoinType type){
@@ -40,7 +42,27 @@ public class JoinActivity extends AppCompatActivity{
 				break;
 			}
 		}
+
 	}
+
+	//
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+
+
+		if ((keyCode == KeyEvent.KEYCODE_BACK)) {
+
+			if(viewPager.getCurrentItem()==1){
+
+				viewPager.setCurrentItem(0);
+				return true;
+
+			}
+		}
+
+		return super.onKeyDown(keyCode, event);
+
+	}
+
 
 	private static final class PagerAdapter extends FragmentStatePagerAdapter{
 		public final JoinFragment join = new JoinFragment();
@@ -60,10 +82,14 @@ public class JoinActivity extends AppCompatActivity{
 				throw new IndexOutOfBoundsException("position");
 			}
 		}
+
 		@Override public int getCount(){
 			return 2;
 		}
+
+
 	}
+
 
 	public enum JoinType{
 		WITH_PHONE,
