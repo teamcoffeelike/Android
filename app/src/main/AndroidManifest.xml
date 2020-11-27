@@ -2,7 +2,15 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 	package="com.hanul.caramelhomecchiato">
 
-	<uses-permission android:name="android.permission.INTERNET"/>
+	<uses-feature android:name="android.hardware.camera" android:required="false" />
+	<uses-feature android:name="android.hardware.camera.autofocus" android:required="false" />
+	<uses-feature android:name="android.hardware.camera.flash" android:required="false" />
+	<uses-permission android:name="android.permission.CAMERA" />
+	<uses-permission android:name="android.permission.INTERNET" />
+	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="18"/>
+
+	<queries />
 
 	<application
 		android:allowBackup="true"
@@ -13,7 +21,17 @@
 		android:theme="@style/Theme.CaramelHOMEcchiato"
 		android:usesCleartextTraffic="true">
 
-		<activity android:name=".EditProfileActivity"/>
+		<provider android:name="androidx.core.content.FileProvider"
+			android:authorities="${applicationId}.provider"
+			android:exported="false"
+			android:grantUriPermissions="true">
+
+			<meta-data
+				android:name="android.support.FILE_PROVIDER_PATHS"
+				android:resource="@xml/provider_paths"/>
+		</provider>
+
+		<activity android:name=".EditProfileActivity" />
 		<activity android:name=".FollowsActivity" />
 		<activity android:name=".JoinActivity" />
 		<activity android:name=".LikesActivity" />
@@ -27,6 +45,7 @@
 		<activity android:name=".MainActivity" />
 		<activity android:name=".MyRecipeActivity" />
 		<activity android:name=".SearchFriendActivity" />
-		<activity android:name=".SettingsActivity"/>
+		<activity android:name=".SettingsActivity" />
+		<activity android:name=".WritePostActivity" />
 	</application>
 </manifest>
