@@ -13,33 +13,33 @@
 		android:layout_width="match_parent"
 		android:layout_height="0dp"
 		android:orientation="horizontal"
-		android:layout_weight="1"
+		android:layout_weight="0.8"
 		android:weightSum="3">
 
 		<Button
-			android:id="@+id/timer_fivemin"
+			android:id="@+id/buttonTimerFiveMin"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:text="+5MIN"
+			android:text="+5분"
 			android:layout_weight="1"
 			android:layout_gravity="center"
 			android:backgroundTint="@color/CadetBlueCrayola"
 			android:layout_margin="10dp"/>
 
 		<Button
-			android:id="@+id/timer_onemin"
+			android:id="@+id/buttonTimerOneMin"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:text="+1MIN"
+			android:text="+1분"
 			android:layout_weight="1"
 			android:layout_gravity="center"
 			android:backgroundTint="@color/CadetBlueCrayola"/>
 
 		<Button
-			android:id="@+id/timer_sec"
+			android:id="@+id/buttonTimerSec"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:text="+15SEC"
+			android:text="+15초"
 			android:layout_weight="1"
 			android:layout_gravity="center"
 			android:backgroundTint="@color/CadetBlueCrayola"
@@ -47,45 +47,63 @@
 
 	</LinearLayout>
 
-
-	<TextView
-		android:id="@+id/timer_countdown"
+	<LinearLayout
 		android:layout_width="match_parent"
 		android:layout_height="0dp"
-		android:text="00:00"
-		android:textSize="110dp"
-		android:gravity="center"
-		android:textColor="@color/CadetBlueCrayola"
-		android:layout_weight="1"/>
+		android:layout_weight="1.4"
+		android:orientation="vertical"
+		android:weightSum="2">
+
+		<TextView
+			android:id="@+id/textTimerCountdown"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:gravity="center"
+			android:text="00:00"
+			android:textColor="@color/CadetBlueCrayola"
+			android:textSize="120sp"
+			android:layout_weight="1.5"/>
+
+		<ImageButton
+			android:id="@+id/imgBtnReset"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:src="@drawable/ic_timer_reset"
+			style="?android:attr/borderlessButtonStyle"
+			android:layout_gravity="center"
+			android:layout_marginTop="10dp"
+			android:layout_weight="0.5"/>
+
+	</LinearLayout>
 
 	<LinearLayout
 		android:layout_width="match_parent"
 		android:layout_height="0dp"
 		android:orientation="horizontal"
-		android:layout_weight="1"
+		android:layout_weight="0.8"
 		android:weightSum="2">
 
 		<Button
-			android:id="@+id/timer_startpause"
-			android:layout_width="wrap_content"
+			android:id="@+id/buttonTimerStartPause"
+			android:layout_width="60dp"
 			android:layout_height="wrap_content"
 			android:layout_gravity="center"
 			android:layout_margin="10dp"
-			android:layout_weight="1"
-			android:backgroundTint="@color/deepChampagne"
-			android:text="▶"
+			android:layout_weight="1.2"
+			android:backgroundTint="@color/NewYorkPink"
+			android:text="시작"
 			android:textSize="18sp" />
 
 
 		<Button
-			android:id="@+id/timer_stop"
-			android:layout_width="wrap_content"
+			android:id="@+id/buttonTimerStop"
+			android:layout_width="50dp"
 			android:layout_height="wrap_content"
 			android:layout_gravity="center"
 			android:layout_margin="10dp"
-			android:layout_weight="1"
-			android:backgroundTint="@color/deepChampagne"
-			android:text="■"
+			android:layout_weight="0.8"
+			android:backgroundTint="@color/NewYorkPink"
+			android:text="중지"
 			android:textSize="18sp" />
 
 	</LinearLayout>
