@@ -23,4 +23,6 @@
 	<string name="likes">좋아요</string>
 	<string name="search">친구찾기</string>
 	<string name="settings">설정</string>
+	<!-- TODO: Remove or change this placeholder text -->
+	<string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
