@@ -42,10 +42,10 @@
 
 			<ImageButton
 				android:id="@+id/buttonPostOption"
-				android:layout_width="wrap_content"
+				android:layout_width="30dp"
 				android:layout_height="wrap_content"
-				android:layout_marginTop="13dp"
-				android:background="@color/white"
+				android:layout_marginTop="1dp"
+				style="?android:attr/borderlessButtonStyle"
 				android:src="@drawable/ic_button"
 				android:tint="@color/VanDykeBrown"
 				app:layout_constraintEnd_toEndOf="parent"
@@ -80,7 +80,7 @@
 				android:layout_width="30dp"
 				android:layout_height="30dp"
 				android:src="@drawable/ic_like"
-				android:background="@color/white"
+				style="?android:attr/borderlessButtonStyle"
 				app:layout_constraintBottom_toBottomOf="parent"
 				app:layout_constraintStart_toStartOf="parent"
 				app:layout_constraintTop_toTopOf="parent" />
@@ -90,7 +90,7 @@
 				android:layout_width="30dp"
 				android:layout_height="30dp"
 				android:src="@drawable/ic_comment"
-				android:background="@color/white"
+				style="?android:attr/borderlessButtonStyle"
 				app:layout_constraintBottom_toBottomOf="parent"
 				app:layout_constraintStart_toEndOf="@+id/buttonLike"
 				app:layout_constraintTop_toTopOf="parent" />
@@ -110,6 +110,7 @@
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:layout_marginLeft="8dp"
+		android:layout_marginBottom="25dp"
 		android:text="@string/comments"
 		android:textColor="@color/Asparagus" />
 
