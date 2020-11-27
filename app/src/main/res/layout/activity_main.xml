@@ -41,7 +41,7 @@
 
 		</com.google.android.material.appbar.AppBarLayout>
 
-		<!-- 상단바/바텀네비 사이 RecyclerView -->
+		<!-- 상단바/바텀네비 사이 -->
 		<FrameLayout
 			android:id="@+id/mainFrame"
 			android:layout_width="match_parent"
@@ -50,14 +50,7 @@
 			app:layout_constraintBottom_toTopOf="@+id/bottomNavigation"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toBottomOf="@+id/appBar">
-
-			<androidx.recyclerview.widget.RecyclerView
-				android:id="@+id/recyclerView"
-				android:layout_width="match_parent"
-				android:layout_height="match_parent" />
-
-		</FrameLayout>
+			app:layout_constraintTop_toBottomOf="@+id/appBar" />
 
 		<!-- 바텀네비 설정 -->
 		<com.google.android.material.bottomnavigation.BottomNavigationView
