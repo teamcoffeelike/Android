@@ -3,6 +3,10 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	tools:context=".fragment.FollowerFragment"
-	android:background="@color/OrangeYellowCrayola">
+	tools:context=".fragment.FollowerFragment">
+
+	<androidx.recyclerview.widget.RecyclerView
+		android:id="@+id/recyclerViewFollower"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent" />
 </FrameLayout>

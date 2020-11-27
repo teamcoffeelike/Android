@@ -3,8 +3,11 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	tools:context=".fragment.FollowingFragment"
-	android:background="@color/TerraCotta">
+	tools:context=".fragment.FollowingFragment">
 
+	<androidx.recyclerview.widget.RecyclerView
+		android:id="@+id/recyclerViewFollowing"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent" />
 
 </FrameLayout>
