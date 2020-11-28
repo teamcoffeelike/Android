@@ -31,31 +31,43 @@
 		android:id="@+id/switchComment"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:layout_marginLeft="50dp"
-		android:layout_marginTop="100dp"
-		android:text="새댓글 알림"
+		android:layout_marginStart="30dp"
+		android:layout_marginLeft="30dp"
+		android:layout_marginTop="110dp"
+		android:checked="true"
+		android:text="새댓글 알림 "
+		android:thumb="@drawable/switch_thumb"
+		android:track="@drawable/switch_track"
 		app:layout_constraintStart_toEndOf="@+id/settingsUserProfile"
 		app:layout_constraintTop_toTopOf="parent" />
-
-	<Switch
-		android:id="@+id/switchLike"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_marginLeft="50dp"
-		android:layout_marginTop="16dp"
-		android:text="좋아요 알림"
-		app:layout_constraintStart_toEndOf="@+id/settingsUserProfile"
-		app:layout_constraintTop_toBottomOf="@+id/switchComment" />
 
 	<Switch
 		android:id="@+id/switchFollow"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:layout_marginLeft="50dp"
+		android:layout_marginStart="30dp"
+		android:layout_marginLeft="30dp"
 		android:layout_marginTop="16dp"
-		android:text="팔로우 알림"
+		android:checked="true"
+		android:text="팔로우 알림 "
+		android:thumb="@drawable/switch_thumb"
+		android:track="@drawable/switch_track"
 		app:layout_constraintStart_toEndOf="@+id/settingsUserProfile"
 		app:layout_constraintTop_toBottomOf="@+id/switchLike" />
+
+	<Switch
+		android:id="@+id/switchLike"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginStart="30dp"
+		android:layout_marginLeft="30dp"
+		android:layout_marginTop="16dp"
+		android:checked="true"
+		android:text="좋아요 알림 "
+		android:thumb="@drawable/switch_thumb"
+		android:track="@drawable/switch_track"
+		app:layout_constraintStart_toEndOf="@+id/settingsUserProfile"
+		app:layout_constraintTop_toBottomOf="@+id/switchComment" />
 
 	<TextView
 		android:id="@+id/textViewUserName"
