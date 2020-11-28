@@ -1,5 +1,9 @@
 package com.hanul.caramelhomecchiato.fragment;
 
+import android.content.DialogInterface;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.Log;
@@ -12,6 +16,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import com.hanul.caramelhomecchiato.R;
@@ -40,37 +45,36 @@ public class TimerFragment extends Fragment{
 		//5분 추가 버튼
 		tFiveMin = view.findViewById(R.id.buttonTimerFiveMin);
 		tFiveMin.setOnClickListener(v -> {
-
 			timeLeftInMillis += 300000;
+			userSettingTime = timeLeftInMillis;
 			updateCountDownText();
-
 		});
 
 		//1분 추가버튼
 		tOneMin = view.findViewById(R.id.buttonTimerOneMin);
 		tOneMin.setOnClickListener(v -> {
-
 			timeLeftInMillis += 60000;
+			userSettingTime = timeLeftInMillis;
 			updateCountDownText();
-
 		});
 
 		//15초 추가버튼
 		tSec = view.findViewById(R.id.buttonTimerSec);
 		tSec.setOnClickListener(v -> {
-
 			timeLeftInMillis += 15000;
+			userSettingTime = timeLeftInMillis;
 			updateCountDownText();
-
 		});
 
 		//시작/일시정지버튼
 		tStartPause = view.findViewById(R.id.buttonTimerStartPause);
 		tStartPause.setOnClickListener(v -> {
-			if (timeStarted == false){
-				startTimer();
-			}else {
-				pauseTimer();
+			if(timeLeftInMillis != 0) {
+				if (timeStarted == false) {
+					startTimer();
+				} else {
+					pauseTimer();
+				}
 			}
 		});
 
@@ -99,17 +103,24 @@ public class TimerFragment extends Fragment{
 				timeLeftInMillis = millisUntilFinished;
 				updateCountDownText();
 			}
-
+			//타이머가 완전히 끝나면
 			@Override
 			public void onFinish() {
 				timeStarted = false;
 				tStartPause.setText("시작");
+				timerAlarm();
 			}
-
 		}.start();
 
 		timeStarted = true;
 		tStartPause.setText("일시정지");
+	}
+
+	//타이머알람
+	private void timerAlarm() {
+		Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+		Ringtone ringtone = RingtoneManager.getRingtone(getContext(), uri);
+		ringtone.play();
 	}
 
 	//타이머 일시정지
@@ -124,6 +135,8 @@ public class TimerFragment extends Fragment{
 		countDownTimer.cancel();
 		timeStarted = false;
 		tStartPause.setText("시작");
+		timeLeftInMillis = userSettingTime;
+		updateCountDownText();
 	}
 
 	//시간 리셋
@@ -132,14 +145,14 @@ public class TimerFragment extends Fragment{
 		timeStarted = false;
 		tStartPause.setText("시작");
 		timeLeftInMillis = 0;
+		userSettingTime = 0;
 		updateCountDownText();
 	}
 
 	//시간부분
 	private void updateCountDownText() {
-
-		int minutes = (int) (timeLeftInMillis / 1000) / 60;
-		int seconds = (int) (timeLeftInMillis / 1000) % 60;
+		int	minutes = (int) (timeLeftInMillis / 1000) / 60;
+		int	seconds = (int) (timeLeftInMillis / 1000) % 60;
 
 		String timeLeftFormatted = null;
 
@@ -159,5 +172,4 @@ public class TimerFragment extends Fragment{
 
 		tCountDown.setText(timeLeftFormatted);
 	}
-
 }
