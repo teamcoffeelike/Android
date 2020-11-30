@@ -1,13 +1,16 @@
 package com.hanul.caramelhomecchiato.adapter;
 
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.viewpager.widget.ViewPager;
 
 import com.hanul.caramelhomecchiato.R;
@@ -28,6 +31,8 @@ public class PostAdapter extends BaseAdapter<Post>{
 		private final TextView textViewLikes;
 		private final TextView textViewComments;
 
+		private final ImageButton buttonPostOption;
+		
 		public ViewHolder(@NonNull View itemView){
 			super(itemView);
 			imageViewPostUserProfile = itemView.findViewById(R.id.imageViewPostUserProfile);
@@ -36,7 +41,28 @@ public class PostAdapter extends BaseAdapter<Post>{
 			textViewPost = itemView.findViewById(R.id.textViewPost);
 			textViewLikes = itemView.findViewById(R.id.textViewLikes);
 			textViewComments = itemView.findViewById(R.id.textViewComments);
+			buttonPostOption = itemView.findViewById(R.id.buttonPostOption);
 
+			/* 포스트 수정/삭제 버튼 클릭 이벤트 */
+			// TODO 작성자에게만 수정/삭제 권한이 있어야함!
+			buttonPostOption.setOnClickListener(v -> {
+				PopupMenu popupMenu = new PopupMenu(itemView.getContext(), v);
+				popupMenu.getMenuInflater().inflate(R.menu.post_menu, popupMenu.getMenu());
+
+				popupMenu.setOnMenuItemClickListener(item -> {
+					switch (item.getItemId()) {
+						case R.id.postModify:
+							Toast.makeText(itemView.getContext(), "글 수정 버튼 클릭", Toast.LENGTH_SHORT).show();
+							break;
+						case R.id.postDelete:
+							Toast.makeText(itemView.getContext(), "글 삭제 버튼 클릭", Toast.LENGTH_SHORT).show();
+							break;
+					}
+					return true;
+				});
+				popupMenu.show();
+			});
+			
 			itemView.findViewById(R.id.buttonLike).setOnClickListener(v -> {
 				Toast.makeText(this.itemView.getContext(), ";)", Toast.LENGTH_SHORT).show();
 			});
