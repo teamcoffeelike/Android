@@ -19,7 +19,7 @@
 			android:layout_width="200dp"
 			android:layout_height="wrap_content"
 			android:inputType="textPersonName"
-			android:paddingLeft="10dp"
+			android:paddingLeft="15dp"
 			android:theme="@style/edit_text"
 			app:layout_constraintBottom_toBottomOf="parent"
 			app:layout_constraintEnd_toEndOf="parent"
