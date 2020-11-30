@@ -20,6 +20,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import com.hanul.caramelhomecchiato.R;
+import com.hanul.caramelhomecchiato.util.MutableTimer;
 
 import java.util.Locale;
 import java.util.Timer;
@@ -27,11 +28,29 @@ import java.util.TimerTask;
 
 public class TimerFragment extends Fragment{
 
-	private Button tFiveMin, tOneMin, tSec, tStartPause, tStop;
-	private TextView tCountDown;
-	private ImageButton tReset;
+	private Button btnFiveMin;
+	private Button btnOneMin;
+	private Button btnSec;
+	private Button btnStartPause;
+	private Button btnStop;
+	private TextView tvCountDown;
+	private ImageButton ImgBtnReset;
 
-	private CountDownTimer countDownTimer;
+	private final MutableTimer countDownTimer = new MutableTimer(timeLeftInMillis, 1000/4) {
+		@Override
+		public void onTick(long millisUntilFinished) {
+			timeLeftInMillis = millisUntilFinished;
+			updateCountDownText();
+		}
+		//타이머가 완전히 끝나면
+		@Override
+		public void onFinish() {
+			timeStarted = false;
+			btnStartPause.setText("시작");
+			timerAlarm();
+		}
+	};
+
 	private long timeLeftInMillis = 0L;
 	private long userSettingTime = 0L;
 
@@ -40,35 +59,24 @@ public class TimerFragment extends Fragment{
 	@Nullable @Override public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState){
 		View view = inflater.inflate(R.layout.fragment_timer, container, false);
 
-		tCountDown = view.findViewById(R.id.textTimerCountdown);
+		tvCountDown = view.findViewById(R.id.textTimerCountdown);
+
 
 		//5분 추가 버튼
-		tFiveMin = view.findViewById(R.id.buttonTimerFiveMin);
-		tFiveMin.setOnClickListener(v -> {
-			timeLeftInMillis += 300000;
-			userSettingTime = timeLeftInMillis;
-			updateCountDownText();
-		});
+		btnFiveMin = view.findViewById(R.id.buttonTimerFiveMin);
+		btnFiveMin.setOnClickListener(v -> addTime(300000));
 
 		//1분 추가버튼
-		tOneMin = view.findViewById(R.id.buttonTimerOneMin);
-		tOneMin.setOnClickListener(v -> {
-			timeLeftInMillis += 60000;
-			userSettingTime = timeLeftInMillis;
-			updateCountDownText();
-		});
+		btnOneMin = view.findViewById(R.id.buttonTimerOneMin);
+		btnOneMin.setOnClickListener(v -> addTime(60000));
 
 		//15초 추가버튼
-		tSec = view.findViewById(R.id.buttonTimerSec);
-		tSec.setOnClickListener(v -> {
-			timeLeftInMillis += 15000;
-			userSettingTime = timeLeftInMillis;
-			updateCountDownText();
-		});
+		btnSec = view.findViewById(R.id.buttonTimerSec);
+		btnSec.setOnClickListener(v -> addTime(15000));
 
 		//시작/일시정지버튼
-		tStartPause = view.findViewById(R.id.buttonTimerStartPause);
-		tStartPause.setOnClickListener(v -> {
+		btnStartPause = view.findViewById(R.id.buttonTimerStartPause);
+		btnStartPause.setOnClickListener(v -> {
 			if(timeLeftInMillis != 0) {
 				if (timeStarted == false) {
 					startTimer();
@@ -79,41 +87,33 @@ public class TimerFragment extends Fragment{
 		});
 
 		//정지버튼
-		tStop = view.findViewById(R.id.buttonTimerStop);
-		tStop.setOnClickListener(v -> {
-			stopTimer();
-		});
+		btnStop = view.findViewById(R.id.buttonTimerStop);
+		btnStop.setOnClickListener(v -> stopTimer());
 
 		//시간 리셋버튼
-		tReset = view.findViewById(R.id.imgBtnReset);
-		tReset.setOnClickListener(v -> {
-			resetTime();
-		});
+		ImgBtnReset = view.findViewById(R.id.imgBtnReset);
+		ImgBtnReset.setOnClickListener(v -> resetTime());
 
 		updateCountDownText();
 
 		return view;
 	}
 
+	private void addTime(long time){
+		if(timeStarted){
+			countDownTimer.addTime(time);
+		}else{
+			userSettingTime += time;
+			updateCountDownText();
+		}
+	}
+
 	//타이머 시작
 	private void startTimer() {
-		countDownTimer = new CountDownTimer(timeLeftInMillis, 1000) {
-			@Override
-			public void onTick(long millisUntilFinished) {
-				timeLeftInMillis = millisUntilFinished;
-				updateCountDownText();
-			}
-			//타이머가 완전히 끝나면
-			@Override
-			public void onFinish() {
-				timeStarted = false;
-				tStartPause.setText("시작");
-				timerAlarm();
-			}
-		}.start();
+		countDownTimer.start();
 
 		timeStarted = true;
-		tStartPause.setText("일시정지");
+		btnStartPause.setText("일시정지");
 	}
 
 	//타이머알람
@@ -127,14 +127,14 @@ public class TimerFragment extends Fragment{
 	private void pauseTimer() {
 		countDownTimer.cancel();
 		timeStarted = false;
-		tStartPause.setText("계속");
+		btnStartPause.setText("계속");
 	}
 
 	//타이머 중지
 	private void stopTimer() {
 		countDownTimer.cancel();
 		timeStarted = false;
-		tStartPause.setText("시작");
+		btnStartPause.setText("시작");
 		timeLeftInMillis = userSettingTime;
 		updateCountDownText();
 	}
@@ -143,7 +143,7 @@ public class TimerFragment extends Fragment{
 	private void resetTime() {
 		countDownTimer.cancel();
 		timeStarted = false;
-		tStartPause.setText("시작");
+		btnStartPause.setText("시작");
 		timeLeftInMillis = 0;
 		userSettingTime = 0;
 		updateCountDownText();
@@ -170,6 +170,6 @@ public class TimerFragment extends Fragment{
 			}
 		}
 
-		tCountDown.setText(timeLeftFormatted);
+		tvCountDown.setText(timeLeftFormatted);
 	}
 }
