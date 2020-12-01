@@ -8,15 +8,20 @@
 
 	<LinearLayout
 		android:layout_width="match_parent"
-		android:layout_height="match_parent"
-		android:orientation="vertical">
+		android:layout_height="wrap_content"
+		android:orientation="vertical"
+		android:id="@+id/linearLayoutRecipe"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent">
 
-		<!-- 레시피 사진, 텍스트, 별점 -->
+		<!-- 레시피 상세화면 레이아웃 -->
 		<LinearLayout
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
-			android:orientation="vertical"
-			android:layout_marginTop="20dp">
+			android:layout_marginTop="20dp"
+			android:layout_marginBottom="20dp"
+			android:orientation="vertical">
 
 			<!-- 레시피 사진 -->
 			<ImageView
@@ -31,26 +36,26 @@
 
 			<!-- 레시피 제목 -->
 			<TextView
-				android:id="@+id/recipeImageTitle"
+				android:id="@+id/recipeTitle"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:gravity="center"
 				android:text="title"
-				android:textSize="20sp"
 				android:textColor="@color/VanDykeBrown"
+				android:textSize="20sp"
 				app:layout_constraintEnd_toEndOf="parent"
 				app:layout_constraintStart_toStartOf="parent"
 				app:layout_constraintTop_toBottomOf="@+id/recipeImage" />
 
-			<!-- 레시피 만든 유저 -->
+			<!-- 레시피 글쓴이 -->
 			<TextView
-				android:id="@+id/recipeImageAuthor"
+				android:id="@+id/recipeAuthor"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:gravity="center"
 				android:text="author"
-				android:textSize="20sp"
 				android:textColor="@color/VanDykeBrown"
+				android:textSize="20sp"
 				app:layout_constraintEnd_toEndOf="parent"
 				app:layout_constraintStart_toStartOf="parent"
 				app:layout_constraintTop_toBottomOf="@+id/recipeImage" />
@@ -58,16 +63,16 @@
 			<!-- 별점 -->
 			<RatingBar
 				android:id="@+id/ratingBar"
+				style="?android:attr/ratingBarStyleIndicator"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:layout_gravity="center"
-				style="?android:attr/ratingBarStyleIndicator"
-				android:numStars="5"
-				android:stepSize="0.5"
-				android:rating="0.0"
 				android:focusable="true"
 				android:focusableInTouchMode="true"
-				android:soundEffectsEnabled="true"/>
+				android:numStars="5"
+				android:rating="0.0"
+				android:soundEffectsEnabled="true"
+				android:stepSize="0.5" />
 
 		</LinearLayout>
 

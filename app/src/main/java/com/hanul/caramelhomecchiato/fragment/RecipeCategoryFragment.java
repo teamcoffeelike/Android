@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Adapter;
 import android.widget.GridLayout;
 import android.widget.LinearLayout;
 
@@ -36,7 +37,7 @@ public class RecipeCategoryFragment extends Fragment{
 		smoothie = rootView.findViewById(R.id.smoothie);
 		etc = rootView.findViewById(R.id.etc);
 
-		//가져오기
+		//레시피 카테고리 클릭시 각 레시피 상세화면 보여주기
 		hotCoffee.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -83,6 +84,7 @@ public class RecipeCategoryFragment extends Fragment{
 	}
 
 	private void showRecipes(RecipeCategory category){
+		//레시피 액티비티로 전달할 인텐트 생성, 레시피 액티비티 시작
 		Intent intent = new Intent(getContext(), RecipeActivity.class);
 		intent.putExtra("recipeCategory", category);
 		startActivity(intent);
