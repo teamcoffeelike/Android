@@ -3,6 +3,7 @@ package com.hanul.caramelhomecchiato.adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.textservice.TextInfo;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -12,27 +13,42 @@ import androidx.annotation.NonNull;
 import com.hanul.caramelhomecchiato.R;
 import com.hanul.caramelhomecchiato.data.Recipe;
 
+import org.w3c.dom.Text;
+
 public class RecipeAdapter extends BaseAdapter<Recipe> {
 	@NonNull
 	@Override
 	public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 		return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.view_recipe, parent, false));
+		/*LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+		View itemView = inflater.inflate(R.layout.view_recipe, parent, false);
+
+		return new ViewHolder(itemView);*/
 	}
 
-	public static final class ViewHolder extends  BaseAdapter.ViewHolder<Recipe>{
+	//뷰홀더 재사용 위한 메소드
+	/*public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+		holder.setItem(item);
+	}*/
+
+	public static final class ViewHolder extends BaseAdapter.ViewHolder<Recipe>{
+		/*LayoutInflater inflater = LayoutInflater.from(LayoutInflater);*/
+
 		private final ImageView recipeImage;
-		private final TextView recipeTitle;
-		private final TextView recipeAuthor;
-		private final RatingBar ratingBar;
+		private final TextView title;
+		private final TextView author;
+		private final RatingBar rating;
+		/*private final ViewHolder(View itemView, TextView getRecipeTitle);*/
 
 		public ViewHolder(@NonNull View itemView) {
 			super(itemView);
 			recipeImage = itemView.findViewById(R.id.recipeImage);
-			recipeTitle = itemView.findViewById(R.id.recipeTitle);
-			recipeAuthor = itemView.findViewById(R.id.recipeAuthor);
-			ratingBar = itemView.findViewById(R.id.ratingBar);
+			title = itemView.findViewById(R.id.textViewRecipeTitle);
+			author = itemView.findViewById(R.id.textViewRecipeAuthor);
+			rating = itemView.findViewById(R.id.ratingBar);
 
-			ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+			//RatingBar 클릭시 변경
+			rating.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
 				@Override
 				public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
 					ratingBar.setRating(rating);
@@ -40,9 +56,11 @@ public class RecipeAdapter extends BaseAdapter<Recipe> {
 			});
 		}
 
+		//onBindViewHolder()에서 재사용되는 뷰홀더 데이터 설정시 사용
 		@Override
 		protected void setItem(int position, Recipe element) {
-			
+			title.setText(element.getTitle());
+			/*author.setText(element.getAuthor());*/
 		}
 	}
 }

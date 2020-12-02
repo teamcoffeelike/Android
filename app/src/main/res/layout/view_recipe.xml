@@ -10,7 +10,7 @@
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:orientation="vertical"
-		android:id="@+id/linearLayoutRecipe"
+		android:id="@+id/linearLayoutRecipeView"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toTopOf="parent">
@@ -25,7 +25,7 @@
 
 			<!-- 레시피 사진 -->
 			<ImageView
-				android:id="@+id/recipeImage"
+				android:id="@+id/ImageViewRecipeImage"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:layout_gravity="center"
@@ -36,7 +36,7 @@
 
 			<!-- 레시피 제목 -->
 			<TextView
-				android:id="@+id/recipeTitle"
+				android:id="@+id/textViewRecipeTitle"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:gravity="center"
@@ -49,7 +49,7 @@
 
 			<!-- 레시피 글쓴이 -->
 			<TextView
-				android:id="@+id/recipeAuthor"
+				android:id="@+id/textViewRecipeAuthor"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:gravity="center"

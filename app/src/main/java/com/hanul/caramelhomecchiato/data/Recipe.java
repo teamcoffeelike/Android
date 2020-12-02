@@ -1,7 +1,9 @@
 package com.hanul.caramelhomecchiato.data;
 
+import android.media.Rating;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.widget.RatingBar;
 
 public final class Recipe implements Parcelable{
 	public static final Creator<Recipe> CREATOR = new Creator<Recipe>(){
@@ -17,12 +19,14 @@ public final class Recipe implements Parcelable{
 	private RecipeCategory category;
 	private String title;
 	private User author;
+	private float rating;
 
-	public Recipe(int id, RecipeCategory category, String title, User author){
+	public Recipe(int id, RecipeCategory category, String title, User author, Float rating){
 		this.id = id;
 		this.category = category;
 		this.title = title;
 		this.author = author;
+		this.rating = rating;
 	}
 
 	protected Recipe(Parcel in){
@@ -30,6 +34,7 @@ public final class Recipe implements Parcelable{
 		category = RecipeCategory.values()[in.readByte()];
 		title = in.readString();
 		author = in.readParcelable(User.class.getClassLoader());
+		rating = in.readFloat();
 	}
 
 	@Override public int describeContents(){
@@ -40,6 +45,7 @@ public final class Recipe implements Parcelable{
 		dest.writeByte((byte) category.ordinal());
 		dest.writeString(title);
 		dest.writeParcelable(author, flags);
+		dest.writeFloat(rating);
 	}
 
 	public int getId(){
@@ -66,4 +72,6 @@ public final class Recipe implements Parcelable{
 	public void setAuthor(User author){
 		this.author = author;
 	}
+	public float getRating() { return rating; }
+	public void setRating(float rating) { this.rating = rating; }
 }

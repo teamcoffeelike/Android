@@ -20,13 +20,16 @@ import com.hanul.caramelhomecchiato.data.RecipeCategory;
 
 public class RecipeActivity extends AppCompatActivity {
 
-	private Fragment recipeCategoryFragment;
+	/*private RecyclerView recyclerViewRecipe;
+	private RecipeAdapter adapter;*/
 	private Recipe recipe;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_recipe);
+
+
 
 		//레시피 뷰 레이아웃 가져오기
 		LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -38,9 +41,19 @@ public class RecipeActivity extends AppCompatActivity {
 
 		//레시피 카테고리 프래그먼트의 인텐트를 받아서 Parcelable 객체 저장
 		Intent intent = getIntent();
-		recipe = intent.getParcelableExtra("recipe");
+		RecipeCategory category = (RecipeCategory) intent.getSerializableExtra("recipeCategory");
 
-		//프래그먼트 생성
+		//레시피 리사이클러뷰 가져오기
+		LinearLayoutManager layoutManager = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
+		recyclerViewRecipe.setLayoutManager(layoutManager);
+
+		//레시피 어댑터 데이터 가져오기
+		/*RecipeAdapter adapter = new RecipeAdapter(this);
+		adapter.onCreateViewHolder();
+
+		recyclerViewRecipe.setAdapter(adapter);*/
+
+		/*//프래그먼트 생성
 		recipeCategoryFragment = new Fragment();
 
 		getSupportFragmentManager().beginTransaction().replace(R.id.recyclerViewRecipe, recipeCategoryFragment);
@@ -49,6 +62,6 @@ public class RecipeActivity extends AppCompatActivity {
 		Bundle bundle = new Bundle();
 		bundle.putParcelable("recipe", recipe);
 
-		recipeCategoryFragment.setArguments(bundle);
+		recipeCategoryFragment.setArguments(bundle);*/
 	}
 }
