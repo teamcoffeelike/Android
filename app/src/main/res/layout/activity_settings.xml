@@ -22,7 +22,7 @@
 		android:layout_width="150dp"
 		android:layout_height="150dp"
 		android:layout_marginLeft="55dp"
-		android:layout_marginTop="80dp"
+		android:layout_marginTop="100dp"
 		android:src="@drawable/test_user"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toTopOf="parent" />
@@ -33,7 +33,7 @@
 		android:layout_height="wrap_content"
 		android:layout_marginStart="30dp"
 		android:layout_marginLeft="30dp"
-		android:layout_marginTop="110dp"
+		android:layout_marginTop="130dp"
 		android:checked="true"
 		android:text="새댓글 알림 "
 		android:thumb="@drawable/switch_thumb"
@@ -69,11 +69,25 @@
 		app:layout_constraintStart_toEndOf="@+id/settingsUserProfile"
 		app:layout_constraintTop_toBottomOf="@+id/switchComment" />
 
+	<EditText
+		android:id="@+id/editTextUserPassword"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginStart="144dp"
+		android:layout_marginLeft="144dp"
+		android:layout_marginTop="84dp"
+		android:ems="10"
+		android:inputType="textPersonName"
+		android:paddingLeft="15dp"
+		android:theme="@style/edit_text"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@+id/settingsUserProfile" />
+
 	<TextView
 		android:id="@+id/textViewUserName"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:layout_marginTop="75dp"
+		android:layout_marginTop="96dp"
 		android:text="사용자 이름"
 		android:textSize="15sp"
 		app:layout_constraintEnd_toStartOf="@+id/editTextUserPassword"
@@ -81,95 +95,18 @@
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toBottomOf="@+id/settingsUserProfile" />
 
-	<EditText
-		android:id="@+id/editTextUserPassword"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_marginStart="144dp"
-		android:layout_marginLeft="144dp"
-		android:layout_marginTop="64dp"
-		android:layout_marginRight="55dp"
-		android:ems="10"
-		android:paddingLeft="15dp"
-		android:theme="@style/edit_text"
-		android:inputType="textPersonName"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@+id/settingsUserProfile" />
-
-	<TextView
-		android:id="@+id/textView2"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_marginLeft="55dp"
-		android:text="현재 비밀번호"
-		app:layout_constraintBottom_toTopOf="@+id/editTextTextPassword"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@+id/textViewUserName"
-		app:layout_constraintVertical_bias="0.925" />
-
-	<EditText
-		android:id="@+id/editTextTextPassword"
+	<Button
+		android:id="@+id/buttonChangePassword"
 		android:layout_width="300dp"
 		android:layout_height="wrap_content"
-		android:layout_marginTop="32dp"
-		android:ems="10"
-		android:paddingLeft="15dp"
-		android:theme="@style/edit_text"
-		android:inputType="textPassword"
+		android:layout_marginTop="55dp"
+		android:backgroundTint="@color/OrangeYellowCrayola"
+		android:text="비밀번호 변경"
+		android:textColor="@color/VanDykeBrown"
+		android:textSize="18sp"
 		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintHorizontal_bias="0.495"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toBottomOf="@+id/editTextUserPassword" />
 
-	<TextView
-		android:id="@+id/textViewNewPassword"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_marginLeft="55dp"
-		android:text="새로운 비밀번호"
-		app:layout_constraintBottom_toTopOf="@+id/editTextNewPassword"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@+id/editTextTextPassword"
-		app:layout_constraintVertical_bias="1.0" />
-
-	<EditText
-		android:id="@+id/editTextNewPassword"
-		android:layout_width="300dp"
-		android:layout_height="wrap_content"
-		android:layout_marginTop="32dp"
-		android:ems="10"
-		android:paddingLeft="15dp"
-		android:theme="@style/edit_text"
-		android:inputType="textPassword"
-		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintHorizontal_bias="0.495"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@+id/editTextTextPassword" />
-
-	<TextView
-		android:id="@+id/textViewCheckPassword"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_marginStart="55dp"
-		android:layout_marginLeft="55dp"
-		android:text="비밀번호 확인"
-		app:layout_constraintBottom_toTopOf="@+id/editTextCheckPassword"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@+id/editTextNewPassword"
-		app:layout_constraintVertical_bias="1.0" />
-
-	<EditText
-		android:id="@+id/editTextCheckPassword"
-		android:layout_width="300dp"
-		android:layout_height="wrap_content"
-		android:layout_marginTop="32dp"
-		android:ems="10"
-		android:paddingLeft="15dp"
-		android:theme="@style/edit_text"
-		android:inputType="textPassword"
-		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintHorizontal_bias="0.495"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@+id/editTextNewPassword" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
