@@ -9,6 +9,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
 import android.Manifest;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -42,16 +43,17 @@ public class EditProfileActivity extends AppCompatActivity {
 	private Button buttonEditProfile;
 
 	private String imageFilePath;
-	private Uri photoUri;
+	private Uri uri;
 
-	private static final int REQUEST_IMAGE_ALBUM = 1;
-	private static final int REQUEST_IMAGE_CAPTURE = 2;
+	private static final int REQUEST_IMAGE_ALBUM = 111;
+	private static final int REQUEST_IMAGE_CAPTURE = 222;
+	private static final int CROP_IMAGE = 333;
 
 	public String imageRealPathA, imageDbPathA;
 
 	public static final int REQUEST_CODE = 11;
 
-	private File file = null;
+	private File file;
 
 	java.text.SimpleDateFormat tmpDateFormat;
 
@@ -89,54 +91,22 @@ public class EditProfileActivity extends AppCompatActivity {
 
 	/* 갤러리에서 이미지 가져오기 */
 	private void getAlbum() {
-		Intent intent = new Intent(Intent.ACTION_PICK);
-		intent.setType("image/*");
-		intent.setType(MediaStore.Images.Media.CONTENT_TYPE);
-		startActivityForResult(intent, REQUEST_IMAGE_ALBUM);
+		Intent gintent = new Intent(Intent.ACTION_PICK);
+		gintent.setType("image/*");
+		gintent.setType(MediaStore.Images.Media.CONTENT_TYPE);
+		startActivityForResult(gintent, REQUEST_IMAGE_ALBUM);
 	}
 
 	/* 카메라로 사진 찍기 */
 	private void takePhoto() {
-		try{
-			file = createFile();
-			Log.d("FilePath ", file.getAbsolutePath());
-
-		}catch(Exception e){
-			Log.d("Sub1Add:filepath", "Something Wrong", e);
-		}
-
-		imageViewProfile.setVisibility(View.VISIBLE);
-
-		Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) { // API24 이상 부터
-			intent.putExtra(MediaStore.EXTRA_OUTPUT,
-					FileProvider.getUriForFile(getApplicationContext(),
-							getApplicationContext().getPackageName() + ".fileprovider", file));
-			Log.d("sub1:appId", getApplicationContext().getPackageName());
-		}else {
-			intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
-		}
-
-		if (intent.resolveActivity(getPackageManager()) != null) {
-			startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
-		}
-
+		Intent cItent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+		startActivityForResult(cItent, REQUEST_IMAGE_CAPTURE);
 	}
-
-	/* 찍은 사진 저장 */
-	private File createFile() throws IOException {
-		String imageFileName = "My" + tmpDateFormat.format(new Date()) + ".jpg";
-		File storageDir = Environment.getExternalStorageDirectory();
-		File curFile = new File(storageDir, imageFileName);
-
-		return curFile;
-	}
-
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		/* 갤러리에서 이미지 가져오기 */
+	/* 갤러리에서 이미지 가져오기 */
 		if (requestCode == REQUEST_IMAGE_ALBUM && resultCode == RESULT_OK) {
 			try {
 				InputStream inputStream = getContentResolver().openInputStream(data.getData());
@@ -154,7 +124,10 @@ public class EditProfileActivity extends AppCompatActivity {
 
 		/* 카메라로 사진찍기 */
 		if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-
+			Bitmap bitmap = (Bitmap) data.getExtras().get("data");
+			imageViewProfile.setImageBitmap(bitmap);
+		} else if (resultCode == RESULT_CANCELED) {
+			Toast.makeText(this, "사진 선택 취소", Toast.LENGTH_SHORT).show();
 		}
 	}
 
@@ -199,5 +172,18 @@ public class EditProfileActivity extends AppCompatActivity {
 			}
 		}
 	}
+
+	public void cropImage() {
+		Intent cropIntent = new Intent("com.android.camera.action.CROP");
+		cropIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+		cropIntent.setFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+		cropIntent.setDataAndType(uri, "image/*");
+		cropIntent.putExtra("aspectX", 1);
+		cropIntent.putExtra("aspectY", 1);
+		cropIntent.putExtra("scale", true);
+		cropIntent.putExtra("output", true);
+		startActivityForResult(cropIntent, CROP_IMAGE);
+	}
+
 }//class
 
