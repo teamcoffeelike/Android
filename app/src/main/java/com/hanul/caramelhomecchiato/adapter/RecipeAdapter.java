@@ -1,5 +1,6 @@
 package com.hanul.caramelhomecchiato.adapter;
 
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,25 +21,13 @@ public class RecipeAdapter extends BaseAdapter<Recipe> {
 	@Override
 	public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 		return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.view_recipe, parent, false));
-		/*LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-		View itemView = inflater.inflate(R.layout.view_recipe, parent, false);
-
-		return new ViewHolder(itemView);*/
 	}
 
-	//뷰홀더 재사용 위한 메소드
-	/*public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-		holder.setItem(item);
-	}*/
-
 	public static final class ViewHolder extends BaseAdapter.ViewHolder<Recipe>{
-		/*LayoutInflater inflater = LayoutInflater.from(LayoutInflater);*/
-
 		private final ImageView recipeImage;
 		private final TextView title;
 		private final TextView author;
 		private final RatingBar rating;
-		/*private final ViewHolder(View itemView, TextView getRecipeTitle);*/
 
 		public ViewHolder(@NonNull View itemView) {
 			super(itemView);
@@ -56,11 +45,13 @@ public class RecipeAdapter extends BaseAdapter<Recipe> {
 			});
 		}
 
-		//onBindViewHolder()에서 재사용되는 뷰홀더 데이터 설정시 사용
+		//레시피 사진, 제목, 사용자, 별점
 		@Override
-		protected void setItem(int position, Recipe element) {
-			title.setText(element.getTitle());
-			/*author.setText(element.getAuthor());*/
+		protected void setItem(int position, Recipe recipe) {
+			/*recipeImage;*/
+			title.setText(recipe.getTitle());
+			author.setText(recipe.getAuthor().getName());
+			rating.setRating(recipe.getRating());
 		}
 	}
 }
