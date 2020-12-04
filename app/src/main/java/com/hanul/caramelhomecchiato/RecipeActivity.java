@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.view.LayoutInflater;
@@ -20,12 +21,14 @@ import com.hanul.caramelhomecchiato.adapter.RecipeAdapter;
 import com.hanul.caramelhomecchiato.data.Post;
 import com.hanul.caramelhomecchiato.data.Recipe;
 import com.hanul.caramelhomecchiato.data.RecipeCategory;
+import com.hanul.caramelhomecchiato.data.User;
 
+import java.util.Collections;
 import java.util.List;
 
 public class RecipeActivity extends AppCompatActivity {
 
-	private RecyclerView recyclerViewRecipe;
+	private RecyclerView recyclerView;
 	private RecipeAdapter adapter;
 
 	@Override
@@ -38,12 +41,20 @@ public class RecipeActivity extends AppCompatActivity {
 		RecipeCategory category = (RecipeCategory) intent.getSerializableExtra("recipeCategory");
 
 		//레시피 리사이클러뷰 가져오기
-		recyclerViewRecipe = findViewById(R.id.recyclerViewRecipe);
-		recyclerViewRecipe.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false ));
+		recyclerView = findViewById(R.id.recyclerView);
+		recyclerView.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
 
 		//레시피 어댑터 데이터 가져오기
 		RecipeAdapter adapter = new RecipeAdapter();
-		List<Recipe> elements = adapter.elements();
-		recyclerViewRecipe.setAdapter(adapter);
+		List<Recipe> recipes = adapter.elements();
+
+		//recipes.add(new Recipe(id, title, author, rating, photo)
+		recipes.add(new Recipe(1, "아메리카노", new User(1, "dd", null), 5, null));
+		recipes.add(new Recipe(1, "카페라떼", new User(1, "dd", null), 5, null));
+		recipes.add(new Recipe(1, "카페모카", new User(1, "dd", null), 5, null));
+		recipes.add(new Recipe(1, "딸기스무디", new User(1, "dd", null), 5, null));
+		recipes.add(new Recipe(1, "레몬아이스티", new User(1, "dd", null), 5, null));
+
+		recyclerView.setAdapter(adapter);
 	}
 }

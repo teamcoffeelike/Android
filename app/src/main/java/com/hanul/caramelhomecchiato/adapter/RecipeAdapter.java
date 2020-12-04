@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.textservice.TextInfo;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -17,8 +18,7 @@ import com.hanul.caramelhomecchiato.data.Recipe;
 import org.w3c.dom.Text;
 
 public class RecipeAdapter extends BaseAdapter<Recipe> {
-	@NonNull
-	@Override
+	@NonNull @Override
 	public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 		return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.view_recipe, parent, false));
 	}
@@ -48,7 +48,7 @@ public class RecipeAdapter extends BaseAdapter<Recipe> {
 		//레시피 사진, 제목, 사용자, 별점
 		@Override
 		protected void setItem(int position, Recipe recipe) {
-			/*recipeImage;*/
+			if (recipe.getPhoto() != null)recipeImage.setImageURI(recipe.getPhoto());
 			title.setText(recipe.getTitle());
 			author.setText(recipe.getAuthor().getName());
 			rating.setRating(recipe.getRating());
