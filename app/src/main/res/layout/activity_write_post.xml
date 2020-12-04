@@ -16,7 +16,9 @@
 
 		<androidx.constraintlayout.widget.ConstraintLayout
 			android:layout_width="match_parent"
-			android:layout_height="wrap_content">
+			android:layout_height="match_parent"
+			app:layout_constraintTop_toTopOf="parent"
+			app:layout_constraintBottom_toBottomOf="parent">
 
 			<androidx.constraintlayout.widget.ConstraintLayout
 				android:id="@+id/constraintLayout3"
@@ -24,13 +26,6 @@
 				android:layout_height="wrap_content"
 				app:layout_constraintTop_toTopOf="parent">
 
-				<ImageView
-					android:id="@+id/buttonTakePhoto"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					app:layout_constraintEnd_toStartOf="@id/buttonPickImage"
-					app:layout_constraintTop_toTopOf="parent"
-					android:src="@android:drawable/ic_menu_camera"/>
 				<ImageView
 					android:id="@+id/buttonPickImage"
 					android:layout_width="wrap_content"
@@ -47,13 +42,21 @@
 				android:background="#CCC"
 				app:layout_constraintTop_toBottomOf="@+id/constraintLayout3" />
 
-			<EditText
-				android:id="@+id/editTextPost"
+
+			<ScrollView
 				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:inputType="textMultiLine"
-				android:text="@string/very_long_text"
-				app:layout_constraintTop_toBottomOf="@id/viewPager" />
+				android:layout_height="0dp"
+				app:layout_constraintTop_toBottomOf="@id/viewPager"
+				app:layout_constraintBottom_toBottomOf="parent">
+
+				<EditText
+					android:id="@+id/editTextPost"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:inputType="textMultiLine"
+					android:text="@string/very_long_text"
+					/>
+			</ScrollView>
 		</androidx.constraintlayout.widget.ConstraintLayout>
 	</androidx.cardview.widget.CardView>
 

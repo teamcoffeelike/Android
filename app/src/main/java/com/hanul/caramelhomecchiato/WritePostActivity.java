@@ -1,11 +1,11 @@
 package com.hanul.caramelhomecchiato;
 
 import android.Manifest;
+import android.content.ClipData;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 
 import androidx.annotation.NonNull;
@@ -19,25 +19,16 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.hanul.caramelhomecchiato.fragment.SimpleImageFragment;
 
-import java.io.File;
-import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
 public class WritePostActivity extends AppCompatActivity{
-	private static final int GRANT_CAMERA_PERMS = 1;
 	private static final int GRANT_IMAGE_PERMS = 2;
-	private static final int TAKE_PHOTO = 3;
 	private static final int PICK_IMAGE = 4;
 
-	private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US);
-	private final List<Uri> images = new ArrayList<>();
+	private final List<Uri> images = new ArrayList<>(); // TODO 사진 갯수 제한
 
 	private PagerAdapter adapter;
 
@@ -49,26 +40,7 @@ public class WritePostActivity extends AppCompatActivity{
 		ViewPager viewPager = findViewById(R.id.viewPager);
 		viewPager.setAdapter(adapter = new PagerAdapter(getSupportFragmentManager()));
 
-		findViewById(R.id.buttonTakePhoto).setOnClickListener(v -> takePhoto(true));
 		findViewById(R.id.buttonPickImage).setOnClickListener(v -> pickImage(true));
-	}
-
-	private void takePhoto(boolean requestPermission){
-		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
-			if(checkSelfPermission(Manifest.permission.CAMERA)!=PERMISSION_GRANTED||
-					checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)!=PERMISSION_GRANTED){
-				if(requestPermission){
-					requestPermissions(new String[]{
-							Manifest.permission.CAMERA,
-							Manifest.permission.READ_EXTERNAL_STORAGE
-					}, GRANT_CAMERA_PERMS);
-				}else new AlertDialog.Builder(this)
-						.setMessage("요청을 처리하기 위한 권한이 없습니다.")
-						.setPositiveButton("OK", null).show();
-				return;
-			}
-		}
-		startActivityForResult(new Intent(MediaStore.ACTION_IMAGE_CAPTURE), TAKE_PHOTO);
 	}
 
 	private void pickImage(boolean requestPermission){
@@ -84,31 +56,28 @@ public class WritePostActivity extends AppCompatActivity{
 				return;
 			}
 		}
-		startActivityForResult(new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI), PICK_IMAGE);
+		startActivityForResult(Intent.createChooser(new Intent()
+				.setType("image/*")
+				.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+				.setAction(Intent.ACTION_GET_CONTENT), "Select Picture"), PICK_IMAGE);
 	}
 
 	@Override protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data){
 		super.onActivityResult(requestCode, resultCode, data);
-		switch(requestCode){
-		case PICK_IMAGE:
-			if(resultCode==RESULT_OK){
+		if(requestCode==PICK_IMAGE){
+			if(resultCode==RESULT_OK&&data!=null){
 				Uri uri = data.getData();
 				if(uri!=null) addImage(uri);
-			}
-			break;
-		case TAKE_PHOTO:
-			if(resultCode==RESULT_OK){ // TODO 작동안함. 왜? 저도몰라요
-				File storage = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-				try{
-					File tempFile = File.createTempFile("Photo_"+DATE_FORMAT.format(new Date())+"_",
-							".jpg",
-							storage);
-					addImage(Uri.fromFile(tempFile));
-				}catch(IOException e){
-					e.printStackTrace();
+				else{
+					ClipData clipData = data.getClipData();
+					if(clipData!=null){
+						for(int i=0; i<clipData.getItemCount(); i++){
+							Uri uri1 = clipData.getItemAt(i).getUri();
+							addImage(uri1);
+						}
+					}
 				}
 			}
-			break;
 		}
 	}
 
@@ -119,13 +88,8 @@ public class WritePostActivity extends AppCompatActivity{
 
 	@Override public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults){
 		super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-		switch(requestCode){
-		case GRANT_CAMERA_PERMS:
-			takePhoto(false);
-			break;
-		case GRANT_IMAGE_PERMS:
+		if(requestCode==GRANT_IMAGE_PERMS){
 			pickImage(false);
-			break;
 		}
 	}
 
@@ -151,9 +115,7 @@ public class WritePostActivity extends AppCompatActivity{
 			}
 
 			for(int i = 0; i<images.size(); i++){
-				Bundle args = new Bundle();
-				args.putParcelable("image", images.get(i));
-				list.get(i).setArguments(args);
+				list.get(i).setImage(images.get(i));
 			}
 
 			notifyDataSetChanged();
