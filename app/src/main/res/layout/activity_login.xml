@@ -20,7 +20,7 @@
 			android:id="@+id/imageViewLogo"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:layout_marginTop="30dp"
+			android:layout_marginTop="50dp"
 			android:src="@mipmap/ic_launcher_round"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toStartOf="parent"
@@ -31,7 +31,7 @@
 			android:id="@+id/imageView2"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:layout_marginTop="185dp"
+			android:layout_marginTop="205dp"
 			android:src="@drawable/ic_login_id"
 			app:layout_constraintEnd_toStartOf="@+id/editTextEmailPhone"
 			app:layout_constraintStart_toStartOf="parent"
@@ -42,7 +42,7 @@
 			android:id="@+id/editTextEmailPhone"
 			android:layout_width="265dp"
 			android:layout_height="wrap_content"
-			android:layout_marginTop="70dp"
+			android:layout_marginTop="80dp"
 			android:ems="10"
 			android:hint="E-Mail / Phone"
 			android:includeFontPadding="true"
@@ -58,7 +58,7 @@
 		<ImageView
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:layout_marginTop="42dp"
+			android:layout_marginTop="33dp"
 			android:src="@drawable/ic_login_pw"
 			app:layout_constraintEnd_toStartOf="@+id/editTextEmailPhone"
 			app:layout_constraintStart_toStartOf="parent"
@@ -69,7 +69,7 @@
 			android:id="@+id/editTextPassword"
 			android:layout_width="265dp"
 			android:layout_height="wrap_content"
-			android:layout_marginTop="25dp"
+			android:layout_marginTop="15dp"
 			android:autoText="false"
 			android:ems="10"
 			android:hint="Password"
@@ -100,7 +100,7 @@
 			android:id="@+id/buttonJoin"
 			android:layout_width="300dp"
 			android:layout_height="wrap_content"
-			android:layout_marginTop="5dp"
+			android:layout_marginTop="3dp"
 			android:backgroundTint="@color/TerraCotta"
 			android:text="JOIN"
 			app:layout_constraintEnd_toEndOf="parent"
@@ -113,7 +113,7 @@
 			android:id="@+id/textViewFind"
 			android:layout_width="300dp"
 			android:layout_height="wrap_content"
-			android:layout_marginTop="20dp"
+			android:layout_marginTop="15dp"
 			android:gravity="center"
 			android:text="Find ID / Password"
 			android:textSize="16sp"
@@ -122,21 +122,29 @@
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toBottomOf="@+id/buttonJoin" />
 
-		<!-- 카카오톡 연동 로그인 버튼 -->
-		<Button
-			android:id="@+id/buttonLoginWithKakao"
-			android:layout_width="300dp"
-			android:layout_height="wrap_content"
+		<!-- 카카오톡 연동 로그인 이미지버튼 -->
+		<ImageButton
+			android:id="@+id/ImageButtonLoginWithKakao"
+			android:layout_width="150dp"
+			android:layout_height="50dp"
 			android:layout_marginTop="50dp"
-			android:backgroundTint="@color/MinionYellow"
-			android:text="LOGIN with KAKAO"
-			android:textAllCaps="false"
-			android:textColor="@color/VanDykeBrown"
-			android:textSize="16sp"
+			android:background="@drawable/kakao_login"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintHorizontal_bias="0.495"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toBottomOf="@+id/textViewFind" />
+
+		<!-- 네이버 연동 로그인 이미지버튼 -->
+		<ImageButton
+			android:id="@+id/buttonLoginWithNaver"
+			android:layout_width="150dp"
+			android:layout_height="50dp"
+			android:layout_marginTop="10dp"
+			android:background="@drawable/naver_login"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintHorizontal_bias="0.495"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toBottomOf="@+id/ImageButtonLoginWithKakao" />-->
 
 	</androidx.constraintlayout.widget.ConstraintLayout>
 
