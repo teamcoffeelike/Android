@@ -42,7 +42,6 @@ public class JoinActivity extends AppCompatActivity{
 				break;
 			}
 		}
-
 	}
 
 	@Override
