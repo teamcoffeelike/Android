@@ -31,6 +31,10 @@
 				android:resource="@xml/provider_paths"/>
 		</provider>
 
+		<uses-library
+			android:name="org.apache.http.legacy"
+			android:required="false" />
+
 		<activity android:name=".ChangePasswordActivity" />
 		<activity android:name=".EditProfileActivity" />
 		<activity android:name=".FollowsActivity" />

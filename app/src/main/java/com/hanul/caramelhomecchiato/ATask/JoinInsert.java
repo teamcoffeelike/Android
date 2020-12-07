@@ -59,7 +59,7 @@ public class JoinInsert extends AsyncTask<Void, Void, String>{
             builder.addTextBody("password", password, ContentType.create("Multipart/related", "UTF-8"));
             builder.addTextBody("pwconfirm", pwconfirm, ContentType.create("Multipart/related", "UTF-8"));
 
-            String postURL = CommonMethod.ipConfig + "/app/anJoin";
+            String postURL = CommonMethod.ipConfig + "/coffeelike/joinWithEmail";
 
             // 전송
             InputStream inputStream = null;
