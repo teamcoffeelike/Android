@@ -36,6 +36,7 @@ import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -60,6 +61,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
 	File imageFile = null;
 	File photoFile = null;
+	File mFileTemp;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -126,7 +128,19 @@ public class EditProfileActivity extends AppCompatActivity {
 			}
 		}
 		Intent takePhotoIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-		startActivityForResult(takePhotoIntent, REQUEST_IMAGE_CAPTURE);
+		if (takePhotoIntent.resolveActivity(getPackageManager()) != null) {
+			try {
+				imageFile = createImageFile();
+			}catch (IOException e) {
+				Log.e("takePhoto 오류", e.toString());
+				return;
+			}
+			if (imageFile != null) {
+				imageUri = FileProvider.getUriForFile(EditProfileActivity.this,"com.hanul.caramelhomecchiato.fileprovider", imageFile);
+				takePhotoIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+				startActivityForResult(takePhotoIntent, REQUEST_IMAGE_CAPTURE);
+			}
+		}
 	}
 
 	/* 이미지 파일 만들기 */
@@ -138,15 +152,15 @@ public class EditProfileActivity extends AppCompatActivity {
 		File storageDir = new File(Environment.getExternalStorageDirectory() + "/Pictures", "caramel");
 
 		if (!storageDir.exists()) {
-			Log.i("mCurrentPhotoPath1", storageDir.toString());
+			Log.i("mCurrentPhotoPath", storageDir.toString());
 			storageDir.mkdirs();
 		}
-
 		imageFile = new File(storageDir, imageFileName);
-		mCurrentPhotoPath = imageFile.getAbsolutePath();
+		mCurrentPhotoPath = imageFile.getAbsolutePath();	//갤러리에 이미지 저장하기 위해서 꼭 필요
 
 		return imageFile;
 	}
+
 
 	/* 갤러리에 이미지 저장 */
 	private void galleryAddPic() {
@@ -168,7 +182,9 @@ public class EditProfileActivity extends AppCompatActivity {
 		switch (requestCode) {
 			case REQUEST_IMAGE_CAPTURE:
 				if (resultCode == Activity.RESULT_OK) {
-					/* 도대체 어떻게 해야 되는건가요 */
+					Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath);
+
+					imageViewProfile.setImageBitmap(bitmap);
 				}
 				break;
 			case REQUEST_IMAGE_ALBUM:
@@ -222,7 +238,7 @@ public class EditProfileActivity extends AppCompatActivity {
 		super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 		switch (requestCode) {
 			case GRANT_CAMERA_PERMS:
-				//takePhoto(false);
+				takePhoto(false);
 				break;
 			case GRANT_IMAGE_PERMS:
 				pickImage(false);
