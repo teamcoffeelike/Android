@@ -28,10 +28,10 @@
 
 		<!-- 로그인 ID 이미지 -->
 		<ImageView
-			android:id="@+id/imageView2"
+			android:id="@+id/imageViewLoginId"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:layout_marginTop="205dp"
+			android:layout_marginTop="215dp"
 			android:src="@drawable/ic_login_id"
 			app:layout_constraintEnd_toStartOf="@+id/editTextEmailPhone"
 			app:layout_constraintStart_toStartOf="parent"
@@ -39,7 +39,7 @@
 
 		<!-- ID 입력 칸 -->
 		<EditText
-			android:id="@+id/editTextEmailPhone"
+			android:id="@+id/editTextId"
 			android:layout_width="265dp"
 			android:layout_height="wrap_content"
 			android:layout_marginTop="80dp"
@@ -62,7 +62,7 @@
 			android:src="@drawable/ic_login_pw"
 			app:layout_constraintEnd_toStartOf="@+id/editTextEmailPhone"
 			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toBottomOf="@+id/imageView2" />
+			app:layout_constraintTop_toBottomOf="@+id/imageViewLoginId" />
 
 		<!-- Password 입력 칸 -->
 		<EditText
@@ -80,7 +80,7 @@
 			android:theme="@style/edit_text"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toBottomOf="@+id/editTextEmailPhone" />
+			app:layout_constraintTop_toBottomOf="@+id/editTextId" />
 
 		<!-- 로그인 버튼 -->
 		<Button
@@ -110,7 +110,7 @@
 
 		<!-- ID / PW 찾기 -->
 		<TextView
-			android:id="@+id/textViewFind"
+			android:id="@+id/textViewFindLoginIdPw"
 			android:layout_width="300dp"
 			android:layout_height="wrap_content"
 			android:layout_marginTop="15dp"
@@ -125,26 +125,25 @@
 		<!-- 카카오톡 연동 로그인 이미지버튼 -->
 		<ImageButton
 			android:id="@+id/ImageButtonLoginWithKakao"
-			android:layout_width="150dp"
+			android:layout_width="140dp"
 			android:layout_height="50dp"
 			android:layout_marginTop="50dp"
 			android:background="@drawable/kakao_login"
-			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintHorizontal_bias="0.495"
 			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toBottomOf="@+id/textViewFind" />
+			app:layout_constraintTop_toBottomOf="@+id/textViewFindLoginIdPw" />
 
 		<!-- 네이버 연동 로그인 이미지버튼 -->
 		<ImageButton
 			android:id="@+id/buttonLoginWithNaver"
-			android:layout_width="150dp"
+			android:layout_width="140dp"
 			android:layout_height="50dp"
-			android:layout_marginTop="10dp"
+			android:layout_marginTop="50dp"
 			android:background="@drawable/naver_login"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintHorizontal_bias="0.495"
-			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toBottomOf="@+id/ImageButtonLoginWithKakao" />-->
+			app:layout_constraintRight_toRightOf="@+id/ImageButtonLoginWithKakao"
+			app:layout_constraintTop_toBottomOf="@+id/textViewFindLoginIdPw" />
 
 	</androidx.constraintlayout.widget.ConstraintLayout>
 
