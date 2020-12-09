@@ -1,35 +1,110 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:tools="http://schemas.android.com/tools"
+	android:id="@+id/linearLayoutFindLogin"
 	android:layout_width="match_parent"
-	android:layout_height="match_parent"
+	android:layout_height="wrap_content"
+	android:orientation="vertical"
+	android:weightSum="2"
 	tools:context=".fragment.FindLoginIdFragment">
 
 	<LinearLayout
 		android:layout_width="match_parent"
-		android:layout_height="match_parent"
-		android:orientation="vertical">
+		android:layout_height="wrap_content"
+		android:orientation="horizontal"
+		android:layout_weight="1"
+		android:weightSum="2">
 
 		<TextView
-			android:layout_width="wrap_content"
+			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
+			android:layout_weight="1.5"
 			android:layout_margin="20dp"
-			android:text="등록된 휴대폰번호로 찾기" />
+			android:text="등록된 휴대폰번호로 찾기"
+			android:textSize="18sp"
+			android:textColor="@color/VanDykeBrown"/>
 
-		<TextView
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:text="이름" />
-
-		<TextView
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:text="휴대폰번호 ('-' 없이 입력)" />
-
-		<Button
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:text="확인"/>
+		<ImageButton
+			android:id="@+id/buttonFindIdPhone"
+			android:layout_width="70dp"
+			android:layout_height="50dp"
+			android:layout_weight="0.5"
+			android:layout_margin="10dp"
+			android:backgroundTint="@color/white"
+			android:src="@drawable/ic_down"/>
 
 	</LinearLayout>
-</androidx.constraintlayout.widget.ConstraintLayout>
+
+		<EditText
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginLeft="20dp"
+			android:layout_marginRight="20dp"
+			android:hint="이름" />
+
+		<EditText
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginLeft="20dp"
+			android:layout_marginRight="20dp"
+			android:layout_marginTop="5dp"
+			android:hint="휴대폰번호 ('-' 없이 입력)" />
+
+		<Button
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_margin="20dp"
+			android:text="확인"
+			android:backgroundTint="@color/TerraCotta"/>
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="horizontal"
+		android:layout_weight="1"
+		android:weightSum="2">
+
+		<TextView
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_weight="1.5"
+			android:layout_margin="20dp"
+			android:text="등록된 이메일로 찾기"
+			android:textSize="18sp"
+			android:textColor="@color/VanDykeBrown"/>
+
+		<ImageButton
+			android:id="@+id/buttonFindIdEmail"
+			android:layout_width="70dp"
+			android:layout_height="50dp"
+			android:layout_weight="0.5"
+			android:layout_margin="10dp"
+			android:backgroundTint="@color/white"
+			android:src="@drawable/ic_down"/>
+
+	</LinearLayout>
+
+		<EditText
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginLeft="20dp"
+			android:layout_marginRight="20dp"
+			android:hint="이름" />
+
+		<EditText
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginLeft="20dp"
+			android:layout_marginRight="20dp"
+			android:layout_marginTop="5dp"
+			android:hint="이메일"
+			android:layout_weight="1.5"/>
+
+		<Button
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_margin="20dp"
+			android:text="확인"
+			android:backgroundTint="@color/TerraCotta"/>
+
+</LinearLayout>
