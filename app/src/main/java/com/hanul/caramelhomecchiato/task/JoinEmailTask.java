@@ -1,10 +1,9 @@
-package com.hanul.caramelhomecchiato.ATask;
+package com.hanul.caramelhomecchiato.task;
 
 import android.net.http.AndroidHttpClient;
 import android.os.AsyncTask;
 
 import com.hanul.caramelhomecchiato.common.CommonMethod;
-import com.hanul.caramelhomecchiato.data.JoinLogin;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -19,7 +18,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 
-public class JoinInsert extends AsyncTask<Void, Void, String>{
+public class JoinEmailTask extends AsyncTask<Void, Void, String>{
     // 데이터베이스에 삽입결과 0보다크면 삽입성공, 같거나 작으면 실패
     // 필수 부분
     String state = "";
@@ -30,14 +29,12 @@ public class JoinInsert extends AsyncTask<Void, Void, String>{
     HttpEntity httpEntity;
 
     String email;
-    String phone;
     String name;
     String password;
     String pwconfirm;
 
-    public JoinInsert(String email, String phone, String name, String password, String pwconfirm) {
+    public JoinEmailTask(String email, String name, String password, String pwconfirm) {
         this.email = email;
-        this.phone = phone;
         this.name = name;
         this.password = password;
         this.pwconfirm = pwconfirm;
@@ -54,7 +51,6 @@ public class JoinInsert extends AsyncTask<Void, Void, String>{
 
             // 문자열 및 데이터 추가
             builder.addTextBody("email", email, ContentType.create("Multipart/related", "UTF-8"));
-            builder.addTextBody("phone", phone, ContentType.create("Multipart/related", "UTF-8"));
             builder.addTextBody("name", name, ContentType.create("Multipart/related", "UTF-8"));
             builder.addTextBody("password", password, ContentType.create("Multipart/related", "UTF-8"));
             builder.addTextBody("pwconfirm", pwconfirm, ContentType.create("Multipart/related", "UTF-8"));

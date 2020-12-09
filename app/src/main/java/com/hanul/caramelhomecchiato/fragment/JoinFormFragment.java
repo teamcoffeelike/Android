@@ -1,6 +1,5 @@
 package com.hanul.caramelhomecchiato.fragment;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -17,16 +16,17 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.hanul.caramelhomecchiato.ATask.JoinInsert;
+import com.hanul.caramelhomecchiato.task.JoinEmailTask;
 import com.hanul.caramelhomecchiato.JoinActivity.JoinType;
 import com.hanul.caramelhomecchiato.R;
+import com.hanul.caramelhomecchiato.task.JoinPhoneTask;
 
 import java.util.concurrent.ExecutionException;
 
 public class JoinFormFragment extends Fragment{
 	private static final String TAG = "main:JoinFormFragment";
 	
-	String state;
+	private String state;
 
 	private EditText etEmailPhone;
 	private EditText etName;
@@ -35,8 +35,9 @@ public class JoinFormFragment extends Fragment{
 	private TextView tvPwCheck;
 	private ImageView imgEmailPhone;
 	private Button btnConfirm;
-	private Button btnCancel;
-	private Button btnCheck;
+
+	private JoinType type;
+
 
 	@Nullable @Override public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState){
 		View view = inflater.inflate(R.layout.fragment_join_form, container, false);
@@ -44,12 +45,9 @@ public class JoinFormFragment extends Fragment{
 		etName = view.findViewById(R.id.editTextName);
 		etPassword = view.findViewById(R.id.editTextPassword);
 		etPwConfirm = view.findViewById(R.id.editTextPasswordConfirm);
-		tvPwCheck = view.findViewById(R.id.tvPasswordChk);
+		tvPwCheck = view.findViewById(R.id.textViewPwCheck);
 		imgEmailPhone = view.findViewById(R.id.imgEmailPhone);
 		btnConfirm = view.findViewById(R.id.buttonConfirm);
-		btnCancel = view.findViewById(R.id.buttonCancel);
-		btnCheck = view.findViewById(R.id.buttonCheck);
-
 
 		//비밀번호 두개 비교해서 일치
 		//비밀번호 확인
@@ -70,6 +68,23 @@ public class JoinFormFragment extends Fragment{
 					tvPwCheck.setText("비밀번호가 일치하지 않습니다!");
 					tvPwCheck.setTextColor(getResources().getColor(R.color.red));
 				}
+				if(etPassword.getText().toString().length()==0 || etPwConfirm.getText().toString().length()==0){
+					tvPwCheck.setVisibility(View.GONE);
+				}
+			}
+
+			@Override
+			public void afterTextChanged(Editable s) { }
+		});
+
+		etPassword.addTextChangedListener(new TextWatcher() {
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
+				String password=etPassword.getText().toString();
+				String confirm=etPwConfirm.getText().toString();
 				if(confirm.equals(password)){
 					tvPwCheck.setVisibility(View.VISIBLE);
 					tvPwCheck.setText("비밀번호가 일치합니다");
@@ -82,36 +97,52 @@ public class JoinFormFragment extends Fragment{
 				if(etPassword.getText().toString().length()==0 || etPwConfirm.getText().toString().length()==0){
 					tvPwCheck.setVisibility(View.GONE);
 				}
-				if(etPwConfirm.getText().toString().length()==0 || etPassword.getText().toString().length()==0){
-					tvPwCheck.setVisibility(View.GONE);
-				}
 			}
+
 			@Override
 			public void afterTextChanged(Editable s) { }
 		});
 
 
 		btnConfirm.setOnClickListener(v -> {
-			String email = null;
-			String phone = null;
-			if (etEmailPhone.equals(JoinType.WITH_EMAIL)){
-				email = etEmailPhone.getText().toString();
-			}else if(etEmailPhone.equals(JoinType.WITH_PHONE)){
-				phone = etEmailPhone.getText().toString();
-			}
 			String name = etName.getText().toString();
 			String password = etPassword.getText().toString();
 			String pwconfirm = etPwConfirm.getText().toString();
 
-			JoinInsert joinInsert = new JoinInsert(email, phone, name, password, pwconfirm);
+			switch (type){
+				case WITH_PHONE:{
+					String phone = etEmailPhone.getText().toString();
 
-			try {
-				state = joinInsert.execute().get().trim();   //.get() : 데이터가 도착하기 전에 조회하는 것을 방지
-				Log.d(TAG, "onClick: " + state);
-			} catch (ExecutionException e) {
-				e.printStackTrace();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
+
+					JoinPhoneTask joinPhoneTask = new JoinPhoneTask(phone, name, password, pwconfirm);
+
+					try {
+						state = joinPhoneTask.execute().get().trim();   //.get() : 데이터가 도착하기 전에 조회하는 것을 방지
+						Log.d(TAG, "onClick: " + state);
+					} catch (ExecutionException e) {
+						e.printStackTrace();
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+					break;
+				case WITH_EMAIL: {
+					String email = etEmailPhone.getText().toString();
+
+					JoinEmailTask joinEmailTask = new JoinEmailTask(email, name, password, pwconfirm);
+
+					try {
+						state = joinEmailTask.execute().get().trim();   //.get() : 데이터가 도착하기 전에 조회하는 것을 방지
+						Log.d(TAG, "onClick: " + state);
+					} catch (ExecutionException e) {
+						e.printStackTrace();
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+					break;
+				default:
+					throw new IllegalArgumentException("type");
 			}
 
 			if(state.equals("1")) {
@@ -124,17 +155,19 @@ public class JoinFormFragment extends Fragment{
 		return view;
 	}
 
+
+
 	public void setJoinType(JoinType type){
+		this.type = type;
+
 		switch(type){
 		case WITH_PHONE:
 			etEmailPhone.setHint("핸드폰 번호");
 			imgEmailPhone.setImageResource(R.drawable.ic_join_phone);
-			btnCheck.setText("본인확인");
 			break;
 		case WITH_EMAIL:
 			etEmailPhone.setHint("이메일");
 			imgEmailPhone.setImageResource(R.drawable.ic_join_email);
-			btnCheck.setText("중복확인");
 			break;
 		case WITH_KAKAO:
 		default:
