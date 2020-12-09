@@ -35,6 +35,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
@@ -54,15 +55,15 @@ public class EditProfileActivity extends AppCompatActivity {
 	private static final int REQUEST_IMAGE_CAPTURE = 4;
 	private static final int REQUEST_IMAGE_CROP = 5;
 
-	String mCurrentPhotoPath;
+	//mCurrentPhotoPath = imageFile.getAbsolutePath();
 
 	Uri imageUri;
 	Uri photoURI, albumURI;
 
 	File imageFile = null;
-	File photoFile = null;
 	File mFileTemp;
 
+	File file;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -127,53 +128,57 @@ public class EditProfileActivity extends AppCompatActivity {
 				return;
 			}
 		}
-		Intent takePhotoIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-		if (takePhotoIntent.resolveActivity(getPackageManager()) != null) {
-			try {
-				imageFile = createImageFile();
-			}catch (IOException e) {
-				Log.e("takePhoto 오류", e.toString());
-				return;
-			}
-			if (imageFile != null) {
-				imageUri = FileProvider.getUriForFile(EditProfileActivity.this,"com.hanul.caramelhomecchiato.fileprovider", imageFile);
-				takePhotoIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-				startActivityForResult(takePhotoIntent, REQUEST_IMAGE_CAPTURE);
-			}
+		try{
+			file = createImageFile();
+			Log.d("FilePath ", file.getAbsolutePath());
+
+		}catch(Exception e){
+			Log.d("Sub1Add:filepath", "Something Wrong", e);
+		}
+
+		Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) { // API24 이상 부터
+			intent.putExtra(MediaStore.EXTRA_OUTPUT,
+					FileProvider.getUriForFile(this,
+							"com.hanul.caramelhomecchiato.provider", file));
+			Log.d("sub1:appId", getApplicationContext().getPackageName());
+		}else {
+			intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
+		}
+
+		if (intent.resolveActivity(getPackageManager()) != null) {
+			startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
 		}
 	}
 
 	/* 이미지 파일 만들기 */
-	public File createImageFile() throws IOException {
+	public File createImageFile() {
 		// Create an image file name
 		String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
 		String imageFileName = "Caramel_" + timeStamp + ".jpg";
 
-		File storageDir = new File(Environment.getExternalStorageDirectory() + "/Pictures", "caramel");
+		File storageDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Pictures", "caramel");
 
 		if (!storageDir.exists()) {
 			Log.i("mCurrentPhotoPath", storageDir.toString());
 			storageDir.mkdirs();
 		}
-		imageFile = new File(storageDir, imageFileName);
-		mCurrentPhotoPath = imageFile.getAbsolutePath();	//갤러리에 이미지 저장하기 위해서 꼭 필요
 
+		imageFile = new File(storageDir, imageFileName);
 		return imageFile;
 	}
-
 
 	/* 갤러리에 이미지 저장 */
 	private void galleryAddPic() {
 		Log.i("galleryAddPic", "Call");
 		Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
 
-		File f = new File(mCurrentPhotoPath);
+		File f = new File(imageFile.getAbsolutePath());
 		Uri contentUri = Uri.fromFile(f);
 		mediaScanIntent.setData(contentUri);
 		sendBroadcast(mediaScanIntent);
 		Toast.makeText(this, "사진이 앨범에 저장되었습니다.", Toast.LENGTH_SHORT).show();
 	}
-
 
 	/* onActivityResult */
 	@Override
@@ -181,10 +186,8 @@ public class EditProfileActivity extends AppCompatActivity {
 		super.onActivityResult(requestCode, resultCode, data);
 		switch (requestCode) {
 			case REQUEST_IMAGE_CAPTURE:
-				if (resultCode == Activity.RESULT_OK) {
-					Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath);
-
-					imageViewProfile.setImageBitmap(bitmap);
+				if(resultCode == RESULT_OK) {
+					setPic();
 				}
 				break;
 			case REQUEST_IMAGE_ALBUM:
@@ -215,6 +218,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
 	/* 이미지 자르기 */
 	public void cropImage(){
+
 		Log.i("cropImage", "Call");
 		Log.i("cropImage", "photoURI : " + photoURI + " / albumURI : " + albumURI);
 
@@ -223,13 +227,32 @@ public class EditProfileActivity extends AppCompatActivity {
 		cropIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
 		cropIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 		cropIntent.setDataAndType(photoURI, "image/*");
-		//cropIntent.putExtra("outputX", 150);
-		//cropIntent.putExtra("outputY", 150);
 		cropIntent.putExtra("aspectX", 1);
 		cropIntent.putExtra("aspectY", 1);
 		cropIntent.putExtra("scale", true);
 		cropIntent.putExtra("output", albumURI); //저장경로
 		startActivityForResult(cropIntent, REQUEST_IMAGE_CROP);
+	}
+
+	private void setPic() {
+		int targetW = imageViewProfile.getWidth();
+		int targetH = imageViewProfile.getHeight();
+
+		BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+		bmOptions.inJustDecodeBounds = true;
+
+		int photoW = bmOptions.outWidth;
+		int photoH = bmOptions.outHeight;
+
+		int scaleFactor = Math.min(photoW/targetW, photoH/targetH);
+
+		bmOptions.inJustDecodeBounds = false;
+		bmOptions.inSampleSize = scaleFactor;
+		bmOptions.inPurgeable = true;
+
+		Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(), bmOptions);
+		imageViewProfile.setImageBitmap(bitmap);
+
 	}
 
 	/* 권한 설정 */
