@@ -29,7 +29,7 @@ public class SettingsActivity extends AppCompatActivity{
 		switchLike = findViewById(R.id.switchLike);
 		btnChangePw = findViewById(R.id.buttonChangePassword);
 
-		/*Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);*/
+		Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
 		/* 비밀번호 변경 버튼 -> 비밀번호 변경 화면으로 이동 */
 		btnChangePw.setOnClickListener(v -> {
@@ -44,9 +44,9 @@ public class SettingsActivity extends AppCompatActivity{
 				if (isChecked) {
 					Toast.makeText(SettingsActivity.this, "댓글 알림 설정 ON", Toast.LENGTH_SHORT).show();
 					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-						//vibrator.vibrate(VibrationEffect.createOneShot(100, 50));
+						vibrator.vibrate(VibrationEffect.createOneShot(100, 30));
 					}else {
-						//vibrator.vibrate(1000);
+						vibrator.vibrate(100);
 					}
 				}else {
 					Toast.makeText(SettingsActivity.this, "댓글 알림 설정 OFF", Toast.LENGTH_SHORT).show();
@@ -60,6 +60,11 @@ public class SettingsActivity extends AppCompatActivity{
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 				if (isChecked) {
 					Toast.makeText(SettingsActivity.this, "팔로우 알림 설정 ON", Toast.LENGTH_SHORT).show();
+					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+						vibrator.vibrate(VibrationEffect.createOneShot(100, 30));
+					}else {
+						vibrator.vibrate(100);
+					}
 				}else {
 					Toast.makeText(SettingsActivity.this, "팔로우 알림 설정 OFF", Toast.LENGTH_SHORT).show();
 				}
@@ -71,8 +76,13 @@ public class SettingsActivity extends AppCompatActivity{
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 				if (isChecked) {
 					Toast.makeText(SettingsActivity.this, "좋아요 알림 설정 ON", Toast.LENGTH_SHORT).show();
+					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+						vibrator.vibrate(VibrationEffect.createOneShot(100, 30));
+					}else {
+						vibrator.vibrate(100);
+					}
 				}else {
-					Toast.makeText(SettingsActivity.this, "좋아요요 알림설정 OFF", Toast.LENGTH_SHORT).show();
+					Toast.makeText(SettingsActivity.this, "좋아요 알림설정 OFF", Toast.LENGTH_SHORT).show();
 				}
 			}
 		});
