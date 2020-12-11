@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.lang.ref.WeakReference;
@@ -12,12 +13,21 @@ import java.lang.ref.WeakReference;
  * 앱의 시작 Activity.
  */
 public class LoadingActivity extends AppCompatActivity{
+	private static final int ACTIVITY_LOGIN_SUCCESS = 1;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_loading);
 
 		new LoadingTask(this).execute();
+	}
+
+	@Override protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data){
+		super.onActivityResult(requestCode, resultCode, data);
+		if(requestCode==ACTIVITY_LOGIN_SUCCESS){
+
+		}
 	}
 
 	/**
@@ -43,8 +53,7 @@ public class LoadingActivity extends AppCompatActivity{
 		@Override protected void onPostExecute(Void aVoid){
 			LoadingActivity activity = this.activity.get();
 			if(activity!=null){
-				activity.startActivity(new Intent(activity, LoginActivity.class));
-				activity.finish();
+				activity.startActivityForResult(new Intent(activity, LoginActivity.class), ACTIVITY_LOGIN_SUCCESS);
 			}
 		}
 	}

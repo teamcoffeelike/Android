@@ -50,4 +50,6 @@ dependencies {
     implementation('org.apache.httpcomponents:httpmime:4.3') {
         exclude module: "httpclient"
     }
+
+    implementation "com.kakao.sdk:v2-user:2.1.0" // 카카오 로그인
 }

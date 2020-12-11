@@ -124,7 +124,7 @@
 
 		<!-- 카카오톡 연동 로그인 이미지버튼 -->
 		<ImageButton
-			android:id="@+id/ImageButtonLoginWithKakao"
+			android:id="@+id/buttonLoginWithKakao"
 			android:layout_width="140dp"
 			android:layout_height="50dp"
 			android:layout_marginTop="50dp"
@@ -142,7 +142,7 @@
 			android:background="@drawable/naver_login"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintHorizontal_bias="0.495"
-			app:layout_constraintRight_toRightOf="@+id/ImageButtonLoginWithKakao"
+			app:layout_constraintRight_toRightOf="@+id/buttonLoginWithKakao"
 			app:layout_constraintTop_toBottomOf="@+id/textViewFindLoginIdPw" />
 
 	</androidx.constraintlayout.widget.ConstraintLayout>
