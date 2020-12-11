@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<paths>
-	<external-path name="external_files" path="/Pictures/caramel"/>
+<paths xmlns:android="http://schemas.android.com/apk/res/android">
+	<!--<external-path name="external_files" path="/Pictures/caramel"/>-->
+	<external-files-path name="caramel_images" path="/Pictures/caramel" />
+	<root-path name="root" path="." />
 </paths>

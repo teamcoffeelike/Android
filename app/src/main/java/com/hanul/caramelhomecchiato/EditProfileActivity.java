@@ -56,7 +56,7 @@ public class EditProfileActivity extends AppCompatActivity {
 	private static final int REQUEST_IMAGE_CROP = 5;
 
 	//mCurrentPhotoPath = imageFile.getAbsolutePath();
-
+	String mCurrentPhotoPath;
 	Uri imageUri;
 	Uri photoURI, albumURI;
 
@@ -113,6 +113,7 @@ public class EditProfileActivity extends AppCompatActivity {
 		}
 	}
 
+	/* 카메라로 사진찍기 */
 	private void takePhoto(boolean requestPermission) {
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 			if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ||
@@ -128,27 +129,30 @@ public class EditProfileActivity extends AppCompatActivity {
 				return;
 			}
 		}
-		try{
-			file = createImageFile();
-			Log.d("FilePath ", file.getAbsolutePath());
-
-		}catch(Exception e){
-			Log.d("Sub1Add:filepath", "Something Wrong", e);
+		Intent takePhotoIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+		if (takePhotoIntent.resolveActivity(getPackageManager()) != null) {
+			File photoFile = null;
+			try {
+				photoFile = createImageFile2();
+			}catch (IOException e) {
+				e.printStackTrace();
+			}
+			if (photoFile != null) {
+				Uri photoURI = FileProvider.getUriForFile(this, "com.hanul.caramelhomecchiato.provider", photoFile);
+				takePhotoIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+				startActivityForResult(takePhotoIntent, REQUEST_IMAGE_CAPTURE);
+			}
 		}
+	}
 
-		Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) { // API24 이상 부터
-			intent.putExtra(MediaStore.EXTRA_OUTPUT,
-					FileProvider.getUriForFile(this,
-							"com.hanul.caramelhomecchiato.provider", file));
-			Log.d("sub1:appId", getApplicationContext().getPackageName());
-		}else {
-			intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
-		}
+	private File createImageFile2() throws IOException {
+		String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+		String imageFileName = "Caramel_" + timeStamp + ".jpg";
+		File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+		File image = File.createTempFile(imageFileName, ".jpg", storageDir);
 
-		if (intent.resolveActivity(getPackageManager()) != null) {
-			startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
-		}
+		mCurrentPhotoPath = image.getAbsolutePath();
+		return image;
 	}
 
 	/* 이미지 파일 만들기 */
@@ -173,7 +177,7 @@ public class EditProfileActivity extends AppCompatActivity {
 		Log.i("galleryAddPic", "Call");
 		Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
 
-		File f = new File(imageFile.getAbsolutePath());
+		File f = new File(mCurrentPhotoPath);
 		Uri contentUri = Uri.fromFile(f);
 		mediaScanIntent.setData(contentUri);
 		sendBroadcast(mediaScanIntent);
@@ -187,7 +191,16 @@ public class EditProfileActivity extends AppCompatActivity {
 		switch (requestCode) {
 			case REQUEST_IMAGE_CAPTURE:
 				if(resultCode == RESULT_OK) {
-					setPic();
+					File file = new File(mCurrentPhotoPath);
+					Bitmap bitmap = null;
+					try {
+						bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), Uri.fromFile(file));
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+					if (bitmap != null) {
+						imageViewProfile.setImageBitmap(bitmap);
+					}
 				}
 				break;
 			case REQUEST_IMAGE_ALBUM:
