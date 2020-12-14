@@ -45,6 +45,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import static android.provider.MediaStore.EXTRA_OUTPUT;
+
 public class EditProfileActivity extends AppCompatActivity {
 	private static final String TAG = "EditProfileActivity:";
 	private ImageButton editProfileSubmit;
@@ -58,14 +60,11 @@ public class EditProfileActivity extends AppCompatActivity {
 	private static final int REQUEST_IMAGE_CAPTURE = 4;
 	private static final int REQUEST_IMAGE_CROP = 5;
 
-	//mCurrentPhotoPath = imageFile.getAbsolutePath();
-	String mCurrentPhotoPath;
 	Uri imageUri;
 	Uri photoURI, albumURI;
 	File photoFile = null;
 
 	File imageFile = null;
-	File mFileTemp;
 
 	File file;
 	@Override
@@ -151,14 +150,13 @@ public class EditProfileActivity extends AppCompatActivity {
 			Intent takePhotoIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 			if (takePhotoIntent.resolveActivity(getPackageManager()) != null) {
 				try {
-					photoFile = createImageFile2();
-				}catch (IOException e) {
+					photoFile = createImageFile();
+				}catch (Exception e) {
 					e.printStackTrace();
 				}
 				if (photoFile != null) {
-					Uri providerURI = FileProvider.getUriForFile(this, "com.hanul.caramelhomecchiato.provider", photoFile);
-					imageUri = providerURI;
-					takePhotoIntent.putExtra(MediaStore.EXTRA_OUTPUT, providerURI);
+					imageUri = FileProvider.getUriForFile(this, "com.hanul.caramelhomecchiato.provider", photoFile);
+					takePhotoIntent.putExtra(EXTRA_OUTPUT, imageUri);
 					startActivityForResult(takePhotoIntent, REQUEST_IMAGE_CAPTURE);
 				}
 			}
@@ -178,7 +176,7 @@ public class EditProfileActivity extends AppCompatActivity {
 		}
 
 		imageFile = File.createTempFile(imageFileName, ".jpg", storageDir);
-		mCurrentPhotoPath = imageFile.getAbsolutePath();
+
 		return imageFile;
 	}
 
@@ -187,7 +185,9 @@ public class EditProfileActivity extends AppCompatActivity {
 		String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
 		String imageFileName = "Caramel_" + timeStamp + ".jpg";
 
-		File storageDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Pictures", "caramel");
+
+		//File storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "caramel");
+		File storageDir = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), "caramel");
 
 		if (!storageDir.exists()) {
 			Log.i("mCurrentPhotoPath", storageDir.toString());
@@ -195,7 +195,6 @@ public class EditProfileActivity extends AppCompatActivity {
 		}
 
 		imageFile = new File(storageDir, imageFileName);
-		mCurrentPhotoPath = imageFile.getAbsolutePath();
 
 		return imageFile;
 	}
@@ -240,11 +239,10 @@ public class EditProfileActivity extends AppCompatActivity {
 				}
 				break;
 			case REQUEST_IMAGE_ALBUM:
-				if (resultCode == Activity.RESULT_OK) {
+				if (resultCode == Activity.RESULT_OK && data != null) {
 					if (data.getData() != null) {
 						try {
-							File albumFile = null;
-							albumFile = createImageFile();
+							File albumFile = createImageFile();
 							photoURI = data.getData();
 							albumURI = Uri.fromFile(albumFile);
 							cropImage();
@@ -279,7 +277,7 @@ public class EditProfileActivity extends AppCompatActivity {
 		cropIntent.putExtra("aspectX", 1);
 		cropIntent.putExtra("aspectY", 1);
 		cropIntent.putExtra("scale", true);
-		cropIntent.putExtra("output", albumURI); //저장경로
+		cropIntent.putExtra(EXTRA_OUTPUT, albumURI); //저장경로
 		startActivityForResult(cropIntent, REQUEST_IMAGE_CROP);
 	}
 

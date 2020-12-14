@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <paths>
-	<external-path name="external_files" path="/Pictures/caramel"/>
-	<external-files-path name="caramel_images" path="/Pictures/home" />
+	<external-path name="external_files" path="Android/data/com.hanul.caramelhomecchiato/files/Pictures"/>
+	<external-files-path name="caramel_images" path="Android/data/com.hanul.caramelhomecchiato/files/Pictures" />
 	<root-path name="root" path="." />
 </paths>
