@@ -7,8 +7,12 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.gson.JsonObject;
+import com.hanul.caramelhomecchiato.task.JsonResponseTask;
 import com.kakao.sdk.auth.LoginClient;
 import com.kakao.sdk.auth.model.OAuthToken;
+
+import org.jetbrains.annotations.NotNull;
 
 import kotlin.Unit;
 
@@ -53,8 +57,8 @@ public class LoginActivity extends AppCompatActivity{
 	@Override protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data){
 		super.onActivityResult(requestCode, resultCode, data);
 		if(requestCode==ACTIVITY_JOIN_SUCCESS){
-			// TODO pass login data to LoadingActivity
-			finish();
+			if(resultCode==RESULT_OK) setResult(RESULT_OK, data);
+			else setResult(RESULT_CANCELED);
 		}
 	}
 
@@ -62,7 +66,18 @@ public class LoginActivity extends AppCompatActivity{
 		if(error!=null){
 			Log.e(TAG, "카카오톡 로그인 실패", error);
 		}else if(oAuthToken!=null){
-			Log.i(TAG, "카카오톡 로그인 성공! "+oAuthToken.getAccessToken());
+			//Log.i(TAG, "카카오톡 로그인 성공! "+oAuthToken.getAccessToken());
+			new JoinWithKakaoTask(this).execute();
+		}
+	}
+
+	private static final class JoinWithKakaoTask extends JsonResponseTask<LoginActivity>{
+		public JoinWithKakaoTask(LoginActivity context){
+			super(context, "JoinWithKakao");
+		}
+
+		@Override protected void onPostExecute(@NotNull LoginActivity context, JsonObject jsonObject){
+			context.setResult(RESULT_OK, new Intent().putExtra("userId", jsonObject.get("userId").getAsInt()));
 		}
 	}
 }
