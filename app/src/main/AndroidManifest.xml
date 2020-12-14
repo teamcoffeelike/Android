@@ -12,7 +12,7 @@
 		android:name="android.hardware.camera.flash"
 		android:required="false" />
 
-	<uses-permission android:name="android.permission.CAMERA" /><!--android:required="true" -->
+	<uses-permission android:name="android.permission.CAMERA" /> <!-- android:required="true" -->
 	<uses-permission android:name="android.permission.INTERNET" />
 	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 	<uses-permission android:name="android.permission.READ_PHONE_STATE" />
@@ -24,10 +24,13 @@
 		android:maxSdkVersion="18" />
 
 	<queries>
+
 		<!-- WebView -->
 		<intent>
 			<action android:name="android.intent.action.VIEW" />
+
 			<category android:name="android.intent.category.BROWSABLE" />
+
 			<data android:scheme="http" />
 		</intent>
 
@@ -50,6 +53,7 @@
 		android:supportsRtl="true"
 		android:theme="@style/Theme.CaramelHOMEcchiato"
 		android:usesCleartextTraffic="true">
+		<activity android:name=".FindPasswordActivity"></activity>
 
 		<provider
 			android:name="androidx.core.content.FileProvider"
@@ -67,7 +71,7 @@
 
 		<activity android:name=".ChangePasswordActivity" />
 		<activity android:name=".EditProfileActivity" />
-		<activity android:name=".FindLoginIdPwActivity"/>
+		<activity android:name=".FindPasswordActivity" />
 		<activity android:name=".FollowsActivity" />
 		<activity android:name=".JoinActivity" />
 		<activity android:name=".LikesActivity" />

@@ -27,7 +27,7 @@ public class LoginActivity extends AppCompatActivity{
 		});
 
 		findViewById(R.id.textViewFindLoginIdPw).setOnClickListener(v -> {
-			startActivity(new Intent(this, FindLoginIdPwActivity.class));
+			startActivity(new Intent(this, FindPasswordActivity.class));
 		});
 	}
 }

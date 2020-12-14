@@ -110,12 +110,12 @@
 
 		<!-- ID / PW 찾기 -->
 		<TextView
-			android:id="@+id/textViewFindLoginIdPw"
+			android:id="@+id/textViewFindLoginPw"
 			android:layout_width="300dp"
 			android:layout_height="wrap_content"
 			android:layout_marginTop="15dp"
 			android:gravity="center"
-			android:text="Find ID / Password"
+			android:text="Find Password"
 			android:textSize="16sp"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintHorizontal_bias="0.495"
@@ -131,7 +131,7 @@
 			android:background="@drawable/kakao_login"
 			app:layout_constraintHorizontal_bias="0.495"
 			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toBottomOf="@+id/textViewFindLoginIdPw" />
+			app:layout_constraintTop_toBottomOf="@+id/textViewFindLoginPw" />
 
 		<!-- 네이버 연동 로그인 이미지버튼 -->
 		<ImageButton
@@ -143,7 +143,7 @@
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintHorizontal_bias="0.495"
 			app:layout_constraintRight_toRightOf="@+id/ImageButtonLoginWithKakao"
-			app:layout_constraintTop_toBottomOf="@+id/textViewFindLoginIdPw" />
+			app:layout_constraintTop_toBottomOf="@+id/textViewFindLoginPw" />
 
 	</androidx.constraintlayout.widget.ConstraintLayout>
 
