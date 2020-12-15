@@ -14,7 +14,7 @@ import com.hanul.caramelhomecchiato.data.Post;
 
 public class FindPasswordAdapter extends BaseAdapter<FindPassword>{
 	@NonNull @Override public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType){
-		return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.view_, parent, false));
+		return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.view_find_password, parent, false));
 	}
 
 
@@ -29,8 +29,11 @@ public class FindPasswordAdapter extends BaseAdapter<FindPassword>{
 			});
 		}
 
-		@Override protected void setItem(int position, Post post){
-			// TODO 첨부 사진
+		@Override
+		protected void setItem(int position, FindPassword element) {
+
+		}
+
 		}
 	}
-}
+
