@@ -65,7 +65,7 @@ public class EditProfileActivity extends AppCompatActivity {
 	File photoFile = null;
 
 	File imageFile = null;
-
+	String currentPath;
 	File file;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -155,8 +155,9 @@ public class EditProfileActivity extends AppCompatActivity {
 					e.printStackTrace();
 				}
 				if (photoFile != null) {
-					imageUri = FileProvider.getUriForFile(this, "com.hanul.caramelhomecchiato.provider", photoFile);
-					takePhotoIntent.putExtra(EXTRA_OUTPUT, imageUri);
+					Uri providerURI = FileProvider.getUriForFile(this, "com.hanul.caramelhomecchiato.fileprovider", photoFile);
+					imageUri = providerURI;
+					takePhotoIntent.putExtra(MediaStore.EXTRA_OUTPUT, providerURI);
 					startActivityForResult(takePhotoIntent, REQUEST_IMAGE_CAPTURE);
 				}
 			}
@@ -168,15 +169,17 @@ public class EditProfileActivity extends AppCompatActivity {
 
 	private File createImageFile2() throws IOException {
 		String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-		String imageFileName = "Caramel_" + timeStamp;
-		File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+		String imageFileName = "Caramel_" + timeStamp + ".jpg";
+		//File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+		//File storageDir = new File(getExternalFilesDir(Environment.DIRECTORY_DCIM), "camera_test");
+		File storageDir = new File(Environment.getExternalStorageDirectory() + "/Pictures" + "home");
 
 		if (!storageDir.exists()) {
+			Log.i("mCurrentPhotoPath", storageDir.toString());
 			storageDir.mkdirs();
 		}
 
 		imageFile = File.createTempFile(imageFileName, ".jpg", storageDir);
-
 		return imageFile;
 	}
 
@@ -186,16 +189,14 @@ public class EditProfileActivity extends AppCompatActivity {
 		String imageFileName = "Caramel_" + timeStamp + ".jpg";
 
 
-		//File storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "caramel");
+		//File storageDir = new File(Environment.getExternalStorageDirectory() + "/test/");
 		File storageDir = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), "caramel");
-
 		if (!storageDir.exists()) {
 			Log.i("mCurrentPhotoPath", storageDir.toString());
 			storageDir.mkdirs();
 		}
 
 		imageFile = new File(storageDir, imageFileName);
-
 		return imageFile;
 	}
 
@@ -205,9 +206,10 @@ public class EditProfileActivity extends AppCompatActivity {
 		Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
 
 		File f = new File(imageFile.getAbsolutePath());
+		Log.d(TAG, "galleryAddPic: " + imageFile.getAbsolutePath());
 		Uri contentUri = Uri.fromFile(f);
 		mediaScanIntent.setData(contentUri);
-		sendBroadcast(mediaScanIntent);
+		this.sendBroadcast(mediaScanIntent);
 		Toast.makeText(this, "사진이 앨범에 저장되었습니다.", Toast.LENGTH_SHORT).show();
 	}
 
@@ -218,16 +220,6 @@ public class EditProfileActivity extends AppCompatActivity {
 		switch (requestCode) {
 			case REQUEST_IMAGE_CAPTURE:
 				if(resultCode == RESULT_OK) {
-					/*File file = new File(mCurrentPhotoPath);
-					Bitmap bitmap = null;
-					try {
-						bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), Uri.fromFile(file));
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-					if (bitmap != null) {
-						imageViewProfile.setImageBitmap(bitmap);
-					}*/
 					try {
 						Toast.makeText(this, "리퀘스트 캡쳐 처리", Toast.LENGTH_SHORT).show();
 						photoURI = imageUri;
@@ -240,6 +232,8 @@ public class EditProfileActivity extends AppCompatActivity {
 				break;
 			case REQUEST_IMAGE_ALBUM:
 				if (resultCode == Activity.RESULT_OK && data != null) {
+					Log.d(TAG, "album result: " + photoURI);
+					Log.d(TAG, "album result: " + albumURI);
 					if (data.getData() != null) {
 						try {
 							File albumFile = createImageFile();
@@ -297,7 +291,7 @@ public class EditProfileActivity extends AppCompatActivity {
 		bmOptions.inSampleSize = scaleFactor;
 		bmOptions.inPurgeable = true;
 
-		Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(), bmOptions);
+		Bitmap bitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath(), bmOptions);
 		imageViewProfile.setImageBitmap(bitmap);
 
 	}
