@@ -12,6 +12,7 @@ import com.hanul.caramelhomecchiato.task.JsonResponseTask;
 import com.kakao.sdk.auth.LoginClient;
 import com.kakao.sdk.auth.model.OAuthToken;
 
+import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.jetbrains.annotations.NotNull;
 
 import kotlin.Unit;
@@ -27,8 +28,8 @@ public class LoginActivity extends AppCompatActivity{
 		setContentView(R.layout.activity_login);
 
 		findViewById(R.id.buttonLogin).setOnClickListener(v -> {
-
-			finish();
+			// TODO 이메일 또는 휴대폰 번호로 로그인
+			finish(); // FIXME temp
 		});
 		findViewById(R.id.buttonJoin).setOnClickListener(v -> {
 			startActivityForResult(new Intent(this, JoinActivity.class), ACTIVITY_JOIN_SUCCESS);
@@ -50,7 +51,7 @@ public class LoginActivity extends AppCompatActivity{
 			}
 		});
 		findViewById(R.id.buttonLoginWithNaver).setOnClickListener(v -> {
-
+			// TODO ?
 		});
 	}
 
@@ -59,6 +60,7 @@ public class LoginActivity extends AppCompatActivity{
 		if(requestCode==ACTIVITY_JOIN_SUCCESS){
 			if(resultCode==RESULT_OK) setResult(RESULT_OK, data);
 			else setResult(RESULT_CANCELED);
+			finish();
 		}
 	}
 
@@ -67,17 +69,25 @@ public class LoginActivity extends AppCompatActivity{
 			Log.e(TAG, "카카오톡 로그인 실패", error);
 		}else if(oAuthToken!=null){
 			//Log.i(TAG, "카카오톡 로그인 성공! "+oAuthToken.getAccessToken());
-			new JoinWithKakaoTask(this).execute();
+			new LoginWithKakaoTask(this, oAuthToken).execute();
 		}
 	}
 
-	private static final class JoinWithKakaoTask extends JsonResponseTask<LoginActivity>{
-		public JoinWithKakaoTask(LoginActivity context){
-			super(context, "JoinWithKakao");
+	private static final class LoginWithKakaoTask extends JsonResponseTask<LoginActivity>{
+		private final OAuthToken oAuthToken;
+
+		public LoginWithKakaoTask(LoginActivity context, OAuthToken oAuthToken){
+			super(context, "loginWithKakao");
+			this.oAuthToken = oAuthToken;
+		}
+
+		@Override protected void appendMultipartEntity(MultipartEntityBuilder builder){
+			builder.addTextBody("kakaoLoginToken", oAuthToken.getAccessToken());
 		}
 
 		@Override protected void onPostExecute(@NotNull LoginActivity context, JsonObject jsonObject){
 			context.setResult(RESULT_OK, new Intent().putExtra("userId", jsonObject.get("userId").getAsInt()));
+			context.finish();
 		}
 	}
 }
