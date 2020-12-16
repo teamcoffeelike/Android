@@ -53,7 +53,8 @@
 		android:supportsRtl="true"
 		android:theme="@style/Theme.CaramelHOMEcchiato"
 		android:usesCleartextTraffic="true">
-		<activity android:name=".FindPasswordActivity"></activity>
+		<activity android:name=".CommentActivity"></activity>
+		<activity android:name=".FindPasswordActivity" />
 
 		<provider
 			android:name="androidx.core.content.FileProvider"

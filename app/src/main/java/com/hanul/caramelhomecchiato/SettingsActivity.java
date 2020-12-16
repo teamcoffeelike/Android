@@ -1,7 +1,9 @@
 package com.hanul.caramelhomecchiato;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
 
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
@@ -88,4 +90,14 @@ public class SettingsActivity extends AppCompatActivity{
 		});
 
 	}
+
+	private void commentNoti() {
+		NotificationManager notificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+		NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "comment_chan");
+
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+
+		}
+	}
+
 }
