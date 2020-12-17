@@ -53,6 +53,7 @@
 		android:supportsRtl="true"
 		android:theme="@style/Theme.CaramelHOMEcchiato"
 		android:usesCleartextTraffic="true">
+
 		<activity android:name=".ReactionActivity"></activity>
 		<activity android:name=".FindPasswordActivity" />
 
@@ -89,6 +90,7 @@
 		<activity android:name=".RecipeActivity" />
 		<activity android:name=".SearchFriendActivity" />
 		<activity android:name=".SettingsActivity" />
+		<activity android:name=".SmsDisActivity"/>
 		<activity android:name=".WritePostActivity" />
 	</application>
 

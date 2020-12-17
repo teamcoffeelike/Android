@@ -1,11 +1,19 @@
 package com.hanul.caramelhomecchiato;
 
+import android.Manifest;
 import android.app.Activity;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
@@ -23,10 +31,15 @@ public class FindPasswordActivity extends AppCompatActivity {
 	private ViewPagerAdapter pagerAdapter;
 	private TabLayout tabLayout;
 
+	private Button buttonSendCode;
+	private Button buttonCheckCode;
+
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_find_password);
+
+		checkDangerousPermissions();
 
 		viewPager = findViewById(R.id.viewPager);
 		pagerAdapter = new FindPasswordActivity.ViewPagerAdapter(getSupportFragmentManager());
@@ -35,6 +48,10 @@ public class FindPasswordActivity extends AppCompatActivity {
 
 		tabLayout = findViewById(R.id.tabLayout);
 		tabLayout.setupWithViewPager(viewPager);
+
+		buttonSendCode = findViewById(R.id.buttonSendCode);
+		buttonCheckCode = findViewById(R.id.buttonCheckCode);
+
 	}
 
 	private static final class ViewPagerAdapter extends FragmentStatePagerAdapter {
@@ -66,5 +83,44 @@ public class FindPasswordActivity extends AppCompatActivity {
 
 		@Override
 		public int getCount() { return items.size(); }
+	}
+
+	private void checkDangerousPermissions() {
+		String[] permissions = {
+				Manifest.permission.RECEIVE_SMS
+		};
+
+		int permissionCheck = PackageManager.PERMISSION_GRANTED;
+		for (int i = 0; i < permissions.length; i++) {
+			permissionCheck = ContextCompat.checkSelfPermission(this, permissions[i]);
+			if (permissionCheck == PackageManager.PERMISSION_DENIED) {
+				break;
+			}
+		}
+
+		if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
+			Toast.makeText(this, "권한 있음", Toast.LENGTH_LONG).show();
+		} else {
+			Toast.makeText(this, "권한 없음", Toast.LENGTH_LONG).show();
+
+			if (ActivityCompat.shouldShowRequestPermissionRationale(this, permissions[0])) {
+				Toast.makeText(this, "권한 설명 필요함.", Toast.LENGTH_LONG).show();
+			} else {
+				ActivityCompat.requestPermissions(this, permissions, 1);
+			}
+		}
+	}
+
+	@Override
+	public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+		if (requestCode == 1) {
+			for (int i = 0; i < permissions.length; i++) {
+				if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
+					Toast.makeText(this, permissions[i] + " 권한이 승인됨.", Toast.LENGTH_LONG).show();
+				} else {
+					Toast.makeText(this, permissions[i] + " 권한이 승인되지 않음.", Toast.LENGTH_LONG).show();
+				}
+			}
+		}
 	}
 }
