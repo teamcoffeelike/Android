@@ -53,7 +53,7 @@
 		android:supportsRtl="true"
 		android:theme="@style/Theme.CaramelHOMEcchiato"
 		android:usesCleartextTraffic="true">
-		<activity android:name=".CommentActivity"></activity>
+		<activity android:name=".ReactionActivity"></activity>
 		<activity android:name=".FindPasswordActivity" />
 
 		<provider

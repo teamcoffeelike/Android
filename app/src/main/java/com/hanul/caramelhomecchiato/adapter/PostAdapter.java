@@ -2,7 +2,6 @@ package com.hanul.caramelhomecchiato.adapter;
 
 import android.content.Intent;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -14,7 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.viewpager.widget.ViewPager;
 
-import com.hanul.caramelhomecchiato.CommentActivity;
+import com.hanul.caramelhomecchiato.ReactionActivity;
 import com.hanul.caramelhomecchiato.R;
 import com.hanul.caramelhomecchiato.data.Post;
 
@@ -71,7 +70,7 @@ public class PostAdapter extends BaseAdapter<Post>{
 
 			/* 댓글보기 클릭 -> 댓글창으로 이동(댓글 목록, 댓글 쓰기) */
 			textViewComments.setOnClickListener(v -> {
-				Intent intent = new Intent(v.getContext(), CommentActivity.class);
+				Intent intent = new Intent(v.getContext(), ReactionActivity.class);
 				v.getContext().startActivity(intent);
 			});
 		}

@@ -5,7 +5,7 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	tools:context=".CommentActivity"
+	tools:context=".ReactionActivity"
 	android:orientation="vertical"
 	android:weightSum="5">
 
@@ -20,6 +20,7 @@
 			android:layout_height="wrap_content"
 			android:layout_marginLeft="10dp"
 			android:ems="10"
+			android:theme="@style/edit_text"
 			android:inputType="textPersonName"
 			android:hint="내용을 입력하세요"
 			android:textSize="14sp"
@@ -28,7 +29,7 @@
 			app:layout_constraintTop_toTopOf="parent" />
 
 		<ImageButton
-			android:id="@+id/buttonComment"
+			android:id="@+id/buttonAddComment"
 			android:layout_width="30dp"
 			android:layout_height="30dp"
 			android:layout_marginRight="10dp"
