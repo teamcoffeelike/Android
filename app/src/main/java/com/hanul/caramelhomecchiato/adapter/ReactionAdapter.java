@@ -28,7 +28,8 @@ public class ReactionAdapter extends BaseAdapter<Reaction> {
 
 		@Override
 		protected void setItem(int position, Reaction reaction) {
-
+			tvUserName.setText(reaction.getUser().getName());
+			tvReaction.setText(reaction.getText());
 		}
 	}
 }
