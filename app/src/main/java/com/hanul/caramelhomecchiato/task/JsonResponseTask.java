@@ -22,6 +22,6 @@ public abstract class JsonResponseTask<CONTEXT extends Context> extends SendToSe
 	}
 
 	@Override protected JsonObject onReceiveResponse(HttpResponse response) throws IOException{
-		return NetUtils.NET_GSON.fromJson(new InputStreamReader(response.getEntity().getContent()), JsonObject.class);
+		return NetUtils.GSON.fromJson(new InputStreamReader(response.getEntity().getContent()), JsonObject.class);
 	}
 }

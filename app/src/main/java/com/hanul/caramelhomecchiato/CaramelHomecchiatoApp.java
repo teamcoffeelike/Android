@@ -11,4 +11,6 @@ public class CaramelHomecchiatoApp extends Application{
 		super.onCreate();
 		KakaoSdk.init(this, KAKAO_NATIVE_APP_KEY);
 	}
+
+
 }

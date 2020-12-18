@@ -70,7 +70,6 @@
 			android:layout_width="265dp"
 			android:layout_height="wrap_content"
 			android:layout_marginTop="15dp"
-			android:autoText="false"
 			android:ems="10"
 			android:hint="Password"
 			android:includeFontPadding="true"
@@ -80,7 +79,7 @@
 			android:theme="@style/edit_text"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toBottomOf="@+id/editTextId" />
+			app:layout_constraintTop_toBottomOf="@+id/editTextId"/>
 
 		<!-- 로그인 버튼 -->
 		<Button
@@ -88,7 +87,7 @@
 			android:layout_width="300dp"
 			android:layout_height="wrap_content"
 			android:layout_marginTop="28dp"
-			android:backgroundTint="@color/TerraCotta"
+			app:backgroundTint="@color/TerraCotta"
 			android:text="LOGIN"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintHorizontal_bias="0.495"
@@ -101,7 +100,7 @@
 			android:layout_width="300dp"
 			android:layout_height="wrap_content"
 			android:layout_marginTop="3dp"
-			android:backgroundTint="@color/TerraCotta"
+			app:backgroundTint="@color/TerraCotta"
 			android:text="JOIN"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintHorizontal_bias="0.495"

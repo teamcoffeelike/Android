@@ -27,5 +27,10 @@ public abstract class BaseTask<CONTEXT extends Context, Params, Progress, Result
 		if(context!=null) onPostExecute(context, result);
 	}
 
+	@Override protected void onCancelled(Result result){
+		CONTEXT context = ctx.get();
+		if(context!=null) onCancelled(context, result);
+	}
 	protected abstract void onPostExecute(@NonNull CONTEXT context, Result result);
+	protected void onCancelled(@NonNull CONTEXT context, Result result){}
 }

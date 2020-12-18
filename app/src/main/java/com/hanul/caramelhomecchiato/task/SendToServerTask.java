@@ -22,7 +22,7 @@ public abstract class SendToServerTask<CONTEXT extends Context, Params, Progress
 	private final String subroutine;
 
 	public SendToServerTask(CONTEXT context, String subroutine){
-		this(context, NetUtils.COFFEELIKE, subroutine);
+		this(context, NetUtils.API_ADDRESS, subroutine);
 	}
 	public SendToServerTask(CONTEXT context, String server, String subroutine){
 		super(context);
@@ -38,15 +38,17 @@ public abstract class SendToServerTask<CONTEXT extends Context, Params, Progress
 		appendMultipartEntity(builder);
 
 		AndroidHttpClient client = AndroidHttpClient.newInstance("Android");
-		HttpPost post = new HttpPost("http://"+server+"/"+subroutine);
-		post.setEntity(builder.build());
 		try{
+			HttpPost post = new HttpPost("http://"+server+"/"+subroutine);
+			post.setEntity(builder.build());
 			HttpResponse response = client.execute(post);
 			return onReceiveResponse(response);
 		}catch(IOException e){
 			e.printStackTrace();
 			cancel(false);
 			return null;
+		}finally{
+			client.close();
 		}
 	}
 
