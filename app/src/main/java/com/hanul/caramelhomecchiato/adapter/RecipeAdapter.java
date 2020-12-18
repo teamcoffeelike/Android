@@ -41,6 +41,8 @@ public class RecipeAdapter extends BaseAdapter<Recipe> {
 				@Override
 				public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
 					ratingBar.setRating(rating);
+					ratingBar.setIsIndicator(true);	//사용자가 변경 불가능
+					//ratingBar.setIsIndicator(false);	//사용자가 변경 가능
 				}
 			});
 		}

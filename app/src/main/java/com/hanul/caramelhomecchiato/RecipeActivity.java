@@ -48,12 +48,11 @@ public class RecipeActivity extends AppCompatActivity {
 		RecipeAdapter adapter = new RecipeAdapter();
 		List<Recipe> recipes = adapter.elements();
 
-		//recipes.add(new Recipe(id, title, author, rating, photo)
-		recipes.add(new Recipe(1, "아메리카노", new User(1, "dd", null), 5, null));
-		recipes.add(new Recipe(1, "카페라떼", new User(1, "dd", null), 5, null));
+		recipes.add(new Recipe(1, "아메리카노", new User(1, "dd", null), 4, null));
+		recipes.add(new Recipe(1, "카페라떼", new User(1, "dd", null), 4.5f, null));
 		recipes.add(new Recipe(1, "카페모카", new User(1, "dd", null), 5, null));
-		recipes.add(new Recipe(1, "딸기스무디", new User(1, "dd", null), 5, null));
-		recipes.add(new Recipe(1, "레몬아이스티", new User(1, "dd", null), 5, null));
+		recipes.add(new Recipe(1, "딸기스무디", new User(1, "dd", null), 4.5f, null));
+		recipes.add(new Recipe(1, "레몬아이스티", new User(1, "dd", null), 4, null));
 
 		recyclerView.setAdapter(adapter);
 	}

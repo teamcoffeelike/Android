@@ -53,9 +53,13 @@
 		android:supportsRtl="true"
 		android:theme="@style/Theme.CaramelHOMEcchiato"
 		android:usesCleartextTraffic="true">
+<<<<<<< HEAD
 
 		<activity android:name=".ReactionActivity"></activity>
 		<activity android:name=".FindPasswordActivity" />
+=======
+		<activity android:name=".CommentActivity"></activity>
+>>>>>>> 54c8de7 (매니페스트, 레시피어댑터 ratingbar, find password 수정)
 
 		<provider
 			android:name="androidx.core.content.FileProvider"
@@ -90,7 +94,6 @@
 		<activity android:name=".RecipeActivity" />
 		<activity android:name=".SearchFriendActivity" />
 		<activity android:name=".SettingsActivity" />
-		<activity android:name=".SmsDisActivity"/>
 		<activity android:name=".WritePostActivity" />
 	</application>
 
