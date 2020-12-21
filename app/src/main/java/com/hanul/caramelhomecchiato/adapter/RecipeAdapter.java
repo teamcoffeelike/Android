@@ -35,7 +35,7 @@ public class RecipeAdapter extends BaseAdapter<Recipe> {
 			title = itemView.findViewById(R.id.textViewRecipeTitle);
 			author = itemView.findViewById(R.id.textViewRecipeAuthor);
 			rating = itemView.findViewById(R.id.ratingBar);
-
+			
 			//RatingBar 클릭시 변경
 			rating.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
 				@Override
