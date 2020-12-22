@@ -5,124 +5,155 @@
 	android:layout_width="match_parent"
 	android:layout_height="match_parent">
 
-
-	<EditText
-		android:id="@+id/editTextName"
-		android:layout_width="290dp"
-		android:layout_height="wrap_content"
-		android:layout_marginTop="120dp"
-		android:ems="10"
-		android:hint="@string/join_form_name"
-		android:paddingLeft="15dp"
-		android:theme="@style/edit_text"
-		android:inputType="textPersonName"
+	<androidx.constraintlayout.widget.ConstraintLayout
+		android:layout_width="wrap_content"
+		android:layout_height="match_parent"
+		android:padding="30dp"
 		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintHorizontal_bias="0.504"
 		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toTopOf="parent" />
+		app:layout_constraintTop_toTopOf="parent">
 
+		<!-- 이름 폼 -->
+		<LinearLayout
+			android:id="@+id/linearLayoutJoinNameForm"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="100dp"
+			android:gravity="center"
+			app:layout_constraintTop_toTopOf="parent">
 
-	<EditText
-		android:id="@+id/editTextEmailPhone"
-		android:layout_width="290dp"
-		android:layout_height="wrap_content"
-		android:layout_marginTop="32dp"
-		android:ems="10"
-		android:hint="@string/join_form_email"
-		android:paddingLeft="15dp"
-		android:theme="@style/edit_text"
-		android:inputType="textEmailAddress"
-		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintHorizontal_bias="0.502"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@+id/editTextName" />
+			<ImageView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:src="@drawable/ic_login_id" />
 
-	<EditText
-		android:id="@+id/editTextPassword"
-		android:layout_width="290dp"
-		android:layout_height="wrap_content"
-		android:layout_marginTop="32dp"
-		android:ems="10"
-		android:hint="@string/join_form_password"
-		android:paddingLeft="15dp"
-		android:theme="@style/edit_text"
-		android:inputType="textPassword"
-		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintHorizontal_bias="0.502"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@+id/editTextEmailPhone" />
+			<EditText
+				android:id="@+id/editTextName"
+				android:layout_width="280dp"
+				android:layout_height="wrap_content"
+				android:ems="10"
+				android:hint="@string/join_form_name"
+				android:includeFontPadding="true"
+				android:inputType="textPersonName"
+				android:paddingLeft="10dp"
+				android:textSize="16sp"
+				android:theme="@style/edit_text" />
+		</LinearLayout>
 
-	<EditText
-		android:id="@+id/editTextPasswordConfirm"
-		android:layout_width="290dp"
-		android:layout_height="wrap_content"
-		android:layout_marginTop="32dp"
-		android:ems="10"
-		android:hint="@string/join_form_password_confirm"
-		android:paddingLeft="15dp"
-		android:theme="@style/edit_text"
-		android:inputType="textPassword"
-		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintHorizontal_bias="0.502"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@+id/editTextPassword" />
+		<!-- 이메일 폼 -->
+		<LinearLayout
+			android:id="@+id/linearLayoutJoinEmailForm"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="32dp"
+			android:gravity="center"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toBottomOf="@+id/linearLayoutJoinNameForm" >
 
-	<TextView
-		android:id="@+id/textViewPwCheck"
-		android:layout_width="290dp"
-		android:layout_height="30dp"
-		android:layout_marginTop="24dp"
-		android:textSize="15sp"
-		android:text="TextView"
-		android:gravity="center"
-		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintHorizontal_bias="0.512"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@+id/editTextPasswordConfirm"
-		android:visibility="gone"/>
+			<ImageView
+				android:id="@+id/imgEmailPhone"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:src="@drawable/ic_join_email" />
+
+			<EditText
+				android:id="@+id/editTextEmailPhone"
+				android:layout_width="280dp"
+				android:layout_height="wrap_content"
+				android:ems="10"
+				android:hint="@string/join_form_email"
+				android:includeFontPadding="true"
+				android:inputType="textPersonName"
+				android:paddingLeft="10dp"
+				android:textSize="16sp"
+				android:theme="@style/edit_text" />
+		</LinearLayout>
+
+		<!-- 비밀번호 폼 -->
+		<LinearLayout
+			android:id="@+id/linearLayoutJoinPasswordForm"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="32dp"
+			android:gravity="center"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toBottomOf="@+id/linearLayoutJoinEmailForm" >
+
+			<ImageView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:src="@drawable/ic_login_pw" />
+
+			<EditText
+				android:id="@+id/editTextPassword"
+				android:layout_width="280dp"
+				android:layout_height="wrap_content"
+				android:ems="10"
+				android:hint="@string/join_form_password"
+				android:includeFontPadding="true"
+				android:inputType="textPersonName"
+				android:paddingLeft="10dp"
+				android:textSize="16sp"
+				android:theme="@style/edit_text" />
+		</LinearLayout>
+
+		<!-- 비밀번호 확인 폼 -->
+		<LinearLayout
+			android:id="@+id/linearLayoutJoinPasswordConfirmForm"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="32dp"
+			android:gravity="center"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toBottomOf="@+id/linearLayoutJoinPasswordForm" >
+
+			<ImageView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:src="@drawable/ic_check" />
+
+			<EditText
+				android:id="@+id/editTextPasswordConfirm"
+				android:layout_width="280dp"
+				android:layout_height="wrap_content"
+				android:ems="10"
+				android:hint="@string/join_form_password_confirm"
+				android:includeFontPadding="true"
+				android:inputType="textPersonName"
+				android:paddingLeft="10dp"
+				android:textSize="16sp"
+				android:theme="@style/edit_text" />
+
+			<TextView
+				android:id="@+id/textViewPwCheck"
+				android:layout_width="280dp"
+				android:layout_height="30dp"
+				android:layout_marginTop="24dp"
+				android:textSize="15sp"
+				android:text="TextView"
+				android:gravity="center"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintHorizontal_bias="0.512"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintTop_toBottomOf="@+id/editTextPasswordConfirm"
+				android:visibility="gone"/>
+		</LinearLayout>
 
 	<Button
 		android:id="@+id/buttonConfirm"
-		android:layout_width="290dp"
+		android:layout_width="300dp"
 		android:layout_height="wrap_content"
-		android:layout_marginTop="124dp"
+		android:layout_marginTop="100dp"
 		android:text="JOIN"
 		app:backgroundTint="@color/TerraCotta"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintHorizontal_bias="0.495"
 		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@+id/editTextPasswordConfirm" />
+		app:layout_constraintTop_toBottomOf="@+id/linearLayoutJoinPasswordConfirmForm" />
 
-	<ImageView
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_marginTop="140dp"
-		android:layout_marginEnd="4dp"
-		android:layout_marginRight="4dp"
-		android:src="@drawable/ic_join_name"
-		app:layout_constraintEnd_toStartOf="@+id/editTextName"
-		app:layout_constraintTop_toTopOf="parent" />
-
-	<ImageView
-		android:id="@+id/imgEmailPhone"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_marginTop="215dp"
-		android:layout_marginEnd="4dp"
-		android:layout_marginRight="4dp"
-		android:src="@drawable/ic_join_email"
-		app:layout_constraintEnd_toStartOf="@+id/editTextEmailPhone"
-		app:layout_constraintTop_toTopOf="parent" />
-
-	<ImageView
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_marginTop="290dp"
-		android:layout_marginEnd="4dp"
-		android:layout_marginRight="4dp"
-		android:src="@drawable/ic_login_pw"
-		app:layout_constraintEnd_toStartOf="@+id/editTextPassword"
-		app:layout_constraintTop_toTopOf="parent" />
-
+	</androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -26,74 +26,83 @@
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toTopOf="parent" />
 
-		<!-- 로그인 ID 이미지 -->
-		<ImageView
-			android:id="@+id/imageViewLoginId"
-			android:layout_width="wrap_content"
+		<!-- 로그인 ID 폼 -->
+		<LinearLayout
+			android:id="@+id/linearLayoutLoginIdForm"
+			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:layout_marginTop="215dp"
-			android:src="@drawable/ic_login_id"
-			app:layout_constraintEnd_toStartOf="@+id/editTextEmailPhone"
-			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toTopOf="parent" />
+			android:gravity="center"
+			android:layout_marginTop="35dp"
+			app:layout_constraintTop_toBottomOf="@+id/imageViewLogo">
 
-		<!-- ID 입력 칸 -->
-		<EditText
-			android:id="@+id/editTextId"
-			android:layout_width="265dp"
-			android:layout_height="wrap_content"
-			android:layout_marginTop="80dp"
-			android:ems="10"
-			android:hint="E-Mail / Phone"
-			android:includeFontPadding="true"
-			android:inputType="textPersonName"
-			android:paddingLeft="15dp"
-			android:textSize="16sp"
-			android:theme="@style/edit_text"
-			app:layout_constraintEnd_toEndOf="parent"
-			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toBottomOf="@+id/imageViewLogo" />
+			<!-- 로그인 ID 이미지 -->
+			<ImageView
+				android:id="@+id/imageViewLoginId"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:src="@drawable/ic_login_id" />
 
-		<!-- 로그인 Password 이미지 -->
-		<ImageView
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_marginTop="33dp"
-			android:src="@drawable/ic_login_pw"
-			app:layout_constraintEnd_toStartOf="@+id/editTextEmailPhone"
-			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toBottomOf="@+id/imageViewLoginId" />
+			<!-- ID 입력 칸 -->
+			<EditText
+				android:id="@+id/editTextId"
+				android:layout_width="280dp"
+				android:layout_height="wrap_content"
+				android:ems="10"
+				android:hint="@string/login_with_email_or_phone"
+				android:includeFontPadding="true"
+				android:inputType="textPersonName"
+				android:paddingLeft="10dp"
+				android:textSize="16sp"
+				android:theme="@style/edit_text" />
+		</LinearLayout>
 
-		<!-- Password 입력 칸 -->
-		<EditText
-			android:id="@+id/editTextPassword"
-			android:layout_width="265dp"
+		<!-- 로그인 PW 폼 -->
+		<LinearLayout
+			android:id="@+id/linearLayoutLoginPwForm"
+			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:layout_marginTop="15dp"
-			android:autoText="false"
-			android:ems="10"
-			android:hint="Password"
-			android:includeFontPadding="true"
-			android:inputType="textPassword"
-			android:paddingLeft="15dp"
-			android:textSize="16sp"
-			android:theme="@style/edit_text"
-			app:layout_constraintEnd_toEndOf="parent"
-			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toBottomOf="@+id/editTextId" />
+			android:gravity="center"
+			android:layout_marginTop="3dp"
+			app:layout_constraintTop_toBottomOf="@+id/linearLayoutLoginIdForm">
+
+			<!-- 로그인 Password 이미지 -->
+			<ImageView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:src="@drawable/ic_login_pw"
+				app:layout_constraintEnd_toStartOf="@+id/editTextEmailPhone"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintTop_toBottomOf="@+id/imageViewLoginId" />
+
+			<!-- Password 입력 칸 -->
+			<EditText
+				android:id="@+id/editTextPassword"
+				android:layout_width="280dp"
+				android:layout_height="wrap_content"
+				android:ems="10"
+				android:hint="@string/join_form_password"
+				android:includeFontPadding="true"
+				android:inputType="textPassword"
+				android:paddingLeft="10dp"
+				android:textSize="16sp"
+				android:theme="@style/edit_text"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintTop_toBottomOf="@+id/editTextId" />
+		</LinearLayout>
 
 		<!-- 로그인 버튼 -->
 		<Button
 			android:id="@+id/buttonLogin"
 			android:layout_width="300dp"
 			android:layout_height="wrap_content"
-			android:layout_marginTop="28dp"
-			android:backgroundTint="@color/TerraCotta"
+			android:layout_marginTop="35dp"
+			app:backgroundTint="@color/TerraCotta"
 			android:text="LOGIN"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintHorizontal_bias="0.495"
 			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toBottomOf="@id/editTextPassword" />
+			app:layout_constraintTop_toBottomOf="@id/linearLayoutLoginPwForm" />
 
 		<!-- 회원가입 버튼 -->
 		<Button
@@ -101,21 +110,21 @@
 			android:layout_width="300dp"
 			android:layout_height="wrap_content"
 			android:layout_marginTop="3dp"
-			android:backgroundTint="@color/TerraCotta"
+			app:backgroundTint="@color/TerraCotta"
 			android:text="JOIN"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintHorizontal_bias="0.495"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toBottomOf="@id/buttonLogin" />
 
-		<!-- ID / PW 찾기 -->
+		<!-- ID/PW 찾기 -->
 		<TextView
 			android:id="@+id/textViewFindPassword"
 			android:layout_width="300dp"
 			android:layout_height="wrap_content"
 			android:layout_marginTop="15dp"
 			android:gravity="center"
-			android:text="Find Password"
+			android:text="Find ID / Password"
 			android:textSize="16sp"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintHorizontal_bias="0.495"
@@ -123,26 +132,18 @@
 			app:layout_constraintTop_toBottomOf="@+id/buttonJoin" />
 
 		<!-- 카카오톡 연동 로그인 이미지버튼 -->
-		<ImageButton
-			android:id="@+id/ImageButtonLoginWithKakao"
-			android:layout_width="140dp"
-			android:layout_height="50dp"
+		<Button
+			android:id="@+id/buttonLoginWithKakao"
+			android:layout_width="300dp"
+			android:layout_height="wrap_content"
 			android:layout_marginTop="50dp"
-			android:background="@drawable/kakao_login"
-			app:layout_constraintHorizontal_bias="0.495"
-			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toBottomOf="@+id/textViewFindPassword" />
-
-		<!-- 네이버 연동 로그인 이미지버튼 -->
-		<ImageButton
-			android:id="@+id/buttonLoginWithNaver"
-			android:layout_width="140dp"
-			android:layout_height="50dp"
-			android:layout_marginTop="50dp"
-			android:background="@drawable/naver_login"
+			app:backgroundTint="@color/MinionYellow"
+			android:textColor="@color/VanDykeBrown"
+			android:text="LOGIN with KAKAO"
+			android:textAllCaps="false"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintHorizontal_bias="0.495"
-			app:layout_constraintRight_toRightOf="@+id/ImageButtonLoginWithKakao"
+			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toBottomOf="@+id/textViewFindPassword" />
 
 	</androidx.constraintlayout.widget.ConstraintLayout>

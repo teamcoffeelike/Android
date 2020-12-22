@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.MediaStore;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -56,10 +55,13 @@ public class WritePostActivity extends AppCompatActivity{
 				return;
 			}
 		}
-		startActivityForResult(Intent.createChooser(new Intent()
+		Intent intent = new Intent()
 				.setType("image/*")
-				.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
-				.setAction(Intent.ACTION_GET_CONTENT), "Select Picture"), PICK_IMAGE);
+				.setAction(Intent.ACTION_GET_CONTENT);
+		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2){
+			intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+		}
+		startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE);
 	}
 
 	@Override protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data){
@@ -71,7 +73,7 @@ public class WritePostActivity extends AppCompatActivity{
 				else{
 					ClipData clipData = data.getClipData();
 					if(clipData!=null){
-						for(int i=0; i<clipData.getItemCount(); i++){
+						for(int i = 0; i<clipData.getItemCount(); i++){
 							Uri uri1 = clipData.getItemAt(i).getUri();
 							addImage(uri1);
 						}

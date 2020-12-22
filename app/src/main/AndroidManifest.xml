@@ -13,7 +13,9 @@
 		android:required="false" />
 
 	<uses-permission android:name="android.permission.CAMERA" /> <!-- android:required="true" -->
+	<uses-permission android:name="android.permission.CAMERA" />
 	<uses-permission android:name="android.permission.INTERNET" />
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 	<uses-permission android:name="android.permission.READ_PHONE_STATE" />
 	<uses-permission android:name="android.permission.READ_SMS" />
@@ -46,6 +48,7 @@
 	</queries>
 
 	<application
+		android:name=".CaramelHomecchiatoApp"
 		android:allowBackup="true"
 		android:icon="@mipmap/ic_launcher"
 		android:label="@string/app_name"
@@ -89,6 +92,17 @@
 		<activity android:name=".SearchFriendActivity" />
 		<activity android:name=".SettingsActivity" />
 		<activity android:name=".WritePostActivity" />
+
+		<activity android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity">
+			<intent-filter>
+				<action android:name="android.intent.action.VIEW" />
+				<category android:name="android.intent.category.DEFAULT" />
+				<category android:name="android.intent.category.BROWSABLE" />
+
+				<data android:host="oauth"
+					android:scheme="kakao47e844c627448470e1f25b8e1fa0c23e" />
+			</intent-filter>
+		</activity>
 	</application>
 
 </manifest>
