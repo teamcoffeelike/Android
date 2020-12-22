@@ -76,9 +76,6 @@ public class LoginActivity extends AppCompatActivity{
 				}
 			});
 		});
-		findViewById(R.id.buttonLoginWithNaver).setOnClickListener(v -> {
-			// TODO ?
-		});
 	}
 
 	@Override protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data){
