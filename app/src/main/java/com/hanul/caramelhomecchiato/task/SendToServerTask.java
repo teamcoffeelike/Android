@@ -1,6 +1,5 @@
 package com.hanul.caramelhomecchiato.task;
 
-import android.content.Context;
 import android.net.http.AndroidHttpClient;
 
 import com.hanul.caramelhomecchiato.util.NetUtils;
@@ -16,8 +15,7 @@ import java.nio.charset.StandardCharsets;
 /**
  * 서버로 메시지를 보내는 {@code AsyncTask}. 멀티파트 객체를 사용한 HTTP 연결의 기초를 구현합니다.
  */
-public abstract class SendToServerTask<CONTEXT extends Context, Params, Progress, Result>
-		extends BaseTask<CONTEXT, Params, Progress, Result>{
+public abstract class SendToServerTask<CONTEXT, Params, Progress, Result> extends BaseTask<CONTEXT, Params, Progress, Result>{
 	private final String server;
 	private final String subroutine;
 

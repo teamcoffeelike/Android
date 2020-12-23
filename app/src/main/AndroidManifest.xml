@@ -25,10 +25,13 @@
 		android:maxSdkVersion="18" />
 
 	<queries>
+
 		<!-- WebView -->
 		<intent>
 			<action android:name="android.intent.action.VIEW" />
+
 			<category android:name="android.intent.category.BROWSABLE" />
+
 			<data android:scheme="http" />
 		</intent>
 
@@ -52,6 +55,7 @@
 		android:supportsRtl="true"
 		android:theme="@style/Theme.CaramelHOMEcchiato"
 		android:usesCleartextTraffic="true">
+		<activity android:name=".JoinKakaoWithNameActivity"></activity>
 
 		<provider
 			android:name="androidx.core.content.FileProvider"
@@ -69,7 +73,7 @@
 
 		<activity android:name=".ChangePasswordActivity" />
 		<activity android:name=".EditProfileActivity" />
-		<activity android:name=".FindLoginIdPwActivity"/>
+		<activity android:name=".FindLoginIdPwActivity" />
 		<activity android:name=".FollowsActivity" />
 		<activity android:name=".JoinActivity" />
 		<activity android:name=".LikesActivity" />
@@ -87,14 +91,15 @@
 		<activity android:name=".SearchFriendActivity" />
 		<activity android:name=".SettingsActivity" />
 		<activity android:name=".WritePostActivity" />
-
 		<activity android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity">
 			<intent-filter>
 				<action android:name="android.intent.action.VIEW" />
+
 				<category android:name="android.intent.category.DEFAULT" />
 				<category android:name="android.intent.category.BROWSABLE" />
 
-				<data android:host="oauth"
+				<data
+					android:host="oauth"
 					android:scheme="kakao47e844c627448470e1f25b8e1fa0c23e" />
 			</intent-filter>
 		</activity>
