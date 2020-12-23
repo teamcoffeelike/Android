@@ -47,9 +47,10 @@ public class LoadingActivity extends AppCompatActivity{
 	}
 
 	private void setUserIdAndPostLoad(int userId){
+		Log.d(TAG, "setUserIdAndPostLoad: userId = "+userId);
 		// TODO Application에 userId 저장
 		// TODO 모종의 이유로 로그아웃 시 다시 로그인?
-		new PostLoginLoadingTask(this).doInBackground();
+		new PostLoginLoadingTask(this).execute();
 	}
 
 	/**
@@ -96,7 +97,8 @@ public class LoadingActivity extends AppCompatActivity{
 		}
 
 		@Override protected void onPostExecute(@NonNull LoadingActivity activity, Void aVoid){
-			activity.startActivityForResult(new Intent(activity, MainActivity.class), LOGIN_REQ);
+			activity.startActivity(new Intent(activity, MainActivity.class));
+			activity.finish();
 		}
 	}
 }
