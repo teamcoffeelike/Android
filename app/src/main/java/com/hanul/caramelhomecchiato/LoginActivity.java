@@ -7,10 +7,12 @@ import android.util.Log;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.gson.JsonObject;
+import com.hanul.caramelhomecchiato.task.BaseTask;
 import com.hanul.caramelhomecchiato.task.JoinWithKakaoTask;
 import com.hanul.caramelhomecchiato.task.LoginWithEmailTask;
 import com.hanul.caramelhomecchiato.task.LoginWithKakaoTask;
@@ -53,7 +55,11 @@ public class LoginActivity extends AppCompatActivity{
 
 			if(isIdEmail){
 				new LoginWithEmailTask<>(this, id, pw)
-						.onSucceed(LoginActivity::loginCallback)
+						.onSucceed(new BaseTask.BaseTaskCallback<LoginActivity, JsonObject>(){
+							@Override public void onFinish(@NonNull LoginActivity activity1, JsonObject jsonObject1){
+								activity1.loginCallback(jsonObject1);
+							}
+						})
 						.onCancelled((activity, jsonObject) -> activity.dialog.dismiss())
 						.execute();
 			}else{
