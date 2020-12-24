@@ -17,7 +17,7 @@ public class JoinWithKakaoTask<CONTEXT> extends JsonResponseTask<CONTEXT>{
 	}
 
 	@Override protected void appendMultipartEntity(MultipartEntityBuilder builder){
-		builder.addTextBody("token", token.getAccessToken());
+		builder.addTextBody("kakaoLoginToken", token.getAccessToken());
 		if(name!=null) builder.addTextBody("name", name);
 	}
 }

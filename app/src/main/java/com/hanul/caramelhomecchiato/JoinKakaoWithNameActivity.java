@@ -1,5 +1,6 @@
 package com.hanul.caramelhomecchiato;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -31,9 +32,8 @@ public class JoinKakaoWithNameActivity extends AppCompatActivity{
 
 			new JoinWithKakaoTask<>(this, oAuthToken, name)
 					.onSucceed((activity, result) -> {
-						activity.setResult(RESULT_OK, );
+						activity.setResult(RESULT_OK, new Intent().putExtra("userId", result.get("userId").getAsInt()));
 					}).onCancelled((activity, result) -> {
-
 			}).execute();
 		});
 	}

@@ -1,6 +1,7 @@
 package com.hanul.caramelhomecchiato.task;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -36,6 +37,7 @@ public abstract class BaseTask<CONTEXT, Params, Progress, Result> extends AsyncT
 	}
 
 	@Override protected void onPostExecute(Result result){
+		Log.d(this.getClass().getSimpleName(), "onPostExecute");
 		if(onSucceed!=null){
 			CONTEXT context = ctx.get();
 			if(context!=null) onSucceed.onFinish(context, result);
@@ -43,6 +45,7 @@ public abstract class BaseTask<CONTEXT, Params, Progress, Result> extends AsyncT
 	}
 
 	@Override protected void onCancelled(Result result){
+		Log.d(this.getClass().getSimpleName(), "onCancelled");
 		if(onCancelled!=null){
 			CONTEXT context = ctx.get();
 			if(context!=null) onCancelled.onFinish(context, result);
