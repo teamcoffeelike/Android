@@ -52,4 +52,9 @@ dependencies {
     }
 
     implementation "com.kakao.sdk:v2-user:2.1.0" // 카카오 로그인
+
+    def room_version = "2.2.6"
+
+    implementation "androidx.room:room-runtime:$room_version"
+    annotationProcessor "androidx.room:room-compiler:$room_version"
 }

@@ -7,22 +7,23 @@ import android.util.Log;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.gson.JsonObject;
-import com.hanul.caramelhomecchiato.task.JsonResponseTask;
-import com.hanul.caramelhomecchiato.util.NetUtils;
+import com.hanul.caramelhomecchiato.task.JoinWithKakaoTask;
+import com.hanul.caramelhomecchiato.task.LoginWithEmailTask;
+import com.hanul.caramelhomecchiato.task.LoginWithKakaoTask;
+import com.hanul.caramelhomecchiato.task.LoginWithPhoneNumberTask;
+import com.hanul.caramelhomecchiato.util.KakaoApiUtils;
 import com.kakao.sdk.auth.model.OAuthToken;
-
-import org.apache.http.entity.mime.MultipartEntityBuilder;
-import org.jetbrains.annotations.NotNull;
+import com.kakao.sdk.user.model.Account;
+import com.kakao.sdk.user.model.Profile;
 
 public class LoginActivity extends AppCompatActivity{
 	private static final String TAG = "LoginActivity";
 
-	private static final int JOIN_REQ = 1;
+	private static final int LOGIN_RESULT = 1;
 
 	private ProgressDialog dialog;
 
@@ -51,14 +52,20 @@ public class LoginActivity extends AppCompatActivity{
 			boolean isIdEmail = id.indexOf('@') >= 0;
 
 			if(isIdEmail){
-				new LoginWithEmailTask(this, id, pw).execute();
+				new LoginWithEmailTask<>(this, id, pw)
+						.onSucceed(LoginActivity::loginCallback)
+						.onCancelled((activity, jsonObject) -> activity.dialog.dismiss())
+						.execute();
 			}else{
-				new LoginWithPhoneNumberTask(this, id, pw).execute();
+				new LoginWithPhoneNumberTask<>(this, id, pw)
+						.onSucceed(LoginActivity::loginCallback)
+						.onCancelled((activity, jsonObject) -> activity.dialog.dismiss())
+						.execute();
 			}
 			dialog.show();
 		});
 		findViewById(R.id.buttonJoin).setOnClickListener(v -> {
-			startActivityForResult(new Intent(this, JoinActivity.class), JOIN_REQ);
+			startActivityForResult(new Intent(this, JoinActivity.class), LOGIN_RESULT);
 		});
 
 		findViewById(R.id.textViewFindPassword).setOnClickListener(v -> {
@@ -66,12 +73,15 @@ public class LoginActivity extends AppCompatActivity{
 		});
 
 		findViewById(R.id.buttonLoginWithKakao).setOnClickListener(v -> {
-			NetUtils.loginWithKakao(this, (oAuthToken, error) -> {
+			KakaoApiUtils.loginWithKakao(this, (oAuthToken, error) -> {
 				if(error!=null){
 					Log.e(TAG, "카카오톡 로그인 실패", error);
 				}else if(oAuthToken!=null){
 					//Log.i(TAG, "카카오톡 로그인 성공! "+oAuthToken.getAccessToken());
-					new LoginWithKakaoTask(this, oAuthToken).execute();
+					new LoginWithKakaoTask<>(this, oAuthToken)
+							.onSucceed((activity, jsonObject) -> activity.kakaoLoginCallback(oAuthToken, jsonObject))
+							.onCancelled((activity, jsonObject) -> activity.dialog.dismiss())
+							.execute();
 					dialog.show();
 				}
 			});
@@ -80,7 +90,7 @@ public class LoginActivity extends AppCompatActivity{
 
 	@Override protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data){
 		super.onActivityResult(requestCode, resultCode, data);
-		if(requestCode==JOIN_REQ){
+		if(requestCode==LOGIN_RESULT){
 			if(resultCode==RESULT_OK){
 				int userId = data==null ? 0 : data.getIntExtra("userId", 0);
 				if(userId==0){
@@ -95,85 +105,83 @@ public class LoginActivity extends AppCompatActivity{
 	}
 
 	private void loginCallback(JsonObject jsonObject){
-		if(jsonObject.get(NetUtils.SUCCESS).getAsBoolean()){
-			setResult(RESULT_OK, new Intent().putExtra("userId", jsonObject.get("userId").getAsInt()));
-			finish();
-		}else{
+		if(jsonObject.has("error")){
 			String error = jsonObject.get("error").getAsString();
 			if("login_failed".equals(error)){
 				Toast.makeText(this, "이메일, 휴대전화 번호 또는 비밀번호가 일치하지 않습니다.", Toast.LENGTH_SHORT).show();
 			}else{
 				Toast.makeText(this, "예상치 못한 오류가 발생했습니다: "+error, Toast.LENGTH_SHORT).show();
 			}
+			dialog.dismiss();
+			return;
 		}
+
+		setResult(RESULT_OK, new Intent().putExtra("userId", jsonObject.get("userId").getAsInt()));
+		finish();
 	}
 
-
-	private static final class LoginWithEmailTask extends JsonResponseTask<LoginActivity>{
-		private final String email;
-		private final String password;
-
-		public LoginWithEmailTask(LoginActivity activity, String email, String password){
-			super(activity, "loginWithEmail");
-			this.email = email;
-			this.password = password;
+	private void kakaoLoginCallback(OAuthToken oAuthToken, JsonObject jsonObject){
+		if(jsonObject.has("error")){
+			String loginError = jsonObject.get("error").getAsString();
+			switch(loginError){
+			case "needs_agreement": // 프로필 이용을 위한 동의가 필요
+				fetchProfileAndJoin(oAuthToken, true);
+				break;
+			case "bad_kakao_login_token":
+				Toast.makeText(this, "카카오 로그인이 해제되었습니다. 다시 시도해 주세요.", Toast.LENGTH_SHORT).show();
+				dialog.dismiss();
+				break;
+			case "kakao_service_unavailable":
+				Toast.makeText(this, "카카오 연동 서비스를 제공할 수 없습니다.", Toast.LENGTH_SHORT).show();
+				dialog.dismiss();
+				break;
+			default:
+				Log.e(TAG, "kakaoLoginCallback: "+loginError);
+				Toast.makeText(this, "예상치 못한 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
+				dialog.dismiss();
+				break;
+			}
+			return;
 		}
 
-		@Override protected void appendMultipartEntity(MultipartEntityBuilder builder){
-			builder.addTextBody("email", email).addTextBody("password", password);
-		}
-		@Override protected void onPostExecute(@NonNull LoginActivity activity, JsonObject jsonObject){
-			activity.dialog.dismiss();
-			activity.loginCallback(jsonObject);
-		}
-
-		@Override protected void onCancelled(@NonNull LoginActivity activity, JsonObject jsonObject){
-			activity.dialog.dismiss();
-		}
+		setResult(RESULT_OK, new Intent().putExtra("userId", jsonObject.get("userId").getAsInt()));
+		finish();
+		dialog.dismiss();
 	}
 
-	private static final class LoginWithPhoneNumberTask extends JsonResponseTask<LoginActivity>{
-		private final String phoneNumber;
-		private final String password;
+	private void fetchProfileAndJoin(OAuthToken oAuthToken, boolean retry){
+		KakaoApiUtils.getUser((user, error) -> {
+			if(error!=null){
+				Log.e(TAG, "fetchProfileAndJoin: 사용자 정보 요청 실패", error);
+				dialog.dismiss();
+				return;
+			}
 
-		public LoginWithPhoneNumberTask(LoginActivity activity, String phoneNumber, String password){
-			super(activity, "loginWithPhoneNumber");
-			this.phoneNumber = phoneNumber;
-			this.password = password;
-		}
+			Account acc = user.getKakaoAccount();
+			if(acc!=null){
+				Profile profile = acc.getProfile();
+				if(profile!=null){
+					// 닉네임 확인, 이름 명시하여 재시도
+					new JoinWithKakaoTask<>(this, oAuthToken, profile.getNickname())
+							.onSucceed(LoginActivity::loginCallback)
+							.onCancelled((activity, jsonObject) -> activity.dialog.dismiss())
+							.execute();
+					return;
+				}else if(acc.getProfileNeedsAgreement()){ // 동의 필요
+					if(retry){
+						// 동의 후 재시도
+						KakaoApiUtils.loginWithNewScopes(this,
+								(token, error2) -> fetchProfileAndJoin(token, false),
+								"profile");
+						return;
+					}
+				}
+			}
 
-		@Override protected void appendMultipartEntity(MultipartEntityBuilder builder){
-			builder.addTextBody("phoneNumber", phoneNumber).addTextBody("password", password);
-		}
-		@Override protected void onPostExecute(@NonNull LoginActivity activity, JsonObject jsonObject){
-			activity.dialog.dismiss();
-			activity.loginCallback(jsonObject);
-		}
-
-		@Override protected void onCancelled(@NonNull LoginActivity activity, JsonObject jsonObject){
-			activity.dialog.dismiss();
-		}
-	}
-
-	private static final class LoginWithKakaoTask extends JsonResponseTask<LoginActivity>{
-		private final OAuthToken oAuthToken;
-
-		public LoginWithKakaoTask(LoginActivity activity, OAuthToken oAuthToken){
-			super(activity, "loginWithKakao");
-			this.oAuthToken = oAuthToken;
-		}
-
-		@Override protected void appendMultipartEntity(MultipartEntityBuilder builder){
-			builder.addTextBody("kakaoLoginToken", oAuthToken.getAccessToken());
-		}
-
-		@Override protected void onPostExecute(@NotNull LoginActivity activity, JsonObject jsonObject){
-			activity.dialog.dismiss();
-			activity.loginCallback(jsonObject);
-		}
-
-		@Override protected void onCancelled(@NonNull LoginActivity activity, JsonObject jsonObject){
-			activity.dialog.dismiss();
-		}
+			// 거부당함
+			startActivityForResult(new Intent(this, JoinKakaoWithNameActivity.class)
+							.putExtra(JoinKakaoWithNameActivity.EXTRA_KAKAO_AUTO_TOKEN, oAuthToken),
+					LOGIN_RESULT);
+		});
 	}
 }

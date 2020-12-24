@@ -1,17 +1,13 @@
 package com.hanul.caramelhomecchiato;
 
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.hanul.caramelhomecchiato.task.BaseTask;
-
-import java.lang.ref.WeakReference;
 
 /**
  * 앱의 시작 Activity.
@@ -26,7 +22,14 @@ public class LoadingActivity extends AppCompatActivity{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_loading);
 
-		new PreLoginLoadingTask(this).execute();
+		new PreLoginLoadingTask(this)
+				.onSucceed((activity, userId) -> {
+					if(userId==null){
+						activity.startActivityForResult(new Intent(activity, LoginActivity.class), LOGIN_REQ);
+					}else{
+						activity.setUserIdAndPostLoad(userId);
+					}
+				}).execute();
 	}
 
 	@Override protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data){
@@ -47,14 +50,18 @@ public class LoadingActivity extends AppCompatActivity{
 	}
 
 	private void setUserIdAndPostLoad(int userId){
+		Log.d(TAG, "setUserIdAndPostLoad: userId = "+userId);
 		// TODO Application에 userId 저장
 		// TODO 모종의 이유로 로그아웃 시 다시 로그인?
-		new PostLoginLoadingTask(this).doInBackground();
+		new PostLoginLoadingTask(this)
+				.onSucceed((activity, aVoid) -> {
+					activity.startActivity(new Intent(activity, MainActivity.class));
+					activity.finish();
+				}).execute();
 	}
 
 	/**
 	 * 앱의 시작 후 바로 실행되는 Task입니다.<br>
-	 *
 	 */
 	public static final class PreLoginLoadingTask extends BaseTask<LoadingActivity, Void, Void, Integer>{
 		public PreLoginLoadingTask(LoadingActivity activity){
@@ -70,16 +77,11 @@ public class LoadingActivity extends AppCompatActivity{
 			}
 			return null;
 		}
-
-		@Override protected void onPostExecute(@NonNull LoadingActivity activity, Integer userId){
-			if(userId==null){
-				activity.startActivityForResult(new Intent(activity, LoginActivity.class), LOGIN_REQ);
-			}else{
-				activity.setUserIdAndPostLoad(userId);
-			}
-		}
 	}
 
+	/**
+	 * 로그인 후 실행되는 Task입니다.
+	 */
 	public static final class PostLoginLoadingTask extends BaseTask<LoadingActivity, Void, Void, Void>{
 		public PostLoginLoadingTask(LoadingActivity activity){
 			super(activity);
@@ -87,16 +89,14 @@ public class LoadingActivity extends AppCompatActivity{
 
 		@Override protected Void doInBackground(Void... voids){
 			try{
+				//
+				// TODO 알림 업데이트
 				Thread.sleep(3000);
 			}catch(InterruptedException e){
 				e.printStackTrace();
 				Thread.currentThread().interrupt();
 			}
 			return null;
-		}
-
-		@Override protected void onPostExecute(@NonNull LoadingActivity activity, Void aVoid){
-			activity.startActivityForResult(new Intent(activity, MainActivity.class), LOGIN_REQ);
 		}
 	}
 }
