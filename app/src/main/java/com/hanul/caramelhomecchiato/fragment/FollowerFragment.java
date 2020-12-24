@@ -34,7 +34,7 @@ public class FollowerFragment extends Fragment {
 
 		follower = view.findViewById(R.id.recyclerViewFollower);
 
-		follower.setAdapter();
+		// follower.setAdapter(adapter); // TODO setAdapter
 
 		new GetFollowerTask<>(this)
 			.onSucceed(new BaseTask.BaseTaskCallback<FollowerFragment, JsonObject>(){
