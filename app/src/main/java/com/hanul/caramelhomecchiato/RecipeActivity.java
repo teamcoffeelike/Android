@@ -1,59 +1,89 @@
 package com.hanul.caramelhomecchiato;
 
+import android.os.Bundle;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 
-import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
-import android.os.Bundle;
-import android.os.Parcel;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.RatingBar;
-import android.widget.TextView;
-
-import com.hanul.caramelhomecchiato.adapter.RecipeAdapter;
-import com.hanul.caramelhomecchiato.data.Post;
 import com.hanul.caramelhomecchiato.data.Recipe;
-import com.hanul.caramelhomecchiato.data.RecipeCategory;
-import com.hanul.caramelhomecchiato.data.User;
+import com.hanul.caramelhomecchiato.fragment.RecipeCoverContentFragment;
+import com.hanul.caramelhomecchiato.fragment.RecipeCoverImageFragment;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
-public class RecipeActivity extends AppCompatActivity {
-
-	private RecyclerView recyclerView;
-	private RecipeAdapter adapter;
+public class RecipeActivity extends AppCompatActivity{
+	public static final String EXTRA_RECIPE = "recipe";
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	protected void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_recipe);
 
-		//레시피 카테고리 프래그먼트의 인텐트를 받아서 Parcelable 객체 저장
-		Intent intent = getIntent();
-		RecipeCategory category = (RecipeCategory) intent.getSerializableExtra("recipeCategory");
+		Recipe recipe = getIntent().getParcelableExtra(EXTRA_RECIPE);
+		if(recipe==null) throw new IllegalStateException("No recipe provided for RecipeActivity");
 
-		//레시피 리사이클러뷰 가져오기
-		recyclerView = findViewById(R.id.recyclerView);
-		recyclerView.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
+		ViewPager viewPagerImage = findViewById(R.id.viewPagerImage);
+		ViewPager viewPagerContent = findViewById(R.id.viewPagerContent);
 
-		//레시피 어댑터 데이터 가져오기
-		RecipeAdapter adapter = new RecipeAdapter();
-		List<Recipe> recipes = adapter.elements();
+		viewPagerImage.addOnPageChangeListener(new ViewPagerSynchronizer(viewPagerImage, viewPagerContent));
+		viewPagerContent.addOnPageChangeListener(new ViewPagerSynchronizer(viewPagerContent, viewPagerImage));
 
-		recipes.add(new Recipe(1, "아메리카노", new User(1, "dd", null), 4, null));
-		recipes.add(new Recipe(1, "카페라떼", new User(1, "dd", null), 4.5f, null));
-		recipes.add(new Recipe(1, "카페모카", new User(1, "dd", null), 5, null));
-		recipes.add(new Recipe(1, "딸기스무디", new User(1, "dd", null), 4.5f, null));
-		recipes.add(new Recipe(1, "레몬아이스티", new User(1, "dd", null), 4, null));
+		// Generate fragments
+		List<Fragment> images = new ArrayList<>();
+		List<Fragment> contents = new ArrayList<>();
 
-		recyclerView.setAdapter(adapter);
+		images.add(RecipeCoverImageFragment.newInstance(recipe.getCover()));
+		contents.add(RecipeCoverContentFragment.newInstance(recipe.getCover()));
+
+		FragmentManager fm = getSupportFragmentManager();
+
+		viewPagerImage.setAdapter(new PagerAdapter(images, fm));
+		viewPagerImage.setAdapter(new PagerAdapter(contents, fm));
+	}
+
+	// https://stackoverflow.com/a/26513243/12224135
+	private static final class ViewPagerSynchronizer implements ViewPager.OnPageChangeListener{
+		private final ViewPager thisViewPager;
+		private final ViewPager otherViewPager;
+
+		private int scrollState = ViewPager.SCROLL_STATE_IDLE;
+
+		public ViewPagerSynchronizer(ViewPager thisViewPager, ViewPager otherViewPager){
+			this.thisViewPager = thisViewPager;
+			this.otherViewPager = otherViewPager;
+		}
+
+		@Override public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels){
+			if(scrollState==ViewPager.SCROLL_STATE_IDLE) return;
+			otherViewPager.scrollTo(thisViewPager.getScrollX(), otherViewPager.getScrollY());
+		}
+		@Override public void onPageSelected(int position){ }
+		@Override public void onPageScrollStateChanged(int state){
+			scrollState = state;
+			if(state==ViewPager.SCROLL_STATE_IDLE){
+				otherViewPager.setCurrentItem(thisViewPager.getCurrentItem(), false);
+			}
+		}
+	}
+
+	private static final class PagerAdapter extends FragmentStatePagerAdapter{
+		private final List<Fragment> fragments;
+
+		public PagerAdapter(List<Fragment> fragments, @NonNull FragmentManager fm){
+			super(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
+			this.fragments = fragments;
+		}
+
+		@NonNull @Override public Fragment getItem(int position){
+			return fragments.get(position);
+		}
+		@Override public int getCount(){
+			return fragments.size();
+		}
 	}
 }

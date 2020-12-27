@@ -5,18 +5,14 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
-import android.widget.GridLayout;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.hanul.caramelhomecchiato.MainActivity;
 import com.hanul.caramelhomecchiato.R;
-import com.hanul.caramelhomecchiato.RecipeActivity;
-import com.hanul.caramelhomecchiato.data.Recipe;
+import com.hanul.caramelhomecchiato.RecipeListActivity;
 import com.hanul.caramelhomecchiato.data.RecipeCategory;
 
 public class RecipeCategoryFragment extends Fragment{
@@ -85,8 +81,8 @@ public class RecipeCategoryFragment extends Fragment{
 
 	private void showRecipes(RecipeCategory category){
 		//레시피 액티비티로 전달할 인텐트 생성, 레시피 액티비티 시작
-		Intent intent = new Intent(getContext(), RecipeActivity.class);
-		intent.putExtra("recipeCategory", category);
+		Intent intent = new Intent(getContext(), RecipeListActivity.class);
+		intent.putExtra(RecipeListActivity.EXTRA_RECIPE_CATEGORY, category);
 		startActivity(intent);
 	}
 }

@@ -64,7 +64,10 @@ public class MainActivity extends AppCompatActivity{
 		// 내비
 		findViewById(R.id.nav).setClickable(true);
 
-		findViewById(R.id.myRecipesMenu).setOnClickListener(v -> startActivity(new Intent(this, RecipeActivity.class)));
+		findViewById(R.id.myRecipesMenu).setOnClickListener(v -> {
+			startActivity(new Intent(this, RecipeListActivity.class)
+					.putExtra(RecipeListActivity.EXTRA_MY_RECIPE, true));
+		});
 		findViewById(R.id.followsMenu).setOnClickListener(v -> startActivity(new Intent(this, FollowsActivity.class)));
 		findViewById(R.id.likesMenu).setOnClickListener(v -> startActivity(new Intent(this, LikesActivity.class)));
 		findViewById(R.id.recentActivityMenu).setOnClickListener(v -> {

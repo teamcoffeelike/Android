@@ -1,91 +1,53 @@
 package com.hanul.caramelhomecchiato.data;
 
-import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import androidx.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 
-public final class Recipe implements Parcelable{
+public class Recipe implements Parcelable{
 	public static final Creator<Recipe> CREATOR = new Creator<Recipe>(){
-		@Override public Recipe createFromParcel(Parcel in){
+		@Override
+		public Recipe createFromParcel(Parcel in){
 			return new Recipe(in);
 		}
-		@Override public Recipe[] newArray(int size){
+
+		@Override
+		public Recipe[] newArray(int size){
 			return new Recipe[size];
 		}
 	};
 
-	private int id;
-	/*private RecipeCategory category;*/
-	private String title;
-	private User author;
-	private float rating;
-	@Nullable private Uri photo;
+	private RecipeCover cover;
+	private final List<RecipeStep> steps;
 
-	public Recipe(
-			int id,
-			/*RecipeCategory category,*/
-			String title,
-			User author,
-			float rating,
-			@Nullable Uri photo
-	){
-		this.id = id;
-		/*this.category = category;*/
-		this.title = title;
-		this.author = author;
-		this.rating = rating;
-		this.photo = photo;
+	public Recipe(RecipeCover cover, List<RecipeStep> steps){
+		this.cover = cover;
+		this.steps = new ArrayList<>(steps);
 	}
-
 	protected Recipe(Parcel in){
-		id = in.readInt();
-		/*category = RecipeCategory.values()[in.readByte()];*/
-		title = in.readString();
-		author = in.readParcelable(User.class.getClassLoader());
-		rating = in.readFloat();
-		photo = in.readParcelable(User.class.getClassLoader());
+		cover = in.readParcelable(RecipeCover.class.getClassLoader());
+		steps = in.createTypedArrayList(RecipeStep.CREATOR);
 	}
 
-	@Override public int describeContents(){
+	@Override
+	public void writeToParcel(Parcel dest, int flags){
+		dest.writeParcelable(cover, flags);
+		dest.writeTypedList(steps);
+	}
+
+	@Override
+	public int describeContents(){
 		return 0;
 	}
-	@Override public void writeToParcel(Parcel dest, int flags){
-		dest.writeInt(id);
-		/*dest.writeByte((byte) category.ordinal());*/
-		dest.writeString(title);
-		dest.writeParcelable(author, flags);
-		dest.writeFloat(rating);
-		dest.writeParcelable(photo, flags);
+	public RecipeCover getCover(){
+		return cover;
 	}
-
-	public int getId(){
-		return id;
+	public void setCover(RecipeCover cover){
+		this.cover = cover;
 	}
-	public void setId(int id){
-		this.id = id;
+	public List<RecipeStep> steps(){
+		return steps;
 	}
-	/*public RecipeCategory getCategory(){
-		return category;
-	}
-	public void setCategory(RecipeCategory category){
-		this.category = category;
-	}*/
-	public String getTitle(){
-		return title;
-	}
-	public void setTitle(String title){
-		this.title = title;
-	}
-	public User getAuthor(){
-		return author;
-	}
-	public void setAuthor(User author){
-		this.author = author;
-	}
-	public float getRating() { return rating; }
-	public void setRating(float rating) { this.rating = rating; }
-	@Nullable public Uri getPhoto() { return photo; }
-	public void setPhoto(@Nullable Uri photo) { this.photo = photo; }
 }

@@ -1,29 +1,24 @@
 package com.hanul.caramelhomecchiato.adapter;
 
-import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.textservice.TextInfo;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
 import com.hanul.caramelhomecchiato.R;
-import com.hanul.caramelhomecchiato.data.Recipe;
+import com.hanul.caramelhomecchiato.data.RecipeCover;
 
-import org.w3c.dom.Text;
-
-public class RecipeAdapter extends BaseAdapter<Recipe> {
+public class RecipeAdapter extends BaseAdapter<RecipeCover> {
 	@NonNull @Override
 	public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 		return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.view_recipe, parent, false));
 	}
 
-	public static final class ViewHolder extends BaseAdapter.ViewHolder<Recipe>{
+	public static final class ViewHolder extends BaseAdapter.ViewHolder<RecipeCover>{
 		private final ImageView recipeImage;
 		private final TextView title;
 		private final TextView author;
@@ -49,11 +44,11 @@ public class RecipeAdapter extends BaseAdapter<Recipe> {
 
 		//레시피 사진, 제목, 사용자, 별점
 		@Override
-		protected void setItem(int position, Recipe recipe) {
-			if (recipe.getPhoto() != null)recipeImage.setImageURI(recipe.getPhoto());
-			title.setText(recipe.getTitle());
-			author.setText(recipe.getAuthor().getName());
-			rating.setRating(recipe.getRating());
+		protected void setItem(int position, RecipeCover recipeCover) {
+			if (recipeCover.getPhoto() != null)recipeImage.setImageURI(recipeCover.getPhoto());
+			title.setText(recipeCover.getTitle());
+			author.setText(recipeCover.getAuthor().getName());
+			rating.setRating(recipeCover.getRating());
 		}
 	}
 }
