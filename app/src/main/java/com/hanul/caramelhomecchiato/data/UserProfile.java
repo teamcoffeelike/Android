@@ -5,6 +5,14 @@ import android.os.Parcelable;
 
 import androidx.annotation.Nullable;
 
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+
+import java.lang.reflect.Type;
+
 public final class UserProfile implements Parcelable{
 	public static final Creator<UserProfile> CREATOR = new Creator<UserProfile>(){
 		@Override public UserProfile createFromParcel(Parcel in){
@@ -46,5 +54,21 @@ public final class UserProfile implements Parcelable{
 	}
 	public void setMotd(@Nullable String motd){
 		this.motd = motd;
+	}
+
+
+	public enum Json implements JsonDeserializer<UserProfile>{
+		INSTANCE;
+
+		@Override public UserProfile deserialize(JsonElement json,
+		                                         Type typeOfT,
+		                                         JsonDeserializationContext context) throws JsonParseException{
+			JsonObject o = json.getAsJsonObject();
+			return new UserProfile(
+					new User(o.get("id").getAsInt(),
+							o.get("name").getAsString(),
+							o.get("profileImage").getAsString()),
+					o.get("motd").getAsString());
+		}
 	}
 }

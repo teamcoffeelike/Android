@@ -3,8 +3,7 @@ package com.hanul.caramelhomecchiato.data;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.ArrayList;
-import java.util.List;
+import androidx.annotation.Nullable;
 
 public class Post implements Parcelable{
 	public static final Creator<Post> CREATOR = new Creator<Post>(){
@@ -17,25 +16,28 @@ public class Post implements Parcelable{
 	};
 
 	private int id;
-	private User user;
-	private List<String> images;
+	private User author;
+	@Nullable private String image;
 	private String text;
 	private int likes;
+	private int reactions;
 
-	public Post(int id, User user, List<String> images, String text, int likes){
+	public Post(int id, User author, @Nullable String image, String text, int likes, int reactions){
 		this.id = id;
-		this.user = user;
-		this.images = images;
+		this.author = author;
+		this.image = image;
 		this.text = text;
 		this.likes = likes;
+		this.reactions = reactions;
 	}
 
 	protected Post(Parcel parcel){
 		id = parcel.readInt();
-		user = parcel.readParcelable(User.class.getClassLoader());
-		parcel.readStringList(images = new ArrayList<>());
+		author = parcel.readParcelable(User.class.getClassLoader());
+		image = parcel.readString();
 		text = parcel.readString();
 		likes = parcel.readInt();
+		reactions = parcel.readInt();
 	}
 
 	@Override public int describeContents(){
@@ -43,10 +45,11 @@ public class Post implements Parcelable{
 	}
 	@Override public void writeToParcel(Parcel dest, int flags){
 		dest.writeInt(id);
-		dest.writeParcelable(user, flags);
-		dest.writeStringList(images);
+		dest.writeParcelable(author, flags);
+		dest.writeString(image);
 		dest.writeString(text);
 		dest.writeInt(likes);
+		dest.writeInt(reactions);
 	}
 
 	public int getId(){
@@ -55,17 +58,17 @@ public class Post implements Parcelable{
 	public void setId(int id){
 		this.id = id;
 	}
-	public User getUser(){
-		return user;
+	public User getAuthor(){
+		return author;
 	}
-	public void setUser(User user){
-		this.user = user;
+	public void setAuthor(User author){
+		this.author = author;
 	}
-	public List<String> getImages(){
-		return images;
+	@Nullable public String getImage(){
+		return image;
 	}
-	public void setImages(List<String> images){
-		this.images = images;
+	public void setImage(@Nullable String image){
+		this.image = image;
 	}
 	public String getText(){
 		return text;
@@ -78,5 +81,11 @@ public class Post implements Parcelable{
 	}
 	public void setLikes(int likes){
 		this.likes = likes;
+	}
+	public int getReactions(){
+		return reactions;
+	}
+	public void setReactions(int reactions){
+		this.reactions = reactions;
 	}
 }

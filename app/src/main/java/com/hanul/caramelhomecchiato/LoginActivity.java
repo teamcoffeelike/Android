@@ -55,11 +55,7 @@ public class LoginActivity extends AppCompatActivity{
 
 			if(isIdEmail){
 				new LoginWithEmailTask<>(this, id, pw)
-						.onSucceed(new BaseTask.BaseTaskCallback<LoginActivity, JsonObject>(){
-							@Override public void onFinish(@NonNull LoginActivity activity1, JsonObject jsonObject1){
-								activity1.loginCallback(jsonObject1);
-							}
-						})
+						.onSucceed(LoginActivity::loginCallback)
 						.onCancelled((activity, jsonObject) -> activity.dialog.dismiss())
 						.execute();
 			}else{

@@ -8,6 +8,7 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import com.hanul.caramelhomecchiato.data.RecipeTask.Timer;
 
 import java.lang.reflect.Type;
 
@@ -26,16 +27,20 @@ public abstract class RecipeTask implements Parcelable{
 		};
 
 		private final int seconds;
+		private final Purpose purpose;
 
-		public Timer(int seconds){
+		public Timer(int seconds, Purpose purpose){
 			this.seconds = seconds;
+			this.purpose = purpose;
 		}
 		protected Timer(Parcel in){
 			seconds = in.readInt();
+			purpose = (Purpose) in.readSerializable();
 		}
 
 		@Override public void writeToParcel(Parcel dest, int flags){
 			dest.writeInt(seconds);
+			dest.writeSerializable(purpose);
 		}
 		@Override public int describeContents(){
 			return 0;
@@ -43,6 +48,18 @@ public abstract class RecipeTask implements Parcelable{
 
 		public int getSeconds(){
 			return seconds;
+		}
+		public Purpose getPurpose(){
+			return purpose;
+		}
+
+		public enum Purpose{
+			COOK,
+			WAIT;
+
+			@Override public String toString(){
+				return name().toLowerCase();
+			}
 		}
 	}
 
@@ -54,8 +71,14 @@ public abstract class RecipeTask implements Parcelable{
 		                                        JsonDeserializationContext context
 		) throws JsonParseException{
 			JsonObject o = json.getAsJsonObject();
-
-			return null;
+			final String type = o.get("type").getAsString();
+			switch(type){
+			case "timer":
+				return new Timer(o.get("seconds").getAsInt(),
+						Timer.Purpose.valueOf(o.get("purpose").getAsString().toUpperCase()));
+			default:
+				throw new JsonParseException("Unknown task type "+type+".");
+			}
 		}
 	}
 }

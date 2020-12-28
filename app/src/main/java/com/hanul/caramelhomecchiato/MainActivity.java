@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.widget.TextView;
 
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,14 +14,21 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.hanul.caramelhomecchiato.data.Post;
+import com.hanul.caramelhomecchiato.data.UserProfile;
 import com.hanul.caramelhomecchiato.fragment.PopularPostFragment;
 import com.hanul.caramelhomecchiato.fragment.ProfileFragment;
 import com.hanul.caramelhomecchiato.fragment.RecentFragment;
 import com.hanul.caramelhomecchiato.fragment.RecipeCategoryFragment;
 import com.hanul.caramelhomecchiato.fragment.TimerFragment;
 
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity{
 	private static final String TAG = "MainActivity";
+
+	public static final String EXTRA_PROFILE = "profile";
+	public static final String EXTRA_RECENT_POSTS = "recentPosts";
 
 	private Fragment popularPostFragment;
 	private Fragment recipeCategoryFragment;
@@ -34,6 +42,15 @@ public class MainActivity extends AppCompatActivity{
 	protected void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+
+		UserProfile profile = getIntent().getParcelableExtra(EXTRA_PROFILE);
+		if(profile==null) throw new IllegalStateException("Profile not available");
+
+		List<Post> recentPosts = getIntent().getParcelableArrayListExtra(EXTRA_RECENT_POSTS);
+		if(recentPosts==null) throw new IllegalStateException("Recent posts not available");
+
+		TextView textViewProfileName = findViewById(R.id.textViewProfileName);
+		textViewProfileName.setText(profile.getUser().getName());
 
 		popularPostFragment = new PopularPostFragment();
 		recipeCategoryFragment = new RecipeCategoryFragment();
@@ -83,7 +100,7 @@ public class MainActivity extends AppCompatActivity{
 		bottomNav.setOnNavigationItemSelectedListener(item -> {
 			int id = item.getItemId();
 			if(id==R.id.topPosts) show(popularPostFragment);
-			else if(id==R.id.recipe) show(recipeCategoryFragment);
+			else if(id==R.id.recipes) show(recipeCategoryFragment);
 			else if(id==R.id.timer) show(timerFragment);
 			else if(id==R.id.recent) show(recentFragment);
 			else if(id==R.id.profile) show(profileFragment);

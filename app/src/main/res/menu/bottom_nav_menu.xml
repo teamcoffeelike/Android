@@ -7,7 +7,7 @@
         android:title="@string/popular_post"/>
 
     <item
-        android:id="@+id/recipeCover"
+        android:id="@+id/recipes"
         android:icon="@drawable/ic_menu_recipe"
         android:title="@string/recipeCover" />
 

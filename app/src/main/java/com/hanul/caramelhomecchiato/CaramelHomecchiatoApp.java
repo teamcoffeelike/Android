@@ -2,6 +2,7 @@ package com.hanul.caramelhomecchiato;
 
 import android.app.Application;
 
+import com.hanul.caramelhomecchiato.util.Auth;
 import com.kakao.sdk.common.KakaoSdk;
 
 public class CaramelHomecchiatoApp extends Application{
@@ -10,5 +11,6 @@ public class CaramelHomecchiatoApp extends Application{
 	@Override public void onCreate(){
 		super.onCreate();
 		KakaoSdk.init(this, KAKAO_NATIVE_APP_KEY);
+		Auth.init(this);
 	}
 }

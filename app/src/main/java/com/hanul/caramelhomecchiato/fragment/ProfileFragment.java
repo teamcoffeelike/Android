@@ -49,7 +49,7 @@ public class ProfileFragment extends Fragment{
 
 			ProfilePostAdapter adapter = new ProfilePostAdapter();
 			List<Post> elements = adapter.elements();
-			for(int i = 0; i<45; i++) elements.add(new Post(i, new User(1, "", null), Collections.emptyList(), "", 0));
+			for(int i = 0; i<45; i++) elements.add(new Post(i, new User(1, "", null), Collections.emptyList(), "", 0, reactions));
 			recyclerView.setAdapter(adapter);
 		}
 

@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.hanul.caramelhomecchiato.R;
 import com.hanul.caramelhomecchiato.adapter.PostAdapter;
 import com.hanul.caramelhomecchiato.data.Post;
-import com.hanul.caramelhomecchiato.data.Reaction;
 import com.hanul.caramelhomecchiato.data.User;
 
 import java.util.Collections;
@@ -33,11 +32,11 @@ public class PopularPostFragment extends Fragment{
 			PostAdapter adapter = new PostAdapter();
 
 			List<Post> posts = adapter.elements();
-			posts.add(new Post(1, new User(1, "A", null), Collections.emptyList(), "가나다", 3));
-			posts.add(new Post(2, new User(2, "B", null), Collections.emptyList(), "가나다", 3));
-			posts.add(new Post(3, new User(3, "C", null), Collections.emptyList(), "가나다", 3));
-			posts.add(new Post(4, new User(4, "D", null), Collections.emptyList(), "가나다", 3));
-			posts.add(new Post(5, new User(5, "E", null), Collections.emptyList(), "가나다", 3));
+			posts.add(new Post(1, new User(1, "A", null), Collections.emptyList(), "가나다", 3, reactions));
+			posts.add(new Post(2, new User(2, "B", null), Collections.emptyList(), "가나다", 3, reactions));
+			posts.add(new Post(3, new User(3, "C", null), Collections.emptyList(), "가나다", 3, reactions));
+			posts.add(new Post(4, new User(4, "D", null), Collections.emptyList(), "가나다", 3, reactions));
+			posts.add(new Post(5, new User(5, "E", null), Collections.emptyList(), "가나다", 3, reactions));
 
 			recyclerView.setAdapter(adapter);
 		}
