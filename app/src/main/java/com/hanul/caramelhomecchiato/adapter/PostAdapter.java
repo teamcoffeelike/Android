@@ -76,7 +76,7 @@ public class PostAdapter extends BaseAdapter<Post>{
 		}
 
 		@Override protected void setItem(int position, Post post){ // TODO 프로필 이미지와 첨부 사진
-			textViewPostUser.setText(post.getUser().getName());
+			textViewPostUser.setText(post.getAuthor().getName());
 			textViewPost.setText(post.getText());
 
 			textViewLikes.setText(itemView.getContext().getString(R.string.n_likes, post.getLikes()));

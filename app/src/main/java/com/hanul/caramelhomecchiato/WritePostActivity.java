@@ -1,25 +1,22 @@
 package com.hanul.caramelhomecchiato;
 
 import android.Manifest;
-import android.content.ClipData;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentStatePagerAdapter;
-import androidx.viewpager.widget.ViewPager;
 
-import com.hanul.caramelhomecchiato.fragment.SimpleImageFragment;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.hanul.caramelhomecchiato.task.WritePostTask;
+import com.hanul.caramelhomecchiato.util.Validate;
 
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
@@ -27,19 +24,52 @@ public class WritePostActivity extends AppCompatActivity{
 	private static final int GRANT_IMAGE_PERMS = 2;
 	private static final int PICK_IMAGE = 4;
 
-	private final List<Uri> images = new ArrayList<>(); // TODO 사진 갯수 제한
+	private ImageView imageViewPostImage;
+	@Nullable private Uri image;
 
-	private PagerAdapter adapter;
+	private ProgressDialog dialog;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_write_post);
 
-		ViewPager viewPager = findViewById(R.id.viewPager);
-		viewPager.setAdapter(adapter = new PagerAdapter(getSupportFragmentManager()));
+		dialog = new ProgressDialog(this);
+		dialog.setCancelable(false);
+		dialog.setCanceledOnTouchOutside(false);
+
+		imageViewPostImage = findViewById(R.id.imageViewPostImage);
 
 		findViewById(R.id.buttonPickImage).setOnClickListener(v -> pickImage(true));
+
+		EditText editTextPost = findViewById(R.id.editTextPost);
+
+		findViewById(R.id.buttonSubmit).setOnClickListener(v -> {
+			if(image==null){
+				Toast.makeText(this, "이미지를 첨부해 주세요.", Toast.LENGTH_SHORT).show();
+				return;
+			}
+
+			String postText = editTextPost.getText().toString();
+			if(!Validate.postText(postText)){
+				Toast.makeText(this, "메시지가 너무 깁니다.", Toast.LENGTH_SHORT).show();
+			}
+
+			dialog.show();
+
+			WritePostTask<WritePostActivity> t = new WritePostTask<>(this, postText, image);
+			t.onSucceed((a, o) -> {
+				if(o.has("error")){
+					Toast.makeText(a, "포스트 생성 중 오류가 발생했습니다. 다시 시도해 주세요.", Toast.LENGTH_SHORT).show();
+					a.dialog.dismiss();
+				}else{
+					a.finish();
+				}
+			}).onCancelled((a, o) -> a.dialog.dismiss()).execute();
+		});
+		findViewById(R.id.buttonCancel).setOnClickListener(v -> {
+			finish();
+		});
 	}
 
 	private void pickImage(boolean requestPermission){
@@ -58,9 +88,6 @@ public class WritePostActivity extends AppCompatActivity{
 		Intent intent = new Intent()
 				.setType("image/*")
 				.setAction(Intent.ACTION_GET_CONTENT);
-		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2){
-			intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-		}
 		startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE);
 	}
 
@@ -69,58 +96,18 @@ public class WritePostActivity extends AppCompatActivity{
 		if(requestCode==PICK_IMAGE){
 			if(resultCode==RESULT_OK&&data!=null){
 				Uri uri = data.getData();
-				if(uri!=null) addImage(uri);
-				else{
-					ClipData clipData = data.getClipData();
-					if(clipData!=null){
-						for(int i = 0; i<clipData.getItemCount(); i++){
-							Uri uri1 = clipData.getItemAt(i).getUri();
-							addImage(uri1);
-						}
-					}
+				if(uri!=null){
+					image = uri;
+					imageViewPostImage.setImageURI(uri);
 				}
 			}
 		}
-	}
-
-	private void addImage(Uri uri){
-		images.add(uri);
-		adapter.sync(images);
 	}
 
 	@Override public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults){
 		super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 		if(requestCode==GRANT_IMAGE_PERMS){
 			pickImage(false);
-		}
-	}
-
-	private static final class PagerAdapter extends FragmentStatePagerAdapter{
-		private final List<SimpleImageFragment> list = new ArrayList<>();
-
-		public PagerAdapter(@NonNull FragmentManager fm){
-			super(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
-		}
-
-		@NonNull @Override public Fragment getItem(int position){
-			return list.get(position);
-		}
-		@Override public int getCount(){
-			return list.size();
-		}
-
-		public void sync(List<Uri> images){
-			if(list.size()>images.size()){
-				for(int i = list.size()-images.size(); i>0; i--) list.remove(i);
-			}else if(list.size()<images.size()){
-				for(int i = images.size()-list.size(); i>0; i--) list.add(new SimpleImageFragment());
-			}
-
-			for(int i = 0; i<images.size(); i++){
-				list.get(i).setImage(images.get(i));
-			}
-
-			notifyDataSetChanged();
 		}
 	}
 }

@@ -7,16 +7,15 @@ import android.util.Log;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.gson.JsonObject;
-import com.hanul.caramelhomecchiato.task.BaseTask;
 import com.hanul.caramelhomecchiato.task.JoinWithKakaoTask;
 import com.hanul.caramelhomecchiato.task.LoginWithEmailTask;
 import com.hanul.caramelhomecchiato.task.LoginWithKakaoTask;
 import com.hanul.caramelhomecchiato.task.LoginWithPhoneNumberTask;
+import com.hanul.caramelhomecchiato.util.Auth;
 import com.hanul.caramelhomecchiato.util.KakaoApiUtils;
 import com.kakao.sdk.auth.model.OAuthToken;
 import com.kakao.sdk.user.model.Account;
@@ -35,6 +34,8 @@ public class LoginActivity extends AppCompatActivity{
 		setContentView(R.layout.activity_login);
 
 		dialog = new ProgressDialog(this);
+		dialog.setCancelable(false);
+		dialog.setCanceledOnTouchOutside(false);
 
 		EditText editTextId = findViewById(R.id.editTextId);
 		EditText editTextPassword = findViewById(R.id.editTextPassword);
@@ -93,16 +94,7 @@ public class LoginActivity extends AppCompatActivity{
 	@Override protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data){
 		super.onActivityResult(requestCode, resultCode, data);
 		if(requestCode==LOGIN_RESULT){
-			if(resultCode==RESULT_OK){
-				int userId = data==null ? 0 : data.getIntExtra("userId", 0);
-				if(userId==0){
-					Log.e(TAG, "onActivityResult: 회원가입 Activity가 OK를 반환하였으나 추가적인 데이터를 반환하지 않았습니다.");
-					setResult(RESULT_CANCELED);
-					finish();
-				}
-				setResult(RESULT_OK, new Intent().putExtra("userId", userId));
-				finish();
-			}
+			if(resultCode==RESULT_OK) finish();
 		}
 	}
 
@@ -118,7 +110,7 @@ public class LoginActivity extends AppCompatActivity{
 			return;
 		}
 
-		setResult(RESULT_OK, new Intent().putExtra("userId", jsonObject.get("userId").getAsInt()));
+		Auth.getInstance().setLoginData(jsonObject);
 		finish();
 	}
 
@@ -146,7 +138,7 @@ public class LoginActivity extends AppCompatActivity{
 			return;
 		}
 
-		setResult(RESULT_OK, new Intent().putExtra("userId", jsonObject.get("userId").getAsInt()));
+		Auth.getInstance().setLoginData(jsonObject);
 		finish();
 		dialog.dismiss();
 	}

@@ -21,7 +21,6 @@ import com.hanul.caramelhomecchiato.adapter.ProfilePostAdapter;
 import com.hanul.caramelhomecchiato.data.Post;
 import com.hanul.caramelhomecchiato.data.User;
 
-import java.util.Collections;
 import java.util.List;
 
 public class ProfileFragment extends Fragment{
@@ -30,12 +29,9 @@ public class ProfileFragment extends Fragment{
 
 		/* 프로필 편집 버튼 */
 		Button btnEditProfile = view.findViewById(R.id.buttonEditProfile);
-		btnEditProfile.setOnClickListener(new View.OnClickListener(){
-			@Override
-			public void onClick(View v){
-				Intent intent = new Intent(getContext(), EditProfileActivity.class);
-				startActivity(intent);
-			}
+		btnEditProfile.setOnClickListener(v -> {
+			Intent intent = new Intent(getContext(), EditProfileActivity.class);
+			startActivity(intent);
 		});
 
 
@@ -49,7 +45,9 @@ public class ProfileFragment extends Fragment{
 
 			ProfilePostAdapter adapter = new ProfilePostAdapter();
 			List<Post> elements = adapter.elements();
-			for(int i = 0; i<45; i++) elements.add(new Post(i, new User(1, "", null), Collections.emptyList(), "", 0, reactions));
+			for(int i = 0; i<45; i++){
+				elements.add(new Post(i, new User(1, "", null), null, "", 0, 0));
+			}
 			recyclerView.setAdapter(adapter);
 		}
 

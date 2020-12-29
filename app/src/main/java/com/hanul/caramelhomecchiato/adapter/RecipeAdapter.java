@@ -1,5 +1,6 @@
 package com.hanul.caramelhomecchiato.adapter;
 
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,7 +46,7 @@ public class RecipeAdapter extends BaseAdapter<RecipeCover> {
 		//레시피 사진, 제목, 사용자, 별점
 		@Override
 		protected void setItem(int position, RecipeCover recipeCover) {
-			if (recipeCover.getPhoto() != null)recipeImage.setImageURI(recipeCover.getPhoto());
+			if (recipeCover.getPhoto() != null)recipeImage.setImageURI(Uri.parse(recipeCover.getPhoto()));
 			title.setText(recipeCover.getTitle());
 			author.setText(recipeCover.getAuthor().getName());
 			rating.setRating(recipeCover.getRating());

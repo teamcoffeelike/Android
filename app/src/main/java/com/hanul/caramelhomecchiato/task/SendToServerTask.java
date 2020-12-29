@@ -2,6 +2,8 @@ package com.hanul.caramelhomecchiato.task;
 
 import android.net.http.AndroidHttpClient;
 
+import androidx.annotation.WorkerThread;
+
 import com.hanul.caramelhomecchiato.util.NetUtils;
 
 import org.apache.http.HttpResponse;
@@ -55,12 +57,14 @@ public abstract class SendToServerTask<CONTEXT, Params, Progress, Result> extend
 	 *
 	 * @param builder 멀티파트 객체
 	 */
+	@WorkerThread
 	protected abstract void appendMultipartEntity(MultipartEntityBuilder builder);
 
 	/**
 	 * 전송받은 데이터를 최종 결과로 변환시킵니다.
 	 *
-	 * @param response
+	 * @param response 결과
 	 */
+	@WorkerThread
 	protected abstract Result onReceiveResponse(HttpResponse response) throws IOException;
 }

@@ -5,6 +5,10 @@ import com.google.gson.GsonBuilder;
 import com.hanul.caramelhomecchiato.data.RecipeTask;
 import com.hanul.caramelhomecchiato.data.UserProfile;
 
+import org.apache.http.entity.ContentType;
+
+import java.nio.charset.StandardCharsets;
+
 public final class NetUtils{
 	private NetUtils(){}
 
@@ -15,4 +19,7 @@ public final class NetUtils{
 			.registerTypeAdapter(UserProfile.class, UserProfile.Json.INSTANCE)
 			.setLenient()
 			.create();
+
+	// TODO?
+	public static final ContentType MULTIPART_RELATED = ContentType.create("Multipart/related", StandardCharsets.UTF_8);
 }
