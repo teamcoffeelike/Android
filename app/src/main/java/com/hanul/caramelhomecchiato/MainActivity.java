@@ -16,46 +16,37 @@ import androidx.fragment.app.Fragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.hanul.caramelhomecchiato.data.Post;
 import com.hanul.caramelhomecchiato.data.UserProfile;
-import com.hanul.caramelhomecchiato.fragment.PopularPostFragment;
 import com.hanul.caramelhomecchiato.fragment.ProfileFragment;
-import com.hanul.caramelhomecchiato.fragment.RecentFragment;
+import com.hanul.caramelhomecchiato.fragment.RecentPostFragment;
 import com.hanul.caramelhomecchiato.fragment.RecipeCategoryFragment;
 import com.hanul.caramelhomecchiato.fragment.TimerFragment;
+import com.hanul.caramelhomecchiato.task.GetProfileTask;
+import com.hanul.caramelhomecchiato.util.Auth;
+import com.hanul.caramelhomecchiato.util.NetUtils;
 
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity{
 	private static final String TAG = "MainActivity";
 
-	public static final String EXTRA_PROFILE = "profile";
-	public static final String EXTRA_RECENT_POSTS = "recentPosts";
-
-	private Fragment popularPostFragment;
+	private RecentPostFragment recentPostFragment;
 	private Fragment recipeCategoryFragment;
 	private Fragment timerFragment;
-	private Fragment recentFragment;
 	private Fragment profileFragment;
 
 	private DrawerLayout drawerLayout;
+	private TextView textViewProfileName;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		UserProfile profile = getIntent().getParcelableExtra(EXTRA_PROFILE);
-		if(profile==null) throw new IllegalStateException("Profile not available");
+		textViewProfileName = findViewById(R.id.textViewProfileName);
 
-		List<Post> recentPosts = getIntent().getParcelableArrayListExtra(EXTRA_RECENT_POSTS);
-		if(recentPosts==null) throw new IllegalStateException("Recent posts not available");
-
-		TextView textViewProfileName = findViewById(R.id.textViewProfileName);
-		textViewProfileName.setText(profile.getUser().getName());
-
-		popularPostFragment = new PopularPostFragment();
+		recentPostFragment = new RecentPostFragment();
 		recipeCategoryFragment = new RecipeCategoryFragment();
 		timerFragment = new TimerFragment();
-		recentFragment = new RecentFragment();
 		profileFragment = new ProfileFragment();
 
 		// 툴바 셋업
@@ -87,22 +78,16 @@ public class MainActivity extends AppCompatActivity{
 		});
 		findViewById(R.id.followsMenu).setOnClickListener(v -> startActivity(new Intent(this, FollowsActivity.class)));
 		findViewById(R.id.likesMenu).setOnClickListener(v -> startActivity(new Intent(this, LikesActivity.class)));
-		findViewById(R.id.recentActivityMenu).setOnClickListener(v -> {
-			drawerLayout.closeDrawer(GravityCompat.END);
-			show(recentFragment);
-		});
 		findViewById(R.id.searchFriendsMenu).setOnClickListener(v -> startActivity(new Intent(this, SearchFriendActivity.class)));
 		findViewById(R.id.settingsMenu).setOnClickListener(v -> startActivity(new Intent(this, SettingsActivity.class)));
-
 
 		// BottomNavigation & 프래그먼트 셋업
 		BottomNavigationView bottomNav = findViewById(R.id.bottomNavigation);
 		bottomNav.setOnNavigationItemSelectedListener(item -> {
 			int id = item.getItemId();
-			if(id==R.id.topPosts) show(popularPostFragment);
+			if(id==R.id.posts) show(recentPostFragment);
 			else if(id==R.id.recipes) show(recipeCategoryFragment);
 			else if(id==R.id.timer) show(timerFragment);
-			else if(id==R.id.recent) show(recentFragment);
 			else if(id==R.id.profile) show(profileFragment);
 			else{
 				Log.e(TAG, "onCreate: Invalid navigation item "+id);
@@ -111,7 +96,32 @@ public class MainActivity extends AppCompatActivity{
 			return true;
 		});
 
-		show(popularPostFragment);
+		show(recentPostFragment);
+	}
+
+	@Override protected void onResume(){
+		super.onResume();
+		new GetProfileTask<>(this, Auth.getInstance().getLoginUser())
+				.onSucceed((a1, o1) -> {
+					if(o1.has("error")){
+						String error = o1.get("error").getAsString();
+						Log.e(TAG, "postLoad: GetProfileTask 오류: "+error);
+						return;
+					}
+					UserProfile profile = NetUtils.GSON.fromJson(o1, UserProfile.class);
+					a1.setProfile(profile);
+				})
+				.onCancelled((a1, e1) -> {
+					Log.e(TAG, "postLoad: GetProfileTask 오류: "+e1);
+				}).execute();
+	}
+
+	public void setProfile(UserProfile profile){
+		textViewProfileName.setText(profile.getUser().getName());
+	}
+
+	public void setRecentPosts(List<Post> recentPosts){
+		recentPostFragment.setRecentPosts(recentPosts);
 	}
 
 	@Override public boolean onKeyDown(int keyCode, KeyEvent event){

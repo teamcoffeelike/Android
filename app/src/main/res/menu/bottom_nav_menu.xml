@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/topPosts"
+        android:id="@+id/posts"
         android:icon="@drawable/ic_menu_topposts"
         android:title="@string/popular_post"/>
 
@@ -15,11 +15,6 @@
         android:id="@+id/timer"
         android:icon="@drawable/ic_menu_timer"
         android:title="@string/timer" />
-
-    <item
-        android:id="@+id/recent"
-        android:icon="@drawable/ic_menu_recent"
-        android:title="@string/recent" />
 
     <item
         android:id="@+id/profile"

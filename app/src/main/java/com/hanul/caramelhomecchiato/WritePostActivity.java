@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -18,9 +20,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.hanul.caramelhomecchiato.task.WritePostTask;
 import com.hanul.caramelhomecchiato.util.Validate;
 
+import java.io.File;
+
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
 public class WritePostActivity extends AppCompatActivity{
+	private static final String TAG = "WritePostActivity";
+	
 	private static final int GRANT_IMAGE_PERMS = 2;
 	private static final int PICK_IMAGE = 4;
 
@@ -28,6 +34,7 @@ public class WritePostActivity extends AppCompatActivity{
 	@Nullable private Uri image;
 
 	private ProgressDialog dialog;
+	private Button buttonSubmit;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState){
@@ -44,7 +51,8 @@ public class WritePostActivity extends AppCompatActivity{
 
 		EditText editTextPost = findViewById(R.id.editTextPost);
 
-		findViewById(R.id.buttonSubmit).setOnClickListener(v -> {
+		buttonSubmit = findViewById(R.id.buttonSubmit);
+		buttonSubmit.setOnClickListener(v -> {
 			if(image==null){
 				Toast.makeText(this, "이미지를 첨부해 주세요.", Toast.LENGTH_SHORT).show();
 				return;
@@ -98,7 +106,9 @@ public class WritePostActivity extends AppCompatActivity{
 				Uri uri = data.getData();
 				if(uri!=null){
 					image = uri;
+					Log.d(TAG, "onActivityResult: Image = "+uri);
 					imageViewPostImage.setImageURI(uri);
+					buttonSubmit.setEnabled(true);
 				}
 			}
 		}

@@ -54,6 +54,8 @@ public class LoginActivity extends AppCompatActivity{
 
 			boolean isIdEmail = id.indexOf('@') >= 0;
 
+			dialog.show();
+
 			if(isIdEmail){
 				new LoginWithEmailTask<>(this, id, pw)
 						.onSucceed(LoginActivity::loginCallback)
@@ -65,7 +67,6 @@ public class LoginActivity extends AppCompatActivity{
 						.onCancelled((activity, jsonObject) -> activity.dialog.dismiss())
 						.execute();
 			}
-			dialog.show();
 		});
 		findViewById(R.id.buttonJoin).setOnClickListener(v -> {
 			startActivityForResult(new Intent(this, JoinActivity.class), LOGIN_RESULT);

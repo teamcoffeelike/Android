@@ -36,6 +36,14 @@ public abstract class BaseTask<CONTEXT, Params, Progress, Result> extends AsyncT
 		return this;
 	}
 
+	@Nullable public CONTEXT getContext(){
+		return ctx.get();
+	}
+
+	@Override protected void onPreExecute(){
+		Log.d(this.getClass().getSimpleName(), "onPreExecute");
+	}
+
 	@Override protected void onPostExecute(Result result){
 		Log.d(this.getClass().getSimpleName(), "onPostExecute");
 		if(onSucceed!=null){

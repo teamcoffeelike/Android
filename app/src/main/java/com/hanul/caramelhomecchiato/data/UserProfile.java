@@ -64,11 +64,15 @@ public final class UserProfile implements Parcelable{
 		                                         Type typeOfT,
 		                                         JsonDeserializationContext context) throws JsonParseException{
 			JsonObject o = json.getAsJsonObject();
+			JsonElement id = o.get("id");
+			JsonElement name = o.get("name");
+			JsonElement profileImage = o.get("profileImage");
+			JsonElement motd = o.get("motd");
 			return new UserProfile(
-					new User(o.get("id").getAsInt(),
-							o.get("name").getAsString(),
-							o.get("profileImage").getAsString()),
-					o.get("motd").getAsString());
+					new User(id.getAsInt(),
+							name.getAsString(),
+							profileImage==null ? null : profileImage.getAsString()),
+					motd==null ? null : motd.getAsString());
 		}
 	}
 }

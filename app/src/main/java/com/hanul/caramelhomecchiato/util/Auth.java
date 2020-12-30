@@ -94,8 +94,10 @@ public final class Auth{
 		public void set(T t){
 			if(!initialized){
 				synchronized(this){
-					initialized = true;
-					this.t = t;
+					if(!initialized){
+						initialized = true;
+						this.t = t;
+					}
 				}
 			}else{
 				this.t = t;

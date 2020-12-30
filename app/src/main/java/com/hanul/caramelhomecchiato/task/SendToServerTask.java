@@ -1,6 +1,7 @@
 package com.hanul.caramelhomecchiato.task;
 
 import android.net.http.AndroidHttpClient;
+import android.util.Log;
 
 import androidx.annotation.WorkerThread;
 
@@ -35,20 +36,22 @@ public abstract class SendToServerTask<CONTEXT, Params, Progress, Result> extend
 				.setMode(HttpMultipartMode.BROWSER_COMPATIBLE)
 				.setCharset(StandardCharsets.UTF_8);
 
-		appendMultipartEntity(builder);
-
-		AndroidHttpClient client = AndroidHttpClient.newInstance("Android");
 		try{
-			HttpPost post = new HttpPost("http://"+server+"/"+subroutine);
-			post.setEntity(builder.build());
-			HttpResponse response = client.execute(post);
-			return onReceiveResponse(response);
-		}catch(IOException e){
-			e.printStackTrace();
+			appendMultipartEntity(builder);
+
+			AndroidHttpClient client = AndroidHttpClient.newInstance("Android");
+			try{
+				HttpPost post = new HttpPost("http://"+server+"/"+subroutine);
+				post.setEntity(builder.build());
+				HttpResponse response = client.execute(post);
+				return onReceiveResponse(response);
+			}finally{
+				client.close();
+			}
+		}catch(Exception ex){
+			Log.e(getClass().getSimpleName(), "doInBackground: Unexpected exception occurred", ex);
 			cancel(false);
 			return null;
-		}finally{
-			client.close();
 		}
 	}
 

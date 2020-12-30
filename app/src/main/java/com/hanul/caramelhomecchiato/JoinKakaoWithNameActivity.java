@@ -1,6 +1,5 @@
 package com.hanul.caramelhomecchiato;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -8,6 +7,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.hanul.caramelhomecchiato.task.JoinWithKakaoTask;
+import com.hanul.caramelhomecchiato.util.Auth;
 import com.kakao.sdk.auth.model.OAuthToken;
 
 public class JoinKakaoWithNameActivity extends AppCompatActivity{
@@ -32,7 +32,8 @@ public class JoinKakaoWithNameActivity extends AppCompatActivity{
 
 			new JoinWithKakaoTask<>(this, oAuthToken, name)
 					.onSucceed((activity, result) -> {
-						activity.setResult(RESULT_OK, new Intent().putExtra("userId", result.get("userId").getAsInt()));
+						Auth.getInstance().setLoginData(result);
+						activity.finish();
 					}).onCancelled((activity, result) -> {
 			}).execute();
 		});
