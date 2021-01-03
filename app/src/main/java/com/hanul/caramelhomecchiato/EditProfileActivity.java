@@ -67,6 +67,7 @@ public class EditProfileActivity extends AppCompatActivity {
 	File imageFile = null;
 	String currentPath;
 	File file;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

@@ -5,7 +5,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -14,17 +16,19 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.hanul.caramelhomecchiato.data.Post;
+import com.google.gson.JsonObject;
 import com.hanul.caramelhomecchiato.data.UserProfile;
 import com.hanul.caramelhomecchiato.fragment.ProfileFragment;
 import com.hanul.caramelhomecchiato.fragment.RecentPostFragment;
 import com.hanul.caramelhomecchiato.fragment.RecipeCategoryFragment;
 import com.hanul.caramelhomecchiato.fragment.TimerFragment;
-import com.hanul.caramelhomecchiato.task.GetProfileTask;
+import com.hanul.caramelhomecchiato.network.NetUtils;
+import com.hanul.caramelhomecchiato.network.UserService;
 import com.hanul.caramelhomecchiato.util.Auth;
-import com.hanul.caramelhomecchiato.util.NetUtils;
 
-import java.util.List;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity{
 	private static final String TAG = "MainActivity";
@@ -101,27 +105,25 @@ public class MainActivity extends AppCompatActivity{
 
 	@Override protected void onResume(){
 		super.onResume();
-		new GetProfileTask<>(this, Auth.getInstance().getLoginUser())
-				.onSucceed((a1, o1) -> {
-					if(o1.has("error")){
-						String error = o1.get("error").getAsString();
-						Log.e(TAG, "postLoad: GetProfileTask 오류: "+error);
-						return;
-					}
-					UserProfile profile = NetUtils.GSON.fromJson(o1, UserProfile.class);
-					a1.setProfile(profile);
-				})
-				.onCancelled((a1, e1) -> {
-					Log.e(TAG, "postLoad: GetProfileTask 오류: "+e1);
-				}).execute();
+		UserService.INSTANCE.profile(Auth.getInstance().getLoginUser()).enqueue(new Callback<JsonObject>(){
+			@Override public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response){
+				JsonObject body = response.body();
+				if(body.has("error")){
+					Log.e(TAG, "profile: 예상치 못한 오류: "+body.get("error").getAsString());
+					Toast.makeText(MainActivity.this, "예상치 못한 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
+					return;
+				}
+				setProfile(NetUtils.GSON.fromJson(body, UserProfile.class));
+			}
+			@Override public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t){
+				Log.e(TAG, "profile: Failure ", t);
+				Toast.makeText(MainActivity.this, "예상치 못한 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
+			}
+		});
 	}
 
 	public void setProfile(UserProfile profile){
 		textViewProfileName.setText(profile.getUser().getName());
-	}
-
-	public void setRecentPosts(List<Post> recentPosts){
-		recentPostFragment.setRecentPosts(recentPosts);
 	}
 
 	@Override public boolean onKeyDown(int keyCode, KeyEvent event){

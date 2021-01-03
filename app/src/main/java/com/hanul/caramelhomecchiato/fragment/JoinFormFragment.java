@@ -7,7 +7,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -18,13 +17,16 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
+import com.google.gson.JsonObject;
 import com.hanul.caramelhomecchiato.JoinActivity.JoinType;
 import com.hanul.caramelhomecchiato.R;
-import com.hanul.caramelhomecchiato.task.JoinWithEmailTask;
-import com.hanul.caramelhomecchiato.task.JoinWithPhoneNumberTask;
-import com.hanul.caramelhomecchiato.task.JsonResponseTask;
+import com.hanul.caramelhomecchiato.network.JoinService;
 import com.hanul.caramelhomecchiato.util.Auth;
 import com.hanul.caramelhomecchiato.util.Validate;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class JoinFormFragment extends Fragment{
 	private static final String TAG = "JoinFormFragment";
@@ -85,7 +87,7 @@ public class JoinFormFragment extends Fragment{
 			String pwConfirm = etPwConfirm.getText().toString();
 			String emailOrPhone = etEmailPhone.getText().toString().trim();
 
-			JsonResponseTask<JoinFormFragment> t;
+			Call<JsonObject> call;
 
 			if(!Validate.name(name)){
 				Toast.makeText(getContext(), "부적합한 이름입니다.", Toast.LENGTH_SHORT).show();
@@ -106,60 +108,62 @@ public class JoinFormFragment extends Fragment{
 					Toast.makeText(getContext(), "부적합한 전화번호입니다.", Toast.LENGTH_SHORT).show();
 					return;
 				}
-				t = new JoinWithPhoneNumberTask<>(this, name, emailOrPhone, password);
-
+				call = JoinService.INSTANCE.joinWithPhoneNumber(name, emailOrPhone, password);
 				break;
 			case WITH_EMAIL:
 				if(!Validate.email(emailOrPhone)){
 					Toast.makeText(getContext(), "부적합한 이메일입니다.", Toast.LENGTH_SHORT).show();
 					return;
 				}
-				t = new JoinWithEmailTask<>(this, name, emailOrPhone, password);
-
+				call = JoinService.INSTANCE.joinWithEmail(name, emailOrPhone, password);
 				break;
 			default:
 				throw new IllegalArgumentException("type");
 			}
 
-			t.onSucceed((frag, o) -> {
-				if(o.has("error")){
-					String error = o.get("error").getAsString();
-					switch(error){
-					case "bad_name":
-						Toast.makeText(frag.getContext(), "부적합한 이름입니다.", Toast.LENGTH_SHORT).show();
-						break;
-					case "bad_email":
-						Toast.makeText(frag.getContext(), "부적합한 이메일입니다.", Toast.LENGTH_SHORT).show();
-						break;
-					case "bad_phone_number":
-						Toast.makeText(frag.getContext(), "부적합한 전화번호입니다.", Toast.LENGTH_SHORT).show();
-						break;
-					case "bad_password":
-						Toast.makeText(frag.getContext(), "부적합한 비밀번호입니다.", Toast.LENGTH_SHORT).show();
-						break;
-					case "user_exists":
-						switch(type){
-						case WITH_PHONE:
-							Toast.makeText(frag.getContext(), "동일한 전화번호를 가진 유저가 이미 존재합니다.", Toast.LENGTH_SHORT).show();
-							break;
-						case WITH_EMAIL:
-							Toast.makeText(frag.getContext(), "동일한 이메일을 가진 유저가 이미 존재합니다.", Toast.LENGTH_SHORT).show();
-							break;
+			call.enqueue(new Callback<JsonObject>(){
+				@Override public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response){
+					JsonObject body = response.body();
+					if(body.has("error")){
+						String error = body.get("error").getAsString();
+						switch(error){
+							case "bad_name":
+								Toast.makeText(getContext(), "부적합한 이름입니다.", Toast.LENGTH_SHORT).show();
+								break;
+							case "bad_email":
+								Toast.makeText(getContext(), "부적합한 이메일입니다.", Toast.LENGTH_SHORT).show();
+								break;
+							case "bad_phone_number":
+								Toast.makeText(getContext(), "부적합한 전화번호입니다.", Toast.LENGTH_SHORT).show();
+								break;
+							case "bad_password":
+								Toast.makeText(getContext(), "부적합한 비밀번호입니다.", Toast.LENGTH_SHORT).show();
+								break;
+							case "user_exists":
+								switch(type){
+									case WITH_PHONE:
+										Toast.makeText(getContext(), "동일한 전화번호를 가진 유저가 이미 존재합니다.", Toast.LENGTH_SHORT).show();
+										break;
+									case WITH_EMAIL:
+										Toast.makeText(getContext(), "동일한 이메일을 가진 유저가 이미 존재합니다.", Toast.LENGTH_SHORT).show();
+										break;
+								}
+								break;
+							default:
+								Toast.makeText(getContext(), "예상치 못한 오류가 발생하여 회원가입을 완료할 수 없습니다.", Toast.LENGTH_SHORT).show();
+								Log.e(TAG, "예상치 못한 오류 : "+error);
 						}
-						break;
-					default:
-						Toast.makeText(frag.getContext(), "예상치 못한 오류가 발생하여 회원가입을 완료할 수 없습니다.", Toast.LENGTH_SHORT).show();
-						Log.e(TAG, "예상치 못한 오류 : "+error);
+					}else{
+						Auth.getInstance().setLoginData(body);
+						FragmentActivity activity = getActivity();
+						if(activity!=null) activity.finish();
 					}
-				}else{
-					Auth.getInstance().setLoginData(o);
-					FragmentActivity activity = frag.getActivity();
-					if(activity!=null) activity.finish();
 				}
-			}).onCancelled((frag, o) -> {
-				Toast.makeText(frag.getContext(), "예상치 못한 오류가 발생하여 회원가입을 완료할 수 없습니다.", Toast.LENGTH_SHORT).show();
-				Log.e(TAG, "예상치 못한 오류 : "+o);
-			}).execute();
+				@Override public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t){
+					Toast.makeText(getContext(), "예상치 못한 오류가 발생하여 회원가입을 완료할 수 없습니다.", Toast.LENGTH_SHORT).show();
+					Log.e(TAG, "예상치 못한 오류", t);
+				}
+			});
 		});
 
 		return view;

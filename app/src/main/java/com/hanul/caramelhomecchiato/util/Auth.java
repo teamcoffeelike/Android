@@ -69,6 +69,11 @@ public final class Auth{
 		setLoginUser(jsonObject.get("userId").getAsInt());
 	}
 
+	public void removeLoginData(){
+		setAuthToken(null);
+		setLoginUser(null);
+	}
+
 
 	private final class Lazy<T>{
 		private final Initializer<T> initializer;

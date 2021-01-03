@@ -1,6 +1,8 @@
 package com.hanul.caramelhomecchiato.adapter;
 
+import android.app.AlertDialog;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,13 +13,22 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.PopupMenu;
-import androidx.viewpager.widget.ViewPager;
 
-import com.hanul.caramelhomecchiato.ReactionActivity;
+import com.bumptech.glide.Glide;
+import com.google.gson.JsonObject;
 import com.hanul.caramelhomecchiato.R;
+import com.hanul.caramelhomecchiato.ReactionActivity;
 import com.hanul.caramelhomecchiato.data.Post;
+import com.hanul.caramelhomecchiato.network.PostService;
+import com.hanul.caramelhomecchiato.util.Auth;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class PostAdapter extends BaseAdapter<Post>{
+	private static final String TAG = "PostAdapter";
+
 	@NonNull @Override public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType){
 		return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.view_post, parent, false));
 	}
@@ -26,22 +37,28 @@ public class PostAdapter extends BaseAdapter<Post>{
 	public static final class ViewHolder extends BaseAdapter.ViewHolder<Post>{
 		private final ImageView imageViewPostUserProfile;
 		private final TextView textViewPostUser;
-		private final ViewPager images;
+		private final ImageView imageViewPost;
 		private final TextView textViewPost;
+
+		private final View buttonLike;
 
 		private final TextView textViewLikes;
 		private final TextView textViewComments;
 
 		private final ImageButton buttonPostOption;
-		
+
 		public ViewHolder(@NonNull View itemView){
 			super(itemView);
 			imageViewPostUserProfile = itemView.findViewById(R.id.imageViewPostUserProfile);
 			textViewPostUser = itemView.findViewById(R.id.textViewPostUser);
-			images = itemView.findViewById(R.id.images);
+			imageViewPost = itemView.findViewById(R.id.imageViewPost);
 			textViewPost = itemView.findViewById(R.id.textViewPost);
+
+			buttonLike = itemView.findViewById(R.id.buttonLike);
+
 			textViewLikes = itemView.findViewById(R.id.textViewLikes);
 			textViewComments = itemView.findViewById(R.id.textViewComments);
+
 			buttonPostOption = itemView.findViewById(R.id.buttonPostOption);
 
 			/* 포스트 수정/삭제 버튼 클릭 이벤트 */
@@ -51,20 +68,39 @@ public class PostAdapter extends BaseAdapter<Post>{
 				popupMenu.getMenuInflater().inflate(R.menu.post_menu, popupMenu.getMenu());
 
 				popupMenu.setOnMenuItemClickListener(item -> {
-					switch (item.getItemId()) {
-						case R.id.postModify:
-							Toast.makeText(itemView.getContext(), "글 수정 버튼 클릭", Toast.LENGTH_SHORT).show();
-							break;
-						case R.id.postDelete:
-							Toast.makeText(itemView.getContext(), "글 삭제 버튼 클릭", Toast.LENGTH_SHORT).show();
-							break;
+					int itemId = item.getItemId();
+					if(itemId==R.id.postModify){// TODO
+						Toast.makeText(itemView.getContext(), "글 수정 버튼 클릭", Toast.LENGTH_SHORT).show();
+					}else if(itemId==R.id.postDelete){
+						new AlertDialog.Builder(itemView.getContext())
+								.setTitle("정말 삭제하시겠습니까?")
+								.setPositiveButton("예", (dialog, which) -> {
+									PostService.INSTANCE.deletePost(getItem().getId()).enqueue(new Callback<JsonObject>(){
+										@Override public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response){
+											JsonObject body = response.body();
+											if(body.has("error")){
+												Log.e(TAG, "deletePost: 예상치 못한 오류: "+body.get("error").getAsString());
+												Toast.makeText(itemView.getContext(), "예상치 못한 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
+												return;
+											}
+											Toast.makeText(itemView.getContext(), "포스트를 삭제했습니다.", Toast.LENGTH_SHORT).show();
+											// TODO List 변경?
+										}
+										@Override public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t){
+											Log.e(TAG, "deletePost: Failure ", t);
+											Toast.makeText(itemView.getContext(), "예상치 못한 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
+										}
+									});
+								})
+								.setNegativeButton("아니오", (dialog, which) -> {})
+								.show();
 					}
 					return true;
 				});
 				popupMenu.show();
 			});
-			
-			itemView.findViewById(R.id.buttonLike).setOnClickListener(v -> {
+
+			buttonLike.setOnClickListener(v -> {
 				Toast.makeText(this.itemView.getContext(), ";)", Toast.LENGTH_SHORT).show();
 			});
 
@@ -75,12 +111,28 @@ public class PostAdapter extends BaseAdapter<Post>{
 			});
 		}
 
-		@Override protected void setItem(int position, Post post){ // TODO 프로필 이미지와 첨부 사진
+		@Override protected void setItem(int position, Post post){
+			if(post.getAuthor().getProfileImage()!=null){
+				Glide.with(itemView)
+						.load(post.getAuthor().getProfileImage())
+						.into(imageViewPostUserProfile);
+			}
 			textViewPostUser.setText(post.getAuthor().getName());
+
+			if(post.getImage()!=null){
+				Glide.with(itemView)
+						.load(post.getImage())
+						.into(imageViewPost);
+			}
+
 			textViewPost.setText(post.getText());
 
 			textViewLikes.setText(itemView.getContext().getString(R.string.n_likes, post.getLikes()));
-			// TODO 댓글이 없을 시에는 댓글보기 없어야 함
+
+			buttonPostOption.setVisibility(
+					post.getAuthor().getId()!=Auth.getInstance().getLoginUser() ?
+							View.INVISIBLE :
+							View.VISIBLE); // TODO ????
 		}
 	}
 }

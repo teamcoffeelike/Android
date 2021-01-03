@@ -4,12 +4,12 @@
     <item
         android:id="@+id/posts"
         android:icon="@drawable/ic_menu_topposts"
-        android:title="@string/popular_post"/>
+        android:title="@string/recent_post"/>
 
     <item
         android:id="@+id/recipes"
         android:icon="@drawable/ic_menu_recipe"
-        android:title="@string/recipeCover" />
+        android:title="@string/recipe" />
 
     <item
         android:id="@+id/timer"

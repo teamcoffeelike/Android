@@ -1,112 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:app="http://schemas.android.com/apk/res-auto"
-	xmlns:tools="http://schemas.android.com/tools"
-	android:layout_width="match_parent"
-	android:layout_height="match_parent"
-	tools:context=".SettingsActivity">
+<androidx.constraintlayout.widget.ConstraintLayout
+		xmlns:android="http://schemas.android.com/apk/res/android"
+		xmlns:app="http://schemas.android.com/apk/res-auto"
+		xmlns:tools="http://schemas.android.com/tools"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		tools:context=".SettingsActivity">
 
 	<ImageButton
-		android:id="@+id/settingsSubmit"
-		android:layout_width="50dp"
-		android:layout_height="50dp"
-		android:src="@drawable/ic_done"
-		style="?android:attr/borderlessButtonStyle"
-		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintHorizontal_bias="1.0"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toTopOf="parent" />
+			android:id="@+id/settingsSubmit"
+			android:layout_width="50dp"
+			android:layout_height="50dp"
+			android:src="@drawable/ic_done"
+			style="?android:attr/borderlessButtonStyle"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintTop_toTopOf="parent"/>
 
 	<ImageView
-		android:id="@+id/settingsUserProfile"
-		android:layout_width="150dp"
-		android:layout_height="150dp"
-		android:layout_marginLeft="55dp"
-		android:layout_marginTop="100dp"
-		android:src="@drawable/test_user"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toTopOf="parent" />
+			android:id="@+id/settingsUserProfile"
+			android:layout_width="150dp"
+			android:layout_height="150dp"
+			android:layout_marginTop="100dp"
+			android:src="@drawable/test_user"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="parent"
+			app:layout_constraintEnd_toEndOf="parent"/>
 
-	<Switch
-		android:id="@+id/switchComment"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_marginStart="40dp"
-		android:layout_marginLeft="40dp"
-		android:layout_marginTop="130dp"
-		android:checked="true"
-		android:text="새댓글 알림 "
-		android:thumb="@drawable/switch_thumb"
-		android:track="@drawable/switch_track"
-		app:layout_constraintStart_toEndOf="@+id/settingsUserProfile"
-		app:layout_constraintTop_toTopOf="parent" />
+	<androidx.constraintlayout.widget.ConstraintLayout
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="75dp"
+			android:maxWidth="300dp"
+			app:layout_constraintTop_toBottomOf="@+id/settingsUserProfile"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent">
 
-	<Switch
-		android:id="@+id/switchFollow"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_marginStart="40dp"
-		android:layout_marginLeft="40dp"
-		android:layout_marginTop="16dp"
-		android:checked="true"
-		android:text="팔로우 알림 "
-		android:thumb="@drawable/switch_thumb"
-		android:track="@drawable/switch_track"
-		app:layout_constraintStart_toEndOf="@+id/settingsUserProfile"
-		app:layout_constraintTop_toBottomOf="@+id/switchLike" />
+		<Button
+				android:id="@+id/buttonEditProfile"
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:backgroundTint="@color/OrangeYellowCrayola"
+				android:text="프로필"
+				android:textColor="@color/VanDykeBrown"
+				android:textSize="18sp"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintTop_toTopOf="parent"/>
 
-	<Switch
-		android:id="@+id/switchLike"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_marginStart="40dp"
-		android:layout_marginLeft="40dp"
-		android:layout_marginTop="16dp"
-		android:checked="true"
-		android:text="좋아요 알림 "
-		android:thumb="@drawable/switch_thumb"
-		android:track="@drawable/switch_track"
-		app:layout_constraintStart_toEndOf="@+id/settingsUserProfile"
-		app:layout_constraintTop_toBottomOf="@+id/switchComment" />
+		<Button
+				android:id="@+id/buttonChangePassword"
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="55dp"
+				android:backgroundTint="@color/OrangeYellowCrayola"
+				android:text="비밀번호 변경"
+				android:textColor="@color/VanDykeBrown"
+				android:textSize="18sp"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintTop_toBottomOf="@+id/buttonEditProfile"/>
 
-	<EditText
-		android:id="@+id/editTextUserPassword"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_marginStart="144dp"
-		android:layout_marginLeft="144dp"
-		android:layout_marginTop="84dp"
-		android:ems="10"
-		android:inputType="textPersonName"
-		android:paddingLeft="15dp"
-		android:theme="@style/edit_text"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@+id/settingsUserProfile" />
-
-	<TextView
-		android:id="@+id/textViewUserName"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_marginTop="96dp"
-		android:text="사용자 이름"
-		android:textSize="15sp"
-		app:layout_constraintEnd_toStartOf="@+id/editTextUserPassword"
-		app:layout_constraintHorizontal_bias="0.763"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@+id/settingsUserProfile" />
-
-	<Button
-		android:id="@+id/buttonChangePassword"
-		android:layout_width="300dp"
-		android:layout_height="wrap_content"
-		android:layout_marginTop="55dp"
-		android:backgroundTint="@color/OrangeYellowCrayola"
-		android:text="비밀번호 변경"
-		android:textColor="@color/VanDykeBrown"
-		android:textSize="18sp"
-		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@+id/editTextUserPassword" />
-
-
+		<Button
+				android:id="@+id/buttonLogout"
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="55dp"
+				android:backgroundTint="@color/OrangeYellowCrayola"
+				android:text="로그아웃"
+				android:textColor="@color/VanDykeBrown"
+				android:textSize="18sp"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintTop_toBottomOf="@+id/buttonChangePassword"/>
+	</androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -20,6 +20,12 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            buildConfigField("String", "API_ADDRESS", '"¯\\_(ツ)_/¯"') // TODO
+        }
+        debug {
+            // InetAccess.getLocalHost()는 실패할 수 있다고 하는데 그건 잘 모르겠고ㅎ
+            InetAddress localhost = InetAddress.getLocalHost()
+            buildConfigField("String", "API_ADDRESS", "\"${localhost.hostAddress}:80\"")
         }
     }
     compileOptions {
@@ -45,11 +51,8 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
     implementation "androidx.cardview:cardview:1.0.0"
 
-    /* 안드로이드와 통신할수 있는 버전 가져오기  */
-    implementation group: 'org.apache.httpcomponents', name: 'httpclient-android', version: '4.3.5.1'
-    implementation('org.apache.httpcomponents:httpmime:4.3') {
-        exclude module: "httpclient"
-    }
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.okhttp3:okhttp-urlconnection:4.9.0'
 
     implementation "com.kakao.sdk:v2-user:2.1.0" // 카카오 로그인
 

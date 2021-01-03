@@ -21,7 +21,7 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<BaseAdapter.Vi
 	}
 
 	@Override public void onBindViewHolder(@NonNull BaseAdapter.ViewHolder<T> holder, int position){
-		holder.setItem(position, elements.get(position));
+		holder.setItem(holder.itemPosition = position, holder.item = elements.get(position));
 	}
 	@Override public int getItemCount(){
 		return elements.size();
@@ -29,10 +29,20 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<BaseAdapter.Vi
 
 
 	public static abstract class ViewHolder<T> extends RecyclerView.ViewHolder{
+		private int itemPosition;
+		private T item;
+
 		public ViewHolder(@NonNull View itemView){
 			super(itemView);
 		}
 
 		protected abstract void setItem(int position, T element);
+
+		protected int getItemPosition(){
+			return itemPosition;
+		}
+		protected T getItem(){
+			return item;
+		}
 	}
 }

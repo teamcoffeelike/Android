@@ -1,103 +1,68 @@
 package com.hanul.caramelhomecchiato;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.NotificationCompat;
-
-import android.app.NotificationManager;
-import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.VibrationEffect;
-import android.os.Vibrator;
-import android.view.View;
-import android.widget.Button;
-import android.widget.CompoundButton;
-import android.widget.Switch;
+import android.util.Log;
 import android.widget.Toast;
 
-public class SettingsActivity extends AppCompatActivity{
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 
-	private Button btnChangePw;
-	private Switch switchComment, switchFollow, switchLike;
+import com.google.gson.JsonObject;
+import com.hanul.caramelhomecchiato.network.LoginService;
+import com.hanul.caramelhomecchiato.util.Auth;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+public class SettingsActivity extends AppCompatActivity{
+	private static final String TAG = "SettingsActivity";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_settings);
 
-		switchComment = findViewById(R.id.switchComment);
-		switchFollow = findViewById(R.id.switchFollow);
-		switchLike = findViewById(R.id.switchLike);
-		btnChangePw = findViewById(R.id.buttonChangePassword);
-
-		Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+		findViewById(R.id.buttonEditProfile).setOnClickListener(v -> {
+			startActivity(new Intent(this, EditProfileActivity.class));
+		});
 
 		/* 비밀번호 변경 버튼 -> 비밀번호 변경 화면으로 이동 */
-		btnChangePw.setOnClickListener(v -> {
-			Intent intent = new Intent(getApplicationContext(), ChangePasswordActivity.class);
-			startActivity(intent);
+		findViewById(R.id.buttonChangePassword).setOnClickListener(v -> {
+			startActivity(new Intent(this, ChangePasswordActivity.class));
 		});
 
-		/* 댓글 알림 설정 */
-		switchComment.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-			@Override
-			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-				if (isChecked) {
-					Toast.makeText(SettingsActivity.this, "댓글 알림 설정 ON", Toast.LENGTH_SHORT).show();
-					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-						vibrator.vibrate(VibrationEffect.createOneShot(100, 30));
-					}else {
-						vibrator.vibrate(100);
-					}
-				}else {
-					Toast.makeText(SettingsActivity.this, "댓글 알림 설정 OFF", Toast.LENGTH_SHORT).show();
-				}
-			}
+		findViewById(R.id.buttonLogout).setOnClickListener(v -> {
+			new AlertDialog.Builder(this)
+					.setMessage("정말 로그아웃하시겠습니까?")
+					.setPositiveButton("예", (dialog, which) -> {
+						LoginService.INSTANCE.logout().enqueue(new Callback<JsonObject>(){
+							@Override public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response){
+								JsonObject body = response.body();
+								if(body.has("error")){
+									Log.e(TAG, "logout: 에러 발생 "+body.get("error").getAsString());
+								}
+								Auth.getInstance().removeLoginData();
+								new AlertDialog.Builder(SettingsActivity.this)
+										.setMessage("로그아웃되었습니다.")
+										.setNeutralButton("알겠어요", (dialog1, which1) -> {})
+										.setOnDismissListener(dialog1 -> {
+											startActivity(new Intent(getApplicationContext(), LoadingActivity.class)
+													.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK));
+										})
+										.show();
+							}
+							@Override public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t){
+								// TODO
+								Log.e(TAG, "logout: Failure", t);
+								Toast.makeText(SettingsActivity.this, "예상치 못한 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
+							}
+						});
+					})
+					.setNegativeButton("아니오", (dialog, which) -> {})
+					.show();
 		});
-
-		/* 팔로우 알림 설정 */
-		switchFollow.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-			@Override
-			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-				if (isChecked) {
-					Toast.makeText(SettingsActivity.this, "팔로우 알림 설정 ON", Toast.LENGTH_SHORT).show();
-					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-						vibrator.vibrate(VibrationEffect.createOneShot(100, 30));
-					}else {
-						vibrator.vibrate(100);
-					}
-				}else {
-					Toast.makeText(SettingsActivity.this, "팔로우 알림 설정 OFF", Toast.LENGTH_SHORT).show();
-				}
-			}
-		});
-
-		switchLike.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-			@Override
-			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-				if (isChecked) {
-					Toast.makeText(SettingsActivity.this, "좋아요 알림 설정 ON", Toast.LENGTH_SHORT).show();
-					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-						vibrator.vibrate(VibrationEffect.createOneShot(100, 30));
-					}else {
-						vibrator.vibrate(100);
-					}
-				}else {
-					Toast.makeText(SettingsActivity.this, "좋아요 알림설정 OFF", Toast.LENGTH_SHORT).show();
-				}
-			}
-		});
-
 	}
-
-	private void commentNoti() {
-		NotificationManager notificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
-		NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "comment_chan");
-
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-
-		}
-	}
-
 }
