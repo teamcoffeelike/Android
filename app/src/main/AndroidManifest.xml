@@ -71,7 +71,7 @@
         <activity android:name=".FindPasswordActivity" />
         <activity android:name=".FollowsActivity" />
         <activity android:name=".JoinActivity" />
-        <activity android:name=".JoinKakaoWithNameActivity" />
+        <activity android:name=".JoinKakaoActivity" />
         <activity android:name=".LikesActivity" />
         <activity android:name=".LoadingActivity">
             <intent-filter>

@@ -20,7 +20,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.gson.JsonObject;
 import com.hanul.caramelhomecchiato.network.PostService;
-import com.hanul.caramelhomecchiato.util.ContentResolverHelper;
+import com.hanul.caramelhomecchiato.util.IOUtils;
 import com.hanul.caramelhomecchiato.util.Validate;
 
 import java.io.IOException;
@@ -74,7 +74,7 @@ public class WritePostActivity extends AppCompatActivity{
 			ContentResolver contentResolver = getContentResolver();
 			byte[] read;
 			try{
-				read = ContentResolverHelper.read(contentResolver, image);
+				read = IOUtils.read(contentResolver, image);
 			}catch(IOException e){
 				e.printStackTrace();
 				Toast.makeText(this, "이미지를 읽어들이는 중 예상치 못한 오류가 발생하여 포스트를 작성할 수 없습니다.", Toast.LENGTH_SHORT).show();

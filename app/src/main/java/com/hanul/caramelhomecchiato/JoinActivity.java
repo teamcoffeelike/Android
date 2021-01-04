@@ -1,10 +1,11 @@
 package com.hanul.caramelhomecchiato;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -15,6 +16,7 @@ import com.hanul.caramelhomecchiato.fragment.JoinFormFragment;
 import com.hanul.caramelhomecchiato.fragment.JoinFragment;
 
 public class JoinActivity extends AppCompatActivity{
+	private static final int LOGIN_RESULT = 1;
 	private ViewPager viewPager;
 	private PagerAdapter adapter;
 
@@ -32,27 +34,33 @@ public class JoinActivity extends AppCompatActivity{
 
 	public void openJoinForm(JoinType type){
 		if(viewPager.getCurrentItem()==0){
-			switch(type){
-			case WITH_KAKAO: // TODO
-				Toast.makeText(this, "미완성", Toast.LENGTH_SHORT).show();
-				break;
-			default:
+			if(type==JoinType.WITH_KAKAO){
+				startActivityForResult(new Intent(this, JoinKakaoActivity.class)
+						.putExtra(JoinKakaoActivity.EXTRA_MODE, JoinKakaoActivity.Mode.JOIN), LOGIN_RESULT);
+			}else{
 				adapter.joinForm.setJoinType(type);
 				viewPager.setCurrentItem(1);
-				break;
 			}
 		}
 	}
 
 	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		if ((keyCode == KeyEvent.KEYCODE_BACK)) {
+	public boolean onKeyDown(int keyCode, KeyEvent event){
+		if((keyCode==KeyEvent.KEYCODE_BACK)){
 			if(viewPager.getCurrentItem()==1){
 				viewPager.setCurrentItem(0);
 				return true;
 			}
 		}
 		return super.onKeyDown(keyCode, event);
+	}
+
+	@Override protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data){
+		super.onActivityResult(requestCode, resultCode, data);
+		if(requestCode==LOGIN_RESULT&&resultCode==RESULT_OK){
+			setResult(RESULT_OK);
+			finish();
+		}
 	}
 
 	private static final class PagerAdapter extends FragmentStatePagerAdapter{
