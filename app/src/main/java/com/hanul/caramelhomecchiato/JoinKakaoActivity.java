@@ -92,18 +92,26 @@ public class JoinKakaoActivity extends AppCompatActivity{
 		if(jsonObject.has("error")){
 			String loginError = jsonObject.get("error").getAsString();
 			switch(loginError){
+			// Login/Join 공통
 			case "needs_agreement": // 프로필 이용을 위한 동의가 필요
 				fetchProfileAndJoin(oAuthToken, true);
 				return;
 			case "bad_kakao_login_token":
 				Toast.makeText(this, "카카오 로그인이 해제되었습니다. 다시 시도해 주세요.", Toast.LENGTH_SHORT).show();
 				break;
-			case "user_exists":
-				Toast.makeText(this, "동일한 계정의 유저가 이미 존재합니다.", Toast.LENGTH_SHORT).show();
-				break;
 			case "kakao_service_unavailable":
 				Toast.makeText(this, "카카오 연동 서비스를 제공할 수 없습니다.", Toast.LENGTH_SHORT).show();
 				break;
+			// Join 한정
+			case "user_exists":
+				Toast.makeText(this, "동일한 계정의 유저가 이미 존재합니다.", Toast.LENGTH_SHORT).show();
+				break;
+			case "bad_name":
+				if(root.getVisibility()==View.VISIBLE){
+					Toast.makeText(this, "이름이 적합하지 않습니다.", Toast.LENGTH_SHORT).show();
+					spinnerHandler.dismiss();
+				}else showNameInputWidget(oAuthToken);
+				return;
 			default:
 				Log.e(TAG, "kakaoLoginCallback: 예상치 못한 오류: "+loginError);
 				Toast.makeText(this, "예상치 못한 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
@@ -120,9 +128,9 @@ public class JoinKakaoActivity extends AppCompatActivity{
 	}
 
 	private void fetchProfileAndJoin(OAuthToken oAuthToken, boolean retry){
-		KakaoApiUtils.getUser((user, error) -> {
-			if(error!=null){
-				Log.e(TAG, "fetchProfileAndJoin: 사용자 정보 요청 실패", error);
+		KakaoApiUtils.getUser((user, t) -> {
+			if(t!=null){
+				Log.e(TAG, "fetchProfileAndJoin: 사용자 정보 요청 실패", t);
 				setResult(RESULT_CANCELED);
 				finish();
 				return;
@@ -132,21 +140,17 @@ public class JoinKakaoActivity extends AppCompatActivity{
 			if(acc!=null){
 				Profile profile = acc.getProfile();
 				if(profile!=null){
-					// 닉네임 확인, 이름 명시하여 재시도
-					KakaoIntegrationService.INSTANCE.joinWithKakao(oAuthToken.getAccessToken(), profile.getNickname()).enqueue(new Callback<JsonObject>(){
+					// 닉네임 확인
+					String nickname = profile.getNickname().trim();
+					if(!Validate.name(nickname)){
+						// 프로필 이름 사용 불가
+						showNameInputWidget(oAuthToken);
+						return;
+					}
+					// 이름 명시하여 재시도
+					KakaoIntegrationService.INSTANCE.joinWithKakao(oAuthToken.getAccessToken(), nickname).enqueue(new Callback<JsonObject>(){
 						@Override public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response){
-							JsonObject body = response.body();
-							if(body.has("error")){
-								Log.e(TAG, "joinWithKakao: 예상치 못한 오류: "+body.get("error").getAsString());
-								Toast.makeText(JoinKakaoActivity.this, "예상치 못한 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
-								setResult(RESULT_CANCELED);
-								finish();
-								return;
-							}
-
-							Auth.getInstance().setLoginData(body);
-							setResult(RESULT_OK);
-							finish();
+							kakaoLoginCallback(oAuthToken, response.body());
 						}
 						@Override public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t){
 							Log.e(TAG, "profile: Failure ", t);
@@ -168,9 +172,14 @@ public class JoinKakaoActivity extends AppCompatActivity{
 			}
 
 			// 거부당함
-			root.setVisibility(View.VISIBLE);
-			buttonJoin.setOnClickListener(v -> joinWithName(oAuthToken));
+			showNameInputWidget(oAuthToken);
 		});
+	}
+
+	private void showNameInputWidget(OAuthToken oAuthToken){
+		spinnerHandler.dismiss();
+		root.setVisibility(View.VISIBLE);
+		buttonJoin.setOnClickListener(v -> joinWithName(oAuthToken));
 	}
 
 	private void joinWithName(OAuthToken oAuthToken){
