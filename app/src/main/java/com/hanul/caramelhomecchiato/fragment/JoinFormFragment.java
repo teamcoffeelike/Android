@@ -18,7 +18,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
 import com.google.gson.JsonObject;
-import com.hanul.caramelhomecchiato.JoinActivity.JoinType;
+import com.hanul.caramelhomecchiato.activity.JoinActivity.JoinType;
 import com.hanul.caramelhomecchiato.R;
 import com.hanul.caramelhomecchiato.network.JoinService;
 import com.hanul.caramelhomecchiato.util.Auth;

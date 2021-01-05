@@ -1,4 +1,4 @@
-package com.hanul.caramelhomecchiato;
+package com.hanul.caramelhomecchiato.activity;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.gson.JsonObject;
+import com.hanul.caramelhomecchiato.R;
 import com.hanul.caramelhomecchiato.network.KakaoIntegrationService;
 import com.hanul.caramelhomecchiato.util.Auth;
 import com.hanul.caramelhomecchiato.util.KakaoApiUtils;
@@ -135,6 +136,12 @@ public class JoinKakaoActivity extends AppCompatActivity{
 				finish();
 				return;
 			}
+			if(user==null){
+				Log.e(TAG, "fetchProfileAndJoin: 사용자 정보 요청 실패");
+				setResult(RESULT_CANCELED);
+				finish();
+				return;
+			}
 
 			Account acc = user.getKakaoAccount();
 			if(acc!=null){
@@ -160,7 +167,7 @@ public class JoinKakaoActivity extends AppCompatActivity{
 						}
 					});
 					return;
-				}else if(acc.getProfileNeedsAgreement()){ // 동의 필요
+				}else if(acc.getProfileNeedsAgreement()!=null&&acc.getProfileNeedsAgreement()){ // 동의 필요
 					if(retry){
 						// 동의 후 재시도
 						KakaoApiUtils.loginWithNewScopes(this,

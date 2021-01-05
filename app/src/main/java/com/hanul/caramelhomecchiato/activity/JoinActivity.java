@@ -1,4 +1,4 @@
-package com.hanul.caramelhomecchiato;
+package com.hanul.caramelhomecchiato.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,6 +12,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import com.hanul.caramelhomecchiato.R;
 import com.hanul.caramelhomecchiato.fragment.JoinFormFragment;
 import com.hanul.caramelhomecchiato.fragment.JoinFragment;
 

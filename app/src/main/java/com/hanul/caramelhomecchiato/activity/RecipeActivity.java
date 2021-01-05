@@ -1,4 +1,4 @@
-package com.hanul.caramelhomecchiato;
+package com.hanul.caramelhomecchiato.activity;
 
 import android.os.Bundle;
 
@@ -9,6 +9,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import com.hanul.caramelhomecchiato.R;
 import com.hanul.caramelhomecchiato.data.Recipe;
 import com.hanul.caramelhomecchiato.fragment.RecipeCoverContentFragment;
 import com.hanul.caramelhomecchiato.fragment.RecipeCoverImageFragment;

@@ -1,4 +1,4 @@
-package com.hanul.caramelhomecchiato;
+package com.hanul.caramelhomecchiato.activity;
 
 import android.Manifest;
 import android.app.AlertDialog;
@@ -11,20 +11,30 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.core.content.FileProvider;
 
+import com.google.gson.JsonObject;
+import com.hanul.caramelhomecchiato.CaramelHomecchiatoApp;
+import com.hanul.caramelhomecchiato.R;
+import com.hanul.caramelhomecchiato.network.UserService;
 import com.hanul.caramelhomecchiato.util.IOUtils;
+import com.hanul.caramelhomecchiato.util.SpinnerHandler;
 import com.hanul.caramelhomecchiato.util.UriPermissionHandler;
+import com.hanul.caramelhomecchiato.util.Validate;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -35,6 +45,11 @@ import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
+
+import retrofit2.Response;
 
 public class EditProfileActivity extends AppCompatActivity{
 	private static final String TAG = "EditProfileActivity";
@@ -52,7 +67,12 @@ public class EditProfileActivity extends AppCompatActivity{
 
 	private File tempFile;
 
+	private final SpinnerHandler spinnerHandler = new SpinnerHandler(this);
 	private final UriPermissionHandler permissionHandler = new UriPermissionHandler(this);
+
+	private boolean nameChanged = false;
+	private boolean motdChanged = false;
+	@Nullable private Uri newProfileImage;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState){
@@ -61,10 +81,91 @@ public class EditProfileActivity extends AppCompatActivity{
 
 		ImageButton editProfileSubmit = findViewById(R.id.editProfileSubmit);
 		imageViewProfile = findViewById(R.id.imageViewProfile);
-		Button buttonEditProfile = findViewById(R.id.buttonEditProfile);
+		Button buttonEditProfile = findViewById(R.id.buttonEditProfileImage);
+
+		EditText editTextName = findViewById(R.id.editTextName);
+		EditText editTextMotd = findViewById(R.id.editTextMotd);
+		editTextName.addTextChangedListener(new TextWatcher(){
+			@Override public void beforeTextChanged(CharSequence s, int start, int count, int after){}
+			@Override public void onTextChanged(CharSequence s, int start, int before, int count){}
+			@Override public void afterTextChanged(Editable s){
+				nameChanged = true;
+			}
+		});
+		editTextMotd.addTextChangedListener(new TextWatcher(){
+			@Override public void beforeTextChanged(CharSequence s, int start, int count, int after){}
+			@Override public void onTextChanged(CharSequence s, int start, int before, int count){}
+			@Override public void afterTextChanged(Editable s){
+				motdChanged = true;
+			}
+		});
 
 		editProfileSubmit.setOnClickListener(v -> {
-			// TODO
+			String name, motd;
+
+			if(nameChanged){
+				name = editTextName.getText().toString().trim();
+				if(!Validate.name(name)){
+					Toast.makeText(this, "부적합한 이름입니다.", Toast.LENGTH_SHORT).show();
+					return;
+				}
+			}else name = null;
+			if(motdChanged){
+				motd = editTextMotd.getText().toString().trim();
+				if(!Validate.motd(motd)){
+					Toast.makeText(this, "부적합한 소개글입니다.", Toast.LENGTH_SHORT).show();
+					return;
+				}
+			}else motd = null;
+
+
+			ExecutorService executorService = ((CaramelHomecchiatoApp)getApplication()).executorService;
+			Future<Response<JsonObject>> setProfileImage , setName , setMotd;
+
+			setProfileImage = newProfileImage==null ? null : executorService.submit(() -> {
+				byte[] read;
+				read = IOUtils.read(getContentResolver(), newProfileImage);
+				return UserService.setProfileImage(read).execute();
+			});
+
+			setName = name==null ? null : executorService.submit(() -> {
+				return UserService.INSTANCE.setName(name).execute();
+			});
+
+			setMotd = motd==null ? null : executorService.submit(() -> {
+				return UserService.INSTANCE.setMotd(motd).execute();
+			});
+
+			spinnerHandler.show();
+			executorService.submit(() -> {
+				if(setProfileImage!=null){
+					try{
+						Response<JsonObject> jsonObjectResponse = setProfileImage.get();
+						JsonObject body = jsonObjectResponse.body();
+						if(body==null){
+
+						}else if(body.has("error")){
+							Log.e(TAG, "setProfileImage: "+body.get("error").getAsString());
+							Toast.makeText(this, "프로필 이미지 설정 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
+						}
+					}catch(ExecutionException e){
+						Log.e(TAG, "setProfileImage: Exception", e);
+					}catch(InterruptedException e){
+						Log.e(TAG, "setProfileImage: Exception", e);
+						Thread.currentThread().interrupt();
+					}
+				}
+
+				if(setName!=null){
+
+				}
+
+				if(setMotd!=null){
+
+				}
+
+				spinnerHandler.dismiss();
+			});
 		});
 
 		/* 프로필 사진 편집 버튼 클릭 -> 갤러리/사진찍기 팝업메뉴 */
@@ -82,6 +183,18 @@ public class EditProfileActivity extends AppCompatActivity{
 				return true;
 			});
 			popupMenu.show();
+		});
+
+		getOnBackPressedDispatcher().addCallback(new OnBackPressedCallback(true){
+			@Override public void handleOnBackPressed(){
+				new AlertDialog.Builder(EditProfileActivity.this)
+						.setTitle("작성한 내용을 저장하지 않고 창을 닫겠습니까?")
+						.setPositiveButton("예", (dialog, which) -> {
+							finish();
+						})
+						.setNegativeButton("계속 작성", (dialog, which) -> {})
+						.show();
+			}
 		});
 	}
 
@@ -173,6 +286,7 @@ public class EditProfileActivity extends AppCompatActivity{
 		super.onActivityResult(requestCode, resultCode, data);
 
 		if(resultCode==RESULT_OK){
+			Uri result = data.getData();
 			switch(requestCode){
 			case REQUEST_TAKE_PHOTO:
 				permissionHandler.revokePermissions();
@@ -181,10 +295,10 @@ public class EditProfileActivity extends AppCompatActivity{
 			case REQUEST_PICK_IMAGE:
 				if(data!=null){
 					Bundle extras = data.getExtras();
-					Log.d(TAG, "onActivityResult: REQUEST_PICK_IMAGE "+extras+" "+data.getData());
+					Log.d(TAG, "onActivityResult: REQUEST_PICK_IMAGE "+extras+" "+result);
 
 					File temp = createTempFile();
-					try(InputStream is = getContentResolver().openInputStream(data.getData());
+					try(InputStream is = getContentResolver().openInputStream(result);
 					    FileOutputStream fos = new FileOutputStream(temp)){
 
 						IOUtils.copyInto(new BufferedInputStream(is), new BufferedOutputStream(fos));
@@ -199,10 +313,11 @@ public class EditProfileActivity extends AppCompatActivity{
 				permissionHandler.revokePermissions();
 
 				Bundle extras = data.getExtras();
-				Log.d(TAG, "onActivityResult: REQUEST_CROP "+extras+" "+data.getData());
-				if(data.getData()!=null){
-					galleryAddPic(data.getData());
-					imageViewProfile.setImageURI(data.getData());
+				Log.d(TAG, "onActivityResult: REQUEST_CROP "+extras+" "+result);
+				if(result!=null){
+					galleryAddPic(result);
+					imageViewProfile.setImageURI(result);
+					newProfileImage = result;
 				}
 				removeTempFile();
 				break;

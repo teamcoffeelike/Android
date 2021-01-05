@@ -1,11 +1,18 @@
 package com.hanul.caramelhomecchiato.network;
 
+import android.net.Uri;
+
 import com.google.gson.JsonObject;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.GET;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
 import retrofit2.http.Query;
 
 public interface UserService{
@@ -19,6 +26,20 @@ public interface UserService{
 
 	@POST("setName")
 	Call<JsonObject> setName(@Field("name") String name);
+
+	@POST("setMotd")
+	Call<JsonObject> setMotd(@Field("motd") String motd);
+
+	static Call<JsonObject> setProfileImage(byte[] profileImage){
+		return INSTANCE.setProfileImage(
+				MultipartBody.Part.createFormData("profileImage", "profileImage",
+						RequestBody.create(profileImage, MediaType.parse("image/*")))
+		);
+	}
+
+	@Multipart
+	@POST("setProfileImage")
+	Call<JsonObject> setProfileImage(@Part MultipartBody.Part profileImage);
 
 	@POST("setPassword")
 	Call<JsonObject> setPassword(@Field("password") String password,

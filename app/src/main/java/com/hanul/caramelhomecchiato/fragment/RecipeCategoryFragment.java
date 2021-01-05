@@ -12,7 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.hanul.caramelhomecchiato.R;
-import com.hanul.caramelhomecchiato.RecipeListActivity;
+import com.hanul.caramelhomecchiato.activity.RecipeListActivity;
 import com.hanul.caramelhomecchiato.data.RecipeCategory;
 
 public class RecipeCategoryFragment extends Fragment{

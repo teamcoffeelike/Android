@@ -1,4 +1,4 @@
-package com.hanul.caramelhomecchiato;
+package com.hanul.caramelhomecchiato.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.hanul.caramelhomecchiato.R;
 import com.hanul.caramelhomecchiato.adapter.RecipeAdapter;
 import com.hanul.caramelhomecchiato.data.RecipeCategory;
 import com.hanul.caramelhomecchiato.data.RecipeCover;

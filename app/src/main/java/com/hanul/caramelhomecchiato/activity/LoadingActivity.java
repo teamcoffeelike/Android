@@ -1,4 +1,4 @@
-package com.hanul.caramelhomecchiato;
+package com.hanul.caramelhomecchiato.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,6 +9,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.gson.JsonObject;
+import com.hanul.caramelhomecchiato.R;
 import com.hanul.caramelhomecchiato.network.LoginService;
 import com.hanul.caramelhomecchiato.util.Auth;
 

@@ -11,8 +11,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
-import com.hanul.caramelhomecchiato.JoinActivity;
-import com.hanul.caramelhomecchiato.JoinActivity.JoinType;
+import com.hanul.caramelhomecchiato.activity.JoinActivity;
+import com.hanul.caramelhomecchiato.activity.JoinActivity.JoinType;
 import com.hanul.caramelhomecchiato.R;
 
 public class JoinFragment extends Fragment{

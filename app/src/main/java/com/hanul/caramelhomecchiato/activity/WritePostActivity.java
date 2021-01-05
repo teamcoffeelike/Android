@@ -1,4 +1,4 @@
-package com.hanul.caramelhomecchiato;
+package com.hanul.caramelhomecchiato.activity;
 
 import android.Manifest;
 import android.app.ProgressDialog;
@@ -19,6 +19,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.gson.JsonObject;
+import com.hanul.caramelhomecchiato.R;
 import com.hanul.caramelhomecchiato.network.PostService;
 import com.hanul.caramelhomecchiato.util.IOUtils;
 import com.hanul.caramelhomecchiato.util.Validate;

@@ -1,4 +1,4 @@
-package com.hanul.caramelhomecchiato;
+package com.hanul.caramelhomecchiato.activity;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -11,6 +11,7 @@ import androidx.viewpager.widget.ViewPager;
 import android.os.Bundle;
 
 import com.google.android.material.tabs.TabLayout;
+import com.hanul.caramelhomecchiato.R;
 import com.hanul.caramelhomecchiato.fragment.FollowerFragment;
 import com.hanul.caramelhomecchiato.fragment.FollowingFragment;
 

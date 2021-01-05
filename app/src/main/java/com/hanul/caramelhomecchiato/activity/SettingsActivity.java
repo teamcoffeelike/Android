@@ -1,4 +1,4 @@
-package com.hanul.caramelhomecchiato;
+package com.hanul.caramelhomecchiato.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,6 +10,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.gson.JsonObject;
+import com.hanul.caramelhomecchiato.R;
 import com.hanul.caramelhomecchiato.network.LoginService;
 import com.hanul.caramelhomecchiato.util.Auth;
 
@@ -25,7 +26,7 @@ public class SettingsActivity extends AppCompatActivity{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_settings);
 
-		findViewById(R.id.buttonEditProfile).setOnClickListener(v -> {
+		findViewById(R.id.buttonEditProfileImage).setOnClickListener(v -> {
 			startActivity(new Intent(this, EditProfileActivity.class));
 		});
 

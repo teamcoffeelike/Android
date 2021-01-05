@@ -1,4 +1,4 @@
-package com.hanul.caramelhomecchiato;
+package com.hanul.caramelhomecchiato.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,6 +17,7 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.gson.JsonObject;
+import com.hanul.caramelhomecchiato.R;
 import com.hanul.caramelhomecchiato.data.UserProfile;
 import com.hanul.caramelhomecchiato.fragment.ProfileFragment;
 import com.hanul.caramelhomecchiato.fragment.RecentPostFragment;

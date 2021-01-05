@@ -17,7 +17,7 @@ import androidx.appcompat.widget.PopupMenu;
 import com.bumptech.glide.Glide;
 import com.google.gson.JsonObject;
 import com.hanul.caramelhomecchiato.R;
-import com.hanul.caramelhomecchiato.ReactionActivity;
+import com.hanul.caramelhomecchiato.activity.ReactionActivity;
 import com.hanul.caramelhomecchiato.data.Post;
 import com.hanul.caramelhomecchiato.network.PostService;
 import com.hanul.caramelhomecchiato.util.Auth;

@@ -66,28 +66,28 @@
                 android:resource="@xml/provider_paths" />
         </provider>
 
-        <activity android:name=".ChangePasswordActivity" />
-        <activity android:name=".EditProfileActivity" />
-        <activity android:name=".FindPasswordActivity" />
-        <activity android:name=".FollowsActivity" />
-        <activity android:name=".JoinActivity" />
-        <activity android:name=".JoinKakaoActivity" />
-        <activity android:name=".LikesActivity" />
-        <activity android:name=".LoadingActivity">
+        <activity android:name=".activity.ChangePasswordActivity" />
+        <activity android:name=".activity.EditProfileActivity" />
+        <activity android:name=".activity.FindPasswordActivity" />
+        <activity android:name=".activity.FollowsActivity" />
+        <activity android:name=".activity.JoinActivity" />
+        <activity android:name=".activity.JoinKakaoActivity" />
+        <activity android:name=".activity.LikesActivity" />
+        <activity android:name=".activity.LoadingActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".LoginActivity" />
-        <activity android:name=".MainActivity" />
-        <activity android:name=".ReactionActivity" />
-        <activity android:name=".RecipeActivity"/>
-        <activity android:name=".RecipeListActivity" />
-        <activity android:name=".SearchFriendActivity" />
-        <activity android:name=".SettingsActivity" />
-        <activity android:name=".WritePostActivity" />
+        <activity android:name=".activity.LoginActivity" />
+        <activity android:name=".activity.MainActivity" />
+        <activity android:name=".activity.ReactionActivity" />
+        <activity android:name=".activity.RecipeActivity"/>
+        <activity android:name=".activity.RecipeListActivity" />
+        <activity android:name=".activity.SearchFriendActivity" />
+        <activity android:name=".activity.SettingsActivity" />
+        <activity android:name=".activity.WritePostActivity" />
         <activity android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />

@@ -1,8 +1,10 @@
-package com.hanul.caramelhomecchiato;
+package com.hanul.caramelhomecchiato.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+
+import com.hanul.caramelhomecchiato.R;
 
 public class LikesActivity extends AppCompatActivity{
 

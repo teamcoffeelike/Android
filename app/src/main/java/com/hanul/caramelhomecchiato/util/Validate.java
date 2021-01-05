@@ -7,9 +7,10 @@ public final class Validate{
 
 	private static final Pattern NAME_REGEX = Pattern.compile("[^\t\n]{1,40}");
 	private static final Pattern EMAIL_REGEX = Pattern.compile("[^@]+@[^@]+");
-	private static final Pattern PHONE_NUMBER_REGEX = Pattern.compile("\\d{3}[ -]?\\d{4}[ -]?\\d{4}");
+	private static final Pattern PHONE_NUMBER_REGEX = Pattern.compile("(\\d{3})[ -]?(\\d{4})[ -]?(\\d{4})");
 	private static final Pattern PASSWORD_REGEX = Pattern.compile("\\S{3,63}");
 	private static final Pattern POST_TEXT_REGEX = Pattern.compile(".{0,1000}");
+	private static final Pattern MOTD_REGEX = Pattern.compile(".{0,100}");
 
 	public static boolean name(String name){
 		return NAME_REGEX.matcher(name).matches();
@@ -25,5 +26,8 @@ public final class Validate{
 	}
 	public static boolean postText(String text){
 		return POST_TEXT_REGEX.matcher(text).matches();
+	}
+	public static boolean motd(String motd){
+		return MOTD_REGEX.matcher(motd).matches();
 	}
 }

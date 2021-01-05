@@ -1,11 +1,8 @@
-package com.hanul.caramelhomecchiato;
+package com.hanul.caramelhomecchiato.activity;
 
 import android.Manifest;
-import android.app.Activity;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -20,11 +17,11 @@ import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
+import com.hanul.caramelhomecchiato.R;
 import com.hanul.caramelhomecchiato.fragment.FindEmailPasswordFragment;
 import com.hanul.caramelhomecchiato.fragment.FindPhonePasswordFragment;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class FindPasswordActivity extends AppCompatActivity {
 	private ViewPager viewPager;

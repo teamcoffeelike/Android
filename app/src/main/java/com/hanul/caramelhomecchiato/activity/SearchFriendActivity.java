@@ -1,4 +1,4 @@
-package com.hanul.caramelhomecchiato;
+package com.hanul.caramelhomecchiato.activity;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -8,6 +8,7 @@ import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.hanul.caramelhomecchiato.R;
 import com.hanul.caramelhomecchiato.adapter.SearchFriendAdapter;
 
 public class SearchFriendActivity extends AppCompatActivity{

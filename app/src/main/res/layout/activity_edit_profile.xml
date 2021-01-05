@@ -4,17 +4,15 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	tools:context=".EditProfileActivity">
+	tools:context=".activity.EditProfileActivity">
 
 	<ImageButton
 		android:id="@+id/editProfileSubmit"
+		style="?android:attr/borderlessButtonStyle"
 		android:layout_width="50dp"
 		android:layout_height="50dp"
 		android:src="@drawable/ic_done"
-		style="?android:attr/borderlessButtonStyle"
 		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintHorizontal_bias="1.0"
-		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toTopOf="parent" />
 
 	<ImageView
@@ -24,70 +22,62 @@
 		android:layout_marginTop="148dp"
 		android:src="@color/OrangeYellowCrayola"
 		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintHorizontal_bias="0.498"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toTopOf="parent" />
 
+	<Button
+		android:id="@+id/buttonEditProfileImage"
+		style="?android:attr/borderlessButtonStyle"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="@string/button_edit_profile_image"
+		android:textColor="@color/VanDykeBrown"
+		android:textSize="18sp"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toBottomOf="@+id/imageViewProfile" />
+
+	<TextView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="@string/input_username"
+		app:layout_constraintBottom_toTopOf="@id/editTextName"
+		app:layout_constraintStart_toStartOf="@id/editTextName" />
+
 	<EditText
-		android:id="@+id/editTextUserName"
+		android:id="@+id/editTextName"
 		android:layout_width="300dp"
 		android:layout_height="wrap_content"
 		android:layout_marginTop="64dp"
+		android:autofillHints="username"
 		android:ems="10"
-		android:paddingLeft="15dp"
-		android:theme="@style/edit_text"
 		android:inputType="textPersonName"
+		android:paddingStart="15dp"
+		android:paddingEnd="15dp"
+		android:theme="@style/edit_text"
 		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintHorizontal_bias="0.504"
 		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@+id/buttonEditProfile" />
+		app:layout_constraintTop_toBottomOf="@+id/buttonEditProfileImage" />
+
+	<TextView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="@string/input_motd"
+		app:layout_constraintBottom_toTopOf="@+id/editTextMotd"
+		app:layout_constraintStart_toStartOf="@+id/editTextMotd" />
 
 	<EditText
-		android:id="@+id/editTextUserMotd"
+		android:id="@+id/editTextMotd"
 		android:layout_width="300dp"
 		android:layout_height="wrap_content"
 		android:layout_marginTop="36dp"
 		android:ems="10"
-		android:paddingLeft="15dp"
-		android:theme="@style/edit_text"
+		android:importantForAutofill="no"
 		android:inputType="textPersonName"
+		android:paddingStart="15dp"
+		android:paddingEnd="15dp"
+		android:theme="@style/edit_text"
 		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintHorizontal_bias="0.504"
 		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@+id/editTextUserName" />
-
-	<Button
-		android:id="@+id/buttonEditProfile"
-		style="?android:attr/borderlessButtonStyle"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:text="프로필 사진 편집"
-		android:textColor="@color/VanDykeBrown"
-		android:textSize="18sp"
-		app:layout_constraintBottom_toBottomOf="parent"
-		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintHorizontal_bias="0.498"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@+id/imageViewProfile"
-		app:layout_constraintVertical_bias="0.0" />
-
-	<TextView
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_marginStart="56dp"
-		android:layout_marginLeft="56dp"
-		android:text="사용자 이름"
-		app:layout_constraintBottom_toTopOf="@+id/editTextUserName"
-		app:layout_constraintStart_toStartOf="parent" />
-
-	<TextView
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_marginStart="56dp"
-		android:layout_marginLeft="56dp"
-		android:text="소개"
-		app:layout_constraintBottom_toTopOf="@+id/editTextUserMotd"
-		app:layout_constraintStart_toStartOf="parent" />
-
-
+		app:layout_constraintTop_toBottomOf="@id/editTextName" />
 </androidx.constraintlayout.widget.ConstraintLayout>

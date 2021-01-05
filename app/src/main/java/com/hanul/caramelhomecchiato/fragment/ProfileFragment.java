@@ -14,9 +14,9 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.hanul.caramelhomecchiato.EditProfileActivity;
+import com.hanul.caramelhomecchiato.activity.EditProfileActivity;
 import com.hanul.caramelhomecchiato.R;
-import com.hanul.caramelhomecchiato.WritePostActivity;
+import com.hanul.caramelhomecchiato.activity.WritePostActivity;
 import com.hanul.caramelhomecchiato.adapter.ProfilePostAdapter;
 import com.hanul.caramelhomecchiato.data.Post;
 import com.hanul.caramelhomecchiato.data.User;
@@ -28,7 +28,7 @@ public class ProfileFragment extends Fragment{
 		View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
 		/* 프로필 편집 버튼 */
-		Button btnEditProfile = view.findViewById(R.id.buttonEditProfile);
+		Button btnEditProfile = view.findViewById(R.id.buttonEditProfileImage);
 		btnEditProfile.setOnClickListener(v -> {
 			Intent intent = new Intent(getContext(), EditProfileActivity.class);
 			startActivity(intent);
