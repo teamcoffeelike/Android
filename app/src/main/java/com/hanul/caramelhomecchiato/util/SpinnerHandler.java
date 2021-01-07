@@ -1,9 +1,11 @@
 package com.hanul.caramelhomecchiato.util;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 
 import androidx.activity.ComponentActivity;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LifecycleOwner;
 
 public class SpinnerHandler extends AutoDisposed{
 	private ProgressDialog spinnerDialog;
@@ -14,6 +16,9 @@ public class SpinnerHandler extends AutoDisposed{
 	public SpinnerHandler(Fragment fragment){
 		super(fragment);
 	}
+	public SpinnerHandler(Context context, LifecycleOwner lifecycleOwner){
+		super(context, lifecycleOwner);
+	}
 
 	@Override protected void onDestroy(){
 		dismiss();
@@ -21,7 +26,7 @@ public class SpinnerHandler extends AutoDisposed{
 
 	public void show(){
 		if(spinnerDialog==null){
-			spinnerDialog = new ProgressDialog(context);
+			spinnerDialog = new ProgressDialog(getContext());
 			spinnerDialog.setCancelable(false);
 			spinnerDialog.setCanceledOnTouchOutside(false);
 			spinnerDialog.show();

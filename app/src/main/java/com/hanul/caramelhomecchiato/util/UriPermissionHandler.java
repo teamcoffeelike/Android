@@ -22,7 +22,7 @@ public class UriPermissionHandler extends AutoDisposed{
 	}
 
 	public void grantPermissions(Intent intent, Uri uri, int flags){
-		for(ResolveInfo resolveInfo : context
+		for(ResolveInfo resolveInfo : getContext()
 				.getPackageManager()
 				.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY)){
 			grant(resolveInfo.activityInfo.packageName, uri, flags);
@@ -30,7 +30,7 @@ public class UriPermissionHandler extends AutoDisposed{
 	}
 
 	private void grant(String packageName, Uri uri, int flags){
-		context.grantUriPermission(packageName, uri, flags);
+		getContext().grantUriPermission(packageName, uri, flags);
 		Flags f = map.get(uri);
 		if(f==null){
 			f = new Flags();
@@ -41,7 +41,7 @@ public class UriPermissionHandler extends AutoDisposed{
 
 	public void revokePermissions(){
 		for(Map.Entry<Uri, Flags> e : map.entrySet()){
-			context.revokeUriPermission(e.getKey(), e.getValue().flags);
+			getContext().revokeUriPermission(e.getKey(), e.getValue().flags);
 		}
 		map.clear();
 	}

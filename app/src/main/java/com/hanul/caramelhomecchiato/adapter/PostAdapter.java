@@ -21,9 +21,9 @@ import com.hanul.caramelhomecchiato.activity.ReactionActivity;
 import com.hanul.caramelhomecchiato.data.Post;
 import com.hanul.caramelhomecchiato.network.PostService;
 import com.hanul.caramelhomecchiato.util.Auth;
+import com.hanul.caramelhomecchiato.util.BaseCallback;
 
 import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.Response;
 
 public class PostAdapter extends BaseAdapter<Post>{
@@ -75,16 +75,17 @@ public class PostAdapter extends BaseAdapter<Post>{
 						new AlertDialog.Builder(itemView.getContext())
 								.setTitle("정말 삭제하시겠습니까?")
 								.setPositiveButton("예", (dialog, which) -> {
-									PostService.INSTANCE.deletePost(getItem().getId()).enqueue(new Callback<JsonObject>(){
-										@Override public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response){
-											JsonObject body = response.body();
-											if(body.has("error")){
-												Log.e(TAG, "deletePost: 예상치 못한 오류: "+body.get("error").getAsString());
-												Toast.makeText(itemView.getContext(), "예상치 못한 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
-												return;
-											}
+									PostService.INSTANCE.deletePost(getItem().getId()).enqueue(new BaseCallback(){
+										@Override public void onSuccessfulResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response, @NonNull JsonObject result){
 											Toast.makeText(itemView.getContext(), "포스트를 삭제했습니다.", Toast.LENGTH_SHORT).show();
-											// TODO List 변경?
+										}
+										@Override public void onErrorResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response, @NonNull String error){
+											Log.e(TAG, "deletePost: 예상치 못한 오류: "+error);
+											Toast.makeText(itemView.getContext(), "예상치 못한 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
+										}
+										@Override public void onFailedResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response){
+											Log.e(TAG, "Failure : "+response.errorBody());
+											Toast.makeText(itemView.getContext(), "예상치 못한 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
 										}
 										@Override public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t){
 											Log.e(TAG, "deletePost: Failure ", t);
@@ -114,7 +115,14 @@ public class PostAdapter extends BaseAdapter<Post>{
 		@Override protected void setItem(int position, Post post){
 			if(post.getAuthor().getProfileImage()!=null){
 				Glide.with(itemView)
-						.load(post.getAuthor().getProfileImage())
+						.load(R.drawable.default_profile_image)
+						.placeholder(R.drawable.default_profile_image)
+						.circleCrop()
+						.into(imageViewPostUserProfile);
+			}else{
+				Glide.with(itemView)
+						.load(R.drawable.default_profile_image)
+						.circleCrop()
 						.into(imageViewPostUserProfile);
 			}
 			textViewPostUser.setText(post.getAuthor().getName());
@@ -130,7 +138,7 @@ public class PostAdapter extends BaseAdapter<Post>{
 			textViewLikes.setText(itemView.getContext().getString(R.string.n_likes, post.getLikes()));
 
 			buttonPostOption.setVisibility(
-					post.getAuthor().getId()!=Auth.getInstance().getLoginUser() ?
+					post.getAuthor().getId()!=Auth.getInstance().expectLoginUser() ?
 							View.INVISIBLE :
 							View.VISIBLE); // TODO ????
 		}

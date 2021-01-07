@@ -31,12 +31,12 @@
 
 				<ImageView
 					android:id="@+id/imageViewAppBarUserProfile"
-					android:layout_width="50dp"
-					android:layout_height="50dp"
+					android:layout_width="36dp"
+					android:layout_height="36dp"
 					android:layout_gravity="end|center_vertical"
-					android:layout_marginRight="5dp"
-					android:layout_marginEnd="5dp"
-					android:src="@drawable/ic_menu_profile" />
+					android:layout_marginEnd="8dp"
+					android:layout_marginVertical="8dp"
+					android:src="@drawable/default_profile_image" />
 
 			</androidx.appcompat.widget.Toolbar>
 
@@ -93,23 +93,26 @@
 				android:id="@+id/imageViewProfile"
 				android:layout_width="100dp"
 				android:layout_height="100dp"
-				android:layout_marginTop="50dp"
-				android:layout_marginRight="15dp"
-				android:src="@drawable/test_user"
-				app:layout_constraintEnd_toEndOf="parent"
-				app:layout_constraintTop_toTopOf="parent" />
+				android:layout_marginEnd="15dp"
+				android:layout_marginBottom="30dp"
+				android:src="@drawable/default_profile_image"
+				app:layout_constraintBottom_toBottomOf="parent"
+				app:layout_constraintEnd_toEndOf="parent" />
 
 			<TextView
 				android:id="@+id/textViewProfileName"
-				android:layout_width="wrap_content"
+				android:layout_width="0dp"
 				android:layout_height="wrap_content"
-				android:layout_marginBottom="50dp"
-				android:layout_marginLeft="25dp"
+				android:layout_marginHorizontal="12dp"
+				android:layout_marginBottom="12dp"
+				android:gravity="end|bottom"
+				android:maxLines="1"
 				android:textColor="@color/Almond"
 				android:textSize="20sp"
-				app:layout_constraintBottom_toBottomOf="parent"
+				app:layout_constraintBottom_toBottomOf="@+id/imageViewProfile"
 				app:layout_constraintEnd_toStartOf="@+id/imageViewProfile"
-				app:layout_constraintStart_toStartOf="parent" />
+				app:layout_constraintStart_toStartOf="parent"
+				app:autoSizeTextType="uniform"/>
 		</androidx.constraintlayout.widget.ConstraintLayout>
 
 		<TextView

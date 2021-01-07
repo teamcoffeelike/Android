@@ -10,26 +10,28 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.PopupMenu;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
+import com.bumptech.glide.Glide;
 import com.google.gson.JsonObject;
 import com.hanul.caramelhomecchiato.CaramelHomecchiatoApp;
 import com.hanul.caramelhomecchiato.R;
+import com.hanul.caramelhomecchiato.data.UserProfile;
 import com.hanul.caramelhomecchiato.network.UserService;
 import com.hanul.caramelhomecchiato.util.IOUtils;
 import com.hanul.caramelhomecchiato.util.SpinnerHandler;
@@ -43,9 +45,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
@@ -53,8 +56,11 @@ import retrofit2.Response;
 
 public class EditProfileActivity extends AppCompatActivity{
 	private static final String TAG = "EditProfileActivity";
+
 	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US);
 	private static final String FILE_PROVIDER_AUTH = "com.hanul.caramelhomecchiato.fileprovider";
+
+	public static final String EXTRA_PROFILE = "profile";
 
 	private ImageView imageViewProfile;
 
@@ -79,12 +85,34 @@ public class EditProfileActivity extends AppCompatActivity{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_edit_profile);
 
+		Parcelable profileExtra = getIntent().getParcelableExtra(EXTRA_PROFILE);
+		if(!(profileExtra instanceof UserProfile)){
+			throw new IllegalStateException("EditProfileActivity에 UserProfile 제공되지 않음");
+		}
+		UserProfile profile = (UserProfile)profileExtra;
+
 		ImageButton editProfileSubmit = findViewById(R.id.editProfileSubmit);
 		imageViewProfile = findViewById(R.id.imageViewProfile);
-		Button buttonEditProfile = findViewById(R.id.buttonEditProfileImage);
+
+		if(profile.getUser().getProfileImage()!=null){
+			Glide.with(this)
+					.load(profile.getUser().getProfileImage())
+					.placeholder(R.drawable.default_profile_image)
+					.circleCrop()
+					.into(imageViewProfile);
+		}else{
+			Glide.with(this)
+					.load(R.drawable.default_profile_image)
+					.circleCrop()
+					.into(imageViewProfile);
+		}
 
 		EditText editTextName = findViewById(R.id.editTextName);
 		EditText editTextMotd = findViewById(R.id.editTextMotd);
+
+		editTextName.setText(profile.getUser().getName());
+		editTextMotd.setText(profile.getMotd());
+
 		editTextName.addTextChangedListener(new TextWatcher(){
 			@Override public void beforeTextChanged(CharSequence s, int start, int count, int after){}
 			@Override public void onTextChanged(CharSequence s, int start, int before, int count){}
@@ -118,58 +146,12 @@ public class EditProfileActivity extends AppCompatActivity{
 				}
 			}else motd = null;
 
-
 			ExecutorService executorService = ((CaramelHomecchiatoApp)getApplication()).executorService;
-			Future<Response<JsonObject>> setProfileImage , setName , setMotd;
-
-			setProfileImage = newProfileImage==null ? null : executorService.submit(() -> {
-				byte[] read;
-				read = IOUtils.read(getContentResolver(), newProfileImage);
-				return UserService.setProfileImage(read).execute();
-			});
-
-			setName = name==null ? null : executorService.submit(() -> {
-				return UserService.INSTANCE.setName(name).execute();
-			});
-
-			setMotd = motd==null ? null : executorService.submit(() -> {
-				return UserService.INSTANCE.setMotd(motd).execute();
-			});
-
-			spinnerHandler.show();
-			executorService.submit(() -> {
-				if(setProfileImage!=null){
-					try{
-						Response<JsonObject> jsonObjectResponse = setProfileImage.get();
-						JsonObject body = jsonObjectResponse.body();
-						if(body==null){
-
-						}else if(body.has("error")){
-							Log.e(TAG, "setProfileImage: "+body.get("error").getAsString());
-							Toast.makeText(this, "프로필 이미지 설정 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
-						}
-					}catch(ExecutionException e){
-						Log.e(TAG, "setProfileImage: Exception", e);
-					}catch(InterruptedException e){
-						Log.e(TAG, "setProfileImage: Exception", e);
-						Thread.currentThread().interrupt();
-					}
-				}
-
-				if(setName!=null){
-
-				}
-
-				if(setMotd!=null){
-
-				}
-
-				spinnerHandler.dismiss();
-			});
+			enqueueForm(executorService, name, motd);
 		});
 
 		/* 프로필 사진 편집 버튼 클릭 -> 갤러리/사진찍기 팝업메뉴 */
-		buttonEditProfile.setOnClickListener(v -> {
+		findViewById(R.id.buttonEditProfileImage).setOnClickListener(v -> {
 			PopupMenu popupMenu = new PopupMenu(this, v);
 			popupMenu.getMenuInflater().inflate(R.menu.edit_profile_menu, popupMenu.getMenu());
 
@@ -184,23 +166,132 @@ public class EditProfileActivity extends AppCompatActivity{
 			});
 			popupMenu.show();
 		});
-
-		getOnBackPressedDispatcher().addCallback(new OnBackPressedCallback(true){
-			@Override public void handleOnBackPressed(){
-				new AlertDialog.Builder(EditProfileActivity.this)
-						.setTitle("작성한 내용을 저장하지 않고 창을 닫겠습니까?")
-						.setPositiveButton("예", (dialog, which) -> {
-							finish();
-						})
-						.setNegativeButton("계속 작성", (dialog, which) -> {})
-						.show();
-			}
-		});
 	}
 
 	@Override protected void onDestroy(){
 		super.onDestroy();
 		removeTempFile();
+	}
+
+	@Override public void onBackPressed(){
+		if(newProfileImage!=null||nameChanged||motdChanged){
+			new AlertDialog.Builder(EditProfileActivity.this)
+					.setTitle("작성한 내용을 저장하지 않고 창을 닫겠습니까?")
+					.setPositiveButton("예", (dialog, which) -> {
+						finish();
+					})
+					.setNegativeButton("계속 작성", (dialog, which) -> {})
+					.show();
+		}else super.onBackPressed();
+	}
+
+	@SuppressWarnings("ConstantConditions")
+	private void enqueueForm(ExecutorService executorService, String name, String motd){
+		@Nullable Future<Response<JsonObject>> setProfileImage =
+				newProfileImage==null ? null : executorService.submit(() -> {
+					byte[] read;
+					read = IOUtils.read(getContentResolver(), newProfileImage);
+					return UserService.setProfileImage(read).execute();
+				});
+
+		@Nullable Future<Response<JsonObject>> setName =
+				name==null ? null : executorService.submit(() -> {
+					return UserService.INSTANCE.setName(name).execute();
+				});
+
+		@Nullable Future<Response<JsonObject>> setMotd =
+				motd==null ? null : executorService.submit(() -> {
+					return UserService.INSTANCE.setMotd(motd).execute();
+				});
+
+		spinnerHandler.show();
+		executorService.submit(() -> {
+			boolean allSucceed = true;
+			List<String> toasts = new ArrayList<>();
+
+			if(setProfileImage!=null){
+				try{
+					Response<JsonObject> response = setProfileImage.get();
+					if(response.isSuccessful()){
+						JsonObject body = response.body();
+						if(body.has("error")){
+							Log.e(TAG, "setProfileImage: "+body.get("error").getAsString());
+							toasts.add("프로필 이미지 설정 중 오류가 발생했습니다.");
+							allSucceed = false;
+						}else{
+							// TODO?
+						}
+					}else{
+						Log.e(TAG, "setProfileImage: "+response.errorBody().string());
+						toasts.add("프로필 이미지 설정 중 오류가 발생했습니다.");
+						allSucceed = false;
+					}
+				}catch(Exception e){
+					Log.e(TAG, "setProfileImage: Exception", e);
+					toasts.add("프로필 이미지 설정 중 예상치 못한 오류가 발생했습니다.");
+					allSucceed = false;
+				}
+			}
+
+			if(setName!=null){
+				try{
+					Response<JsonObject> response = setName.get();
+					if(response.isSuccessful()){
+						JsonObject body = response.body();
+						if(body.has("error")){
+							Log.e(TAG, "setName: "+body.get("error").getAsString());
+							toasts.add("이름 설정 중 오류가 발생했습니다.");
+							allSucceed = false;
+						}else{
+							// TODO?
+						}
+					}else{
+						Log.e(TAG, "setName: "+response.errorBody().string());
+						toasts.add("이름 설정 중 오류가 발생했습니다.");
+						allSucceed = false;
+					}
+				}catch(Exception e){
+					Log.e(TAG, "setName: Exception", e);
+					toasts.add("이름 설정 중 예상치 못한 오류가 발생했습니다.");
+					allSucceed = false;
+				}
+			}
+
+			if(setMotd!=null){
+				try{
+					Response<JsonObject> response = setMotd.get();
+					if(response.isSuccessful()){
+						JsonObject body = response.body();
+						if(body.has("error")){
+							Log.e(TAG, "setMotd: "+body.get("error").getAsString());
+							toasts.add("소개글 설정 중 오류가 발생했습니다.");
+							allSucceed = false;
+						}else{
+							// TODO?
+						}
+					}else{
+						Log.e(TAG, "setMotd: "+response.errorBody().string());
+						toasts.add("소개글 설정 중 오류가 발생했습니다.");
+						allSucceed = false;
+					}
+				}catch(Exception e){
+					Log.e(TAG, "setMotd: Exception", e);
+					toasts.add("소개글 설정 중 예상치 못한 오류가 발생했습니다.");
+					allSucceed = false;
+				}
+			}
+
+			final boolean allSucceed2 = allSucceed;
+
+			ContextCompat.getMainExecutor(this).execute(() -> {
+				for(String toast : toasts){
+					Toast.makeText(this, toast, Toast.LENGTH_SHORT).show();
+				}
+
+				if(allSucceed2) finish();
+				else spinnerHandler.dismiss();
+			});
+		});
 	}
 
 	/* 갤러리에서 이미지 가져오기 */
@@ -218,11 +309,12 @@ public class EditProfileActivity extends AppCompatActivity{
 				return;
 			}
 
-			startActivityForResult(
-					new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-							.setType("image/*"),
-					REQUEST_PICK_IMAGE);
 		}
+		spinnerHandler.show();
+		startActivityForResult(
+				new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+						.setType("image/*"),
+				REQUEST_PICK_IMAGE);
 	}
 
 	/* 카메라로 사진찍기 */
@@ -245,6 +337,7 @@ public class EditProfileActivity extends AppCompatActivity{
 				return;
 			}
 		}
+		spinnerHandler.show();
 		Intent takePhotoIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 		if(takePhotoIntent.resolveActivity(getPackageManager())!=null){
 			Uri uri = FileProvider.getUriForFile(this, FILE_PROVIDER_AUTH, createTempFile());
@@ -272,8 +365,8 @@ public class EditProfileActivity extends AppCompatActivity{
 	}
 
 	/* 갤러리에 이미지 저장 */
-	private void galleryAddPic(Uri file){
-		Log.d(TAG, "galleryAddPic: "+file);
+	private void addToMedia(Uri file){
+		Log.d(TAG, "addToMedia: "+file);
 		MediaScannerConnection.scanFile(this,
 				new String[]{file.toString()},
 				null,
@@ -286,7 +379,7 @@ public class EditProfileActivity extends AppCompatActivity{
 		super.onActivityResult(requestCode, resultCode, data);
 
 		if(resultCode==RESULT_OK){
-			Uri result = data.getData();
+			Uri result = data==null ? null : data.getData();
 			switch(requestCode){
 			case REQUEST_TAKE_PHOTO:
 				permissionHandler.revokePermissions();
@@ -294,8 +387,7 @@ public class EditProfileActivity extends AppCompatActivity{
 				break;
 			case REQUEST_PICK_IMAGE:
 				if(data!=null){
-					Bundle extras = data.getExtras();
-					Log.d(TAG, "onActivityResult: REQUEST_PICK_IMAGE "+extras+" "+result);
+					Log.d(TAG, "onActivityResult: REQUEST_PICK_IMAGE "+result);
 
 					File temp = createTempFile();
 					try(InputStream is = getContentResolver().openInputStream(result);
@@ -312,16 +404,21 @@ public class EditProfileActivity extends AppCompatActivity{
 			case REQUEST_CROP:
 				permissionHandler.revokePermissions();
 
-				Bundle extras = data.getExtras();
-				Log.d(TAG, "onActivityResult: REQUEST_CROP "+extras+" "+result);
+				Log.d(TAG, "onActivityResult: REQUEST_CROP "+result);
 				if(result!=null){
-					galleryAddPic(result);
-					imageViewProfile.setImageURI(result);
+					addToMedia(result);
+					Glide.with(this)
+							.load(result)
+							.circleCrop()
+							.into(imageViewProfile);
 					newProfileImage = result;
 				}
 				removeTempFile();
+				spinnerHandler.dismiss();
 				break;
 			}
+		}else{
+			spinnerHandler.dismiss();
 		}
 
 	}

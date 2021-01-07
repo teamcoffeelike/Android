@@ -8,7 +8,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
 import com.google.gson.JsonObject;
+import com.hanul.caramelhomecchiato.CaramelHomecchiatoApp;
 import com.hanul.caramelhomecchiato.R;
 import com.hanul.caramelhomecchiato.network.LoginService;
 import com.hanul.caramelhomecchiato.util.Auth;
@@ -29,6 +31,9 @@ public class LoadingActivity extends AppCompatActivity{
 	protected void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_loading);
+
+		CaramelHomecchiatoApp app = (CaramelHomecchiatoApp)getApplication();
+		app.executorService.submit(() -> Glide.get(app.getApplicationContext()).clearDiskCache());
 
 		String authToken = Auth.getInstance().getAuthToken();
 		if(authToken!=null){

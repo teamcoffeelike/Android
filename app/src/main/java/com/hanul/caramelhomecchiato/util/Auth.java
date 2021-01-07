@@ -24,7 +24,7 @@ public final class Auth{
 	}
 
 	private final Application application;
-	@Nullable private final Lazy<String> authToken = new Lazy<>(ctx ->
+	private final Lazy<String> authToken = new Lazy<>(ctx ->
 			ctx.getSharedPreferences("auth", Context.MODE_PRIVATE)
 					.getString("token", null));
 	@Nullable private Integer loginUser;
@@ -62,6 +62,12 @@ public final class Auth{
 	}
 	public void setLoginUser(@Nullable Integer loginUser){
 		this.loginUser = loginUser;
+	}
+
+	public int expectLoginUser(){
+		Integer loginUser = this.loginUser;
+		if(loginUser==null) throw new IllegalStateException("로그인 유저 정보 없음");
+		return loginUser;
 	}
 
 	public void setLoginData(JsonObject jsonObject){

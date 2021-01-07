@@ -68,8 +68,7 @@
 
         <activity android:name=".activity.ChangePasswordActivity" />
         <activity android:name=".activity.EditProfileActivity" />
-        <activity android:name=".activity.FindPasswordActivity" />
-        <activity android:name=".activity.FollowsActivity" />
+	    <activity android:name=".activity.FollowsActivity" />
         <activity android:name=".activity.JoinActivity" />
         <activity android:name=".activity.JoinKakaoActivity" />
         <activity android:name=".activity.LikesActivity" />

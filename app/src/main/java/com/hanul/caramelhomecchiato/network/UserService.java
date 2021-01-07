@@ -1,7 +1,5 @@
 package com.hanul.caramelhomecchiato.network;
 
-import android.net.Uri;
-
 import com.google.gson.JsonObject;
 
 import okhttp3.MediaType;
@@ -9,6 +7,7 @@ import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
@@ -24,9 +23,11 @@ public interface UserService{
 	@GET("profile")
 	Call<JsonObject> profile(@Query("userId") int userId);
 
+	@FormUrlEncoded
 	@POST("setName")
 	Call<JsonObject> setName(@Field("name") String name);
 
+	@FormUrlEncoded
 	@POST("setMotd")
 	Call<JsonObject> setMotd(@Field("motd") String motd);
 
@@ -41,6 +42,7 @@ public interface UserService{
 	@POST("setProfileImage")
 	Call<JsonObject> setProfileImage(@Part MultipartBody.Part profileImage);
 
+	@FormUrlEncoded
 	@POST("setPassword")
 	Call<JsonObject> setPassword(@Field("password") String password,
 	                             @Field("newPassword") String newPassword);
@@ -51,6 +53,7 @@ public interface UserService{
 	@GET("getFollowing")
 	Call<JsonObject> getFollowing(@Query("user") int user);
 
+	@FormUrlEncoded
 	@POST("setFollowing")
 	Call<JsonObject> setFollowing(@Field("followingId") int followingId, @Field("following") boolean following);
 }

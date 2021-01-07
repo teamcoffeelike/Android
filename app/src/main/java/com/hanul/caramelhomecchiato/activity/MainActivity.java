@@ -4,10 +4,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -15,6 +17,7 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.gson.JsonObject;
 import com.hanul.caramelhomecchiato.R;
@@ -26,21 +29,23 @@ import com.hanul.caramelhomecchiato.fragment.TimerFragment;
 import com.hanul.caramelhomecchiato.network.NetUtils;
 import com.hanul.caramelhomecchiato.network.UserService;
 import com.hanul.caramelhomecchiato.util.Auth;
+import com.hanul.caramelhomecchiato.util.BaseCallback;
 
 import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity{
 	private static final String TAG = "MainActivity";
 
 	private RecentPostFragment recentPostFragment;
-	private Fragment recipeCategoryFragment;
-	private Fragment timerFragment;
-	private Fragment profileFragment;
+	private RecipeCategoryFragment recipeCategoryFragment;
+	private TimerFragment timerFragment;
+	private ProfileFragment profileFragment;
 
-	private DrawerLayout drawerLayout;
 	private TextView textViewProfileName;
+	private ImageView imageViewProfile;
+	private DrawerLayout drawerLayout;
+	private ImageView imageViewAppBarUserProfile;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState){
@@ -48,6 +53,7 @@ public class MainActivity extends AppCompatActivity{
 		setContentView(R.layout.activity_main);
 
 		textViewProfileName = findViewById(R.id.textViewProfileName);
+		imageViewProfile = findViewById(R.id.imageViewProfile);
 
 		recentPostFragment = new RecentPostFragment();
 		recipeCategoryFragment = new RecipeCategoryFragment();
@@ -69,7 +75,8 @@ public class MainActivity extends AppCompatActivity{
 		drawerLayout.addDrawerListener(toggle);
 		toggle.syncState();
 
-		findViewById(R.id.imageViewAppBarUserProfile).setOnClickListener(v -> {
+		imageViewAppBarUserProfile = findViewById(R.id.imageViewAppBarUserProfile);
+		imageViewAppBarUserProfile.setOnClickListener(v -> {
 			if(drawerLayout.isDrawerVisible(GravityCompat.END)) drawerLayout.closeDrawer(GravityCompat.END);
 			else drawerLayout.openDrawer(GravityCompat.END);
 		});
@@ -101,20 +108,24 @@ public class MainActivity extends AppCompatActivity{
 			return true;
 		});
 
+		setProfile(null);
+
 		show(recentPostFragment);
 	}
 
 	@Override protected void onResume(){
 		super.onResume();
-		UserService.INSTANCE.profile(Auth.getInstance().getLoginUser()).enqueue(new Callback<JsonObject>(){
-			@Override public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response){
-				JsonObject body = response.body();
-				if(body.has("error")){
-					Log.e(TAG, "profile: 예상치 못한 오류: "+body.get("error").getAsString());
-					Toast.makeText(MainActivity.this, "예상치 못한 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
-					return;
-				}
-				setProfile(NetUtils.GSON.fromJson(body, UserProfile.class));
+		UserService.INSTANCE.profile(Auth.getInstance().expectLoginUser()).enqueue(new BaseCallback(){
+			@Override public void onSuccessfulResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response, @NonNull JsonObject result){
+				setProfile(NetUtils.GSON.fromJson(result, UserProfile.class));
+			}
+			@Override public void onErrorResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response, @NonNull String error){
+				Log.e(TAG, "profile: 예상치 못한 오류: "+error);
+				Toast.makeText(MainActivity.this, "예상치 못한 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
+			}
+			@Override public void onFailedResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response){
+				Log.e(TAG, "profile: 요청 실패 ");
+				Toast.makeText(MainActivity.this, "예상치 못한 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
 			}
 			@Override public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t){
 				Log.e(TAG, "profile: Failure ", t);
@@ -123,8 +134,32 @@ public class MainActivity extends AppCompatActivity{
 		});
 	}
 
-	public void setProfile(UserProfile profile){
-		textViewProfileName.setText(profile.getUser().getName());
+	public void setProfile(@Nullable UserProfile profile){
+		textViewProfileName.setText(profile==null ? "" : profile.getUser().getName());
+
+		String profileImage = profile==null ? null : profile.getUser().getProfileImage();
+		if(profileImage==null){
+			Glide.with(this)
+					.load(R.drawable.default_profile_image)
+					.circleCrop()
+					.into(imageViewAppBarUserProfile);
+			Glide.with(this)
+					.load(R.drawable.default_profile_image)
+					.circleCrop()
+					.into(imageViewProfile);
+		}else{
+			Glide.with(this)
+					.load(profileImage)
+					.placeholder(R.drawable.default_profile_image)
+					.circleCrop()
+					.into(imageViewAppBarUserProfile);
+			Glide.with(this)
+					.load(profileImage)
+					.placeholder(R.drawable.default_profile_image)
+					.circleCrop()
+					.into(imageViewProfile);
+		}
+		profileFragment.setProfile(profile);
 	}
 
 	@Override public boolean onKeyDown(int keyCode, KeyEvent event){

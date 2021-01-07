@@ -1,10 +1,10 @@
 package com.hanul.caramelhomecchiato.util;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 
 import androidx.activity.ComponentActivity;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleEventObserver;
@@ -13,19 +13,34 @@ import androidx.lifecycle.LifecycleOwner;
 import java.util.Objects;
 
 public abstract class AutoDisposed implements LifecycleEventObserver{
-	protected final Context context;
+	@Nullable private Context context;
+	@Nullable private final Fragment fragment;
 
 	public AutoDisposed(ComponentActivity activity){
-		this((Context)activity);
-		activity.getLifecycle().addObserver(this);
+		this(activity, activity, null);
 	}
 	public AutoDisposed(Fragment fragment){
-		this(Objects.requireNonNull(fragment.getContext()));
-		fragment.getLifecycle().addObserver(this);
+		this(null, fragment, fragment);
+	}
+	public AutoDisposed(Context context, LifecycleOwner lifecycleOwner){
+		this(context, lifecycleOwner, null);
+	}
+	private AutoDisposed(@Nullable Context context, LifecycleOwner lifecycleOwner, @Nullable Fragment fragment){
+		this.context = context;
+		this.fragment = fragment;
+
+		lifecycleOwner.getLifecycle().addObserver(this);
 	}
 
-	private AutoDisposed(Context context){
-		this.context = context;
+	public Context getContext(){
+		if(context==null){
+			if(fragment!=null){
+				context = Objects.requireNonNull(fragment.getContext());
+			}else{
+				throw new IllegalStateException("Context 제공 불가능");
+			}
+		}
+		return context;
 	}
 
 	@Override public void onStateChanged(@NonNull LifecycleOwner source, @NonNull Lifecycle.Event event){
