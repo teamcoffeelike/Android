@@ -5,29 +5,29 @@ import java.util.regex.Pattern;
 public final class Validate{
 	private Validate(){}
 
-	private static final Pattern NAME_REGEX = Pattern.compile("[^\t\n]{1,40}");
-	private static final Pattern EMAIL_REGEX = Pattern.compile("[^@]+@[^@]+");
-	private static final Pattern PHONE_NUMBER_REGEX = Pattern.compile("(\\d{3})[ -]?(\\d{4})[ -]?(\\d{4})");
-	private static final Pattern PASSWORD_REGEX = Pattern.compile("\\S{3,63}");
-	private static final Pattern POST_TEXT_REGEX = Pattern.compile(".{0,1000}");
-	private static final Pattern MOTD_REGEX = Pattern.compile(".{0,100}");
+	private static final Pattern NAME_REGEX = Pattern.compile("\\s*[^\t\n]{1,40}\\s*");
+	private static final Pattern EMAIL_REGEX = Pattern.compile("\\s*[^@]+@[^@]+\\s*");
+	private static final Pattern PHONE_NUMBER_REGEX = Pattern.compile("\\s*(0\\d\\d)[ -]?(\\d{4})[ -]?(\\d{4})\\s*");
+	private static final Pattern PASSWORD_REGEX = Pattern.compile(".{3,63}");
+	private static final Pattern POST_TEXT_REGEX = Pattern.compile("\\s*.{0,1000}\\s*");
+	private static final Pattern MOTD_REGEX = Pattern.compile("\\s*.{0,100}\\s*");
 
-	public static boolean name(String name){
+	public static boolean name(CharSequence name){
 		return NAME_REGEX.matcher(name).matches();
 	}
-	public static boolean email(String email){
+	public static boolean email(CharSequence email){
 		return EMAIL_REGEX.matcher(email).matches();
 	}
-	public static boolean phoneNumber(String phoneNumber){
+	public static boolean phoneNumber(CharSequence phoneNumber){
 		return PHONE_NUMBER_REGEX.matcher(phoneNumber).matches();
 	}
-	public static boolean password(String password){
+	public static boolean password(CharSequence password){
 		return PASSWORD_REGEX.matcher(password).matches();
 	}
-	public static boolean postText(String text){
+	public static boolean postText(CharSequence text){
 		return POST_TEXT_REGEX.matcher(text).matches();
 	}
-	public static boolean motd(String motd){
+	public static boolean motd(CharSequence motd){
 		return MOTD_REGEX.matcher(motd).matches();
 	}
 }

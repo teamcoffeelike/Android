@@ -1,5 +1,6 @@
 package com.hanul.caramelhomecchiato.network;
 
+import android.net.Uri;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -7,6 +8,7 @@ import com.google.gson.GsonBuilder;
 import com.hanul.caramelhomecchiato.BuildConfig;
 import com.hanul.caramelhomecchiato.data.RecipeTask;
 import com.hanul.caramelhomecchiato.data.UserProfile;
+import com.hanul.caramelhomecchiato.util.UriJsonDeserializer;
 
 import java.io.IOException;
 import java.net.CookieManager;
@@ -27,6 +29,7 @@ public final class NetUtils{
 	public static final Gson GSON = new GsonBuilder()
 			.registerTypeAdapter(RecipeTask.class, RecipeTask.Json.INSTANCE)
 			.registerTypeAdapter(UserProfile.class, UserProfile.Json.INSTANCE)
+			.registerTypeAdapter(Uri.class, UriJsonDeserializer.INSTANCE)
 			.setLenient()
 			.create();
 

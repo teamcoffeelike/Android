@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.WorkerThread;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.core.content.ContextCompat;
@@ -33,6 +34,7 @@ import com.hanul.caramelhomecchiato.CaramelHomecchiatoApp;
 import com.hanul.caramelhomecchiato.R;
 import com.hanul.caramelhomecchiato.data.UserProfile;
 import com.hanul.caramelhomecchiato.network.UserService;
+import com.hanul.caramelhomecchiato.util.GlideUtils;
 import com.hanul.caramelhomecchiato.util.IOUtils;
 import com.hanul.caramelhomecchiato.util.SpinnerHandler;
 import com.hanul.caramelhomecchiato.util.UriPermissionHandler;
@@ -94,18 +96,10 @@ public class EditProfileActivity extends AppCompatActivity{
 		ImageButton editProfileSubmit = findViewById(R.id.editProfileSubmit);
 		imageViewProfile = findViewById(R.id.imageViewProfile);
 
-		if(profile.getUser().getProfileImage()!=null){
-			Glide.with(this)
-					.load(profile.getUser().getProfileImage())
-					.placeholder(R.drawable.default_profile_image)
-					.circleCrop()
-					.into(imageViewProfile);
-		}else{
-			Glide.with(this)
-					.load(R.drawable.default_profile_image)
-					.circleCrop()
-					.into(imageViewProfile);
-		}
+		Glide.with(this)
+				.load(profile.getUser().getProfileImage())
+				.apply(GlideUtils.PROFILE_IMAGE)
+				.into(imageViewProfile);
 
 		EditText editTextName = findViewById(R.id.editTextName);
 		EditText editTextMotd = findViewById(R.id.editTextMotd);
@@ -146,8 +140,7 @@ public class EditProfileActivity extends AppCompatActivity{
 				}
 			}else motd = null;
 
-			ExecutorService executorService = ((CaramelHomecchiatoApp)getApplication()).executorService;
-			enqueueForm(executorService, name, motd);
+			enqueueForm(((CaramelHomecchiatoApp)getApplication()).executorService, name, motd);
 		});
 
 		/* 프로필 사진 편집 버튼 클릭 -> 갤러리/사진찍기 팝업메뉴 */
@@ -185,7 +178,6 @@ public class EditProfileActivity extends AppCompatActivity{
 		}else super.onBackPressed();
 	}
 
-	@SuppressWarnings("ConstantConditions")
 	private void enqueueForm(ExecutorService executorService, String name, String motd){
 		@Nullable Future<Response<JsonObject>> setProfileImage =
 				newProfileImage==null ? null : executorService.submit(() -> {
@@ -204,94 +196,67 @@ public class EditProfileActivity extends AppCompatActivity{
 					return UserService.INSTANCE.setMotd(motd).execute();
 				});
 
+		if(setProfileImage==null&&
+				setName==null&&
+				setMotd==null){
+			finish();
+			return;
+		}
 		spinnerHandler.show();
 		executorService.submit(() -> {
-			boolean allSucceed = true;
 			List<String> toasts = new ArrayList<>();
 
-			if(setProfileImage!=null){
-				try{
-					Response<JsonObject> response = setProfileImage.get();
-					if(response.isSuccessful()){
-						JsonObject body = response.body();
-						if(body.has("error")){
-							Log.e(TAG, "setProfileImage: "+body.get("error").getAsString());
-							toasts.add("프로필 이미지 설정 중 오류가 발생했습니다.");
-							allSucceed = false;
-						}else{
-							// TODO?
-						}
-					}else{
-						Log.e(TAG, "setProfileImage: "+response.errorBody().string());
-						toasts.add("프로필 이미지 설정 중 오류가 발생했습니다.");
-						allSucceed = false;
-					}
-				}catch(Exception e){
-					Log.e(TAG, "setProfileImage: Exception", e);
-					toasts.add("프로필 이미지 설정 중 예상치 못한 오류가 발생했습니다.");
-					allSucceed = false;
-				}
-			}
-
-			if(setName!=null){
-				try{
-					Response<JsonObject> response = setName.get();
-					if(response.isSuccessful()){
-						JsonObject body = response.body();
-						if(body.has("error")){
-							Log.e(TAG, "setName: "+body.get("error").getAsString());
-							toasts.add("이름 설정 중 오류가 발생했습니다.");
-							allSucceed = false;
-						}else{
-							// TODO?
-						}
-					}else{
-						Log.e(TAG, "setName: "+response.errorBody().string());
-						toasts.add("이름 설정 중 오류가 발생했습니다.");
-						allSucceed = false;
-					}
-				}catch(Exception e){
-					Log.e(TAG, "setName: Exception", e);
-					toasts.add("이름 설정 중 예상치 못한 오류가 발생했습니다.");
-					allSucceed = false;
-				}
-			}
-
-			if(setMotd!=null){
-				try{
-					Response<JsonObject> response = setMotd.get();
-					if(response.isSuccessful()){
-						JsonObject body = response.body();
-						if(body.has("error")){
-							Log.e(TAG, "setMotd: "+body.get("error").getAsString());
-							toasts.add("소개글 설정 중 오류가 발생했습니다.");
-							allSucceed = false;
-						}else{
-							// TODO?
-						}
-					}else{
-						Log.e(TAG, "setMotd: "+response.errorBody().string());
-						toasts.add("소개글 설정 중 오류가 발생했습니다.");
-						allSucceed = false;
-					}
-				}catch(Exception e){
-					Log.e(TAG, "setMotd: Exception", e);
-					toasts.add("소개글 설정 중 예상치 못한 오류가 발생했습니다.");
-					allSucceed = false;
-				}
-			}
-
-			final boolean allSucceed2 = allSucceed;
+			boolean allSucceed =
+					(setProfileImage==null||checkTransactionResult(setProfileImage,
+							"setProfileImage",
+							"프로필 이미지",
+							toasts))&
+							(setName==null||checkTransactionResult(setName,
+									"setName",
+									"이름",
+									toasts))&
+							(setMotd==null||checkTransactionResult(setMotd,
+									"setMotd",
+									"소개글",
+									toasts));
 
 			ContextCompat.getMainExecutor(this).execute(() -> {
 				for(String toast : toasts){
 					Toast.makeText(this, toast, Toast.LENGTH_SHORT).show();
 				}
 
-				if(allSucceed2) finish();
+				if(allSucceed) finish();
 				else spinnerHandler.dismiss();
 			});
 		});
+	}
+
+	@WorkerThread
+	@SuppressWarnings({"ConstantConditions", "RedundantSuppression"}) // "IntelliJ"
+	private boolean checkTransactionResult(Future<Response<JsonObject>> transaction,
+	                                       String transactionName,
+	                                       String transactionFriendlyName,
+	                                       List<String> toasts){
+		try{
+			Response<JsonObject> response = transaction.get();
+			if(!response.isSuccessful()){
+				Log.e(TAG, transactionName+": "+response.errorBody().string());
+				toasts.add(transactionFriendlyName+" 설정 중 오류가 발생했습니다.");
+				return false;
+			}
+			JsonObject body = response.body();
+			if(body.has("error")){
+				Log.e(TAG, transactionName+": "+body.get("error").getAsString());
+				toasts.add(transactionFriendlyName+" 설정 중 오류가 발생했습니다.");
+				return false;
+			}
+			Log.d(TAG, transactionName+": 성공");
+			return true;
+		}catch(Exception e){
+			Log.e(TAG, transactionName+": Exception", e);
+			toasts.add(transactionFriendlyName+" 설정 중 예상치 못한 오류가 발생했습니다.");
+			return false;
+		}
 	}
 
 	/* 갤러리에서 이미지 가져오기 */
@@ -349,7 +314,6 @@ public class EditProfileActivity extends AppCompatActivity{
 		}
 	}
 
-	/* 이미지 파일 만들기 */
 	private File generateNewImageFile(String type){
 		String timeStamp = DATE_FORMAT.format(new Date());
 		String imageFileName = "Caramel_"+type+"_"+timeStamp+".jpg";
@@ -364,7 +328,7 @@ public class EditProfileActivity extends AppCompatActivity{
 		return new File(storageDir, imageFileName);
 	}
 
-	/* 갤러리에 이미지 저장 */
+	// TODO 작동안함
 	private void addToMedia(Uri file){
 		Log.d(TAG, "addToMedia: "+file);
 		MediaScannerConnection.scanFile(this,
@@ -381,41 +345,41 @@ public class EditProfileActivity extends AppCompatActivity{
 		if(resultCode==RESULT_OK){
 			Uri result = data==null ? null : data.getData();
 			switch(requestCode){
-			case REQUEST_TAKE_PHOTO:
-				permissionHandler.revokePermissions();
-				cropImage(FileProvider.getUriForFile(this, FILE_PROVIDER_AUTH, tempFile));
-				break;
-			case REQUEST_PICK_IMAGE:
-				if(data!=null){
-					Log.d(TAG, "onActivityResult: REQUEST_PICK_IMAGE "+result);
+				case REQUEST_TAKE_PHOTO:
+					permissionHandler.revokePermissions();
+					cropImage(FileProvider.getUriForFile(this, FILE_PROVIDER_AUTH, tempFile));
+					break;
+				case REQUEST_PICK_IMAGE:
+					if(data!=null){
+						Log.d(TAG, "onActivityResult: REQUEST_PICK_IMAGE "+result);
 
-					File temp = createTempFile();
-					try(InputStream is = getContentResolver().openInputStream(result);
-					    FileOutputStream fos = new FileOutputStream(temp)){
+						File temp = createTempFile();
+						try(InputStream is = getContentResolver().openInputStream(result);
+						    FileOutputStream fos = new FileOutputStream(temp)){
 
-						IOUtils.copyInto(new BufferedInputStream(is), new BufferedOutputStream(fos));
-					}catch(IOException e){
-						Log.e(TAG, "onActivityResult: Exception ", e);
+							IOUtils.copyInto(new BufferedInputStream(is), new BufferedOutputStream(fos));
+						}catch(IOException e){
+							Log.e(TAG, "onActivityResult: Exception ", e);
+						}
+
+						cropImage(FileProvider.getUriForFile(this, FILE_PROVIDER_AUTH, temp));
 					}
+					break;
+				case REQUEST_CROP:
+					permissionHandler.revokePermissions();
 
-					cropImage(FileProvider.getUriForFile(this, FILE_PROVIDER_AUTH, temp));
-				}
-				break;
-			case REQUEST_CROP:
-				permissionHandler.revokePermissions();
-
-				Log.d(TAG, "onActivityResult: REQUEST_CROP "+result);
-				if(result!=null){
-					addToMedia(result);
-					Glide.with(this)
-							.load(result)
-							.circleCrop()
-							.into(imageViewProfile);
-					newProfileImage = result;
-				}
-				removeTempFile();
-				spinnerHandler.dismiss();
-				break;
+					Log.d(TAG, "onActivityResult: REQUEST_CROP "+result);
+					if(result!=null){
+						addToMedia(result);
+						Glide.with(this)
+								.load(result)
+								.apply(GlideUtils.PROFILE_IMAGE)
+								.into(imageViewProfile);
+						newProfileImage = result;
+					}
+					removeTempFile();
+					spinnerHandler.dismiss();
+					break;
 			}
 		}else{
 			spinnerHandler.dismiss();
@@ -423,7 +387,6 @@ public class EditProfileActivity extends AppCompatActivity{
 
 	}
 
-	/* 이미지 자르기 */
 	public void cropImage(Uri photoUri){
 		Uri output = FileProvider.getUriForFile(this, FILE_PROVIDER_AUTH, generateNewImageFile("Cropped"));
 		Log.i(TAG, "cropImage: photoUri : "+photoUri+" / outputUri : "+output);
@@ -447,12 +410,12 @@ public class EditProfileActivity extends AppCompatActivity{
 	public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults){
 		super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 		switch(requestCode){
-		case GRANT_CAMERA_PERMS:
-			takePhoto(false);
-			break;
-		case GRANT_IMAGE_PERMS:
-			pickImage(false);
-			break;
+			case GRANT_CAMERA_PERMS:
+				takePhoto(false);
+				break;
+			case GRANT_IMAGE_PERMS:
+				pickImage(false);
+				break;
 		}
 	}
 

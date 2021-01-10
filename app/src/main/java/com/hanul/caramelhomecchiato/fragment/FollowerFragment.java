@@ -17,6 +17,7 @@ import com.google.gson.JsonObject;
 import com.hanul.caramelhomecchiato.R;
 import com.hanul.caramelhomecchiato.adapter.BaseAdapter;
 import com.hanul.caramelhomecchiato.data.User;
+import com.hanul.caramelhomecchiato.network.NetUtils;
 import com.hanul.caramelhomecchiato.network.UserService;
 import com.hanul.caramelhomecchiato.util.Auth;
 
@@ -44,9 +45,7 @@ public class FollowerFragment extends Fragment{
 
 		// follower.setAdapter(adapter); // TODO setAdapter
 
-
-		// TODO loginUser?
-		UserService.INSTANCE.getFollower(Auth.getInstance().getLoginUser()).enqueue(new Callback<JsonObject>(){
+		UserService.INSTANCE.getFollower(Auth.getInstance().expectLoginUser()).enqueue(new Callback<JsonObject>(){
 			@Override public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response){
 				JsonObject body = response.body();
 				if(body.has("error")){
@@ -58,15 +57,7 @@ public class FollowerFragment extends Fragment{
 
 				JsonArray users = body.get("users").getAsJsonArray();
 				for(JsonElement userElement : users){
-					JsonObject userObject = userElement.getAsJsonObject();
-
-					int id = userObject.get("id").getAsInt();
-					String name = userObject.get("name").getAsString();
-					String profileImage = userObject.has("profileImage") ? userObject.get("profileImage").getAsString() : null;
-
-					User u = new User(id, name, profileImage);
-
-					usersList.add(u);
+					usersList.add(NetUtils.GSON.fromJson(userElement, User.class));
 				}
 				setUsers(usersList);
 			}

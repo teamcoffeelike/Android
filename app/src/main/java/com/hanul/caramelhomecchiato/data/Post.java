@@ -1,5 +1,6 @@
 package com.hanul.caramelhomecchiato.data;
 
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -17,12 +18,12 @@ public class Post implements Parcelable{
 
 	private int id;
 	private User author;
-	@Nullable private String image;
+	@Nullable private Uri image;
 	private String text;
 	private int likes;
 	private int reactions;
 
-	public Post(int id, User author, @Nullable String image, String text, int likes, int reactions){
+	public Post(int id, User author, @Nullable Uri image, String text, int likes, int reactions){
 		this.id = id;
 		this.author = author;
 		this.image = image;
@@ -34,7 +35,7 @@ public class Post implements Parcelable{
 	protected Post(Parcel parcel){
 		id = parcel.readInt();
 		author = parcel.readParcelable(User.class.getClassLoader());
-		image = parcel.readString();
+		image = parcel.readParcelable(Uri.class.getClassLoader());
 		text = parcel.readString();
 		likes = parcel.readInt();
 		reactions = parcel.readInt();
@@ -46,7 +47,7 @@ public class Post implements Parcelable{
 	@Override public void writeToParcel(Parcel dest, int flags){
 		dest.writeInt(id);
 		dest.writeParcelable(author, flags);
-		dest.writeString(image);
+		dest.writeParcelable(image, flags);
 		dest.writeString(text);
 		dest.writeInt(likes);
 		dest.writeInt(reactions);
@@ -64,10 +65,10 @@ public class Post implements Parcelable{
 	public void setAuthor(User author){
 		this.author = author;
 	}
-	@Nullable public String getImage(){
+	@Nullable public Uri getImage(){
 		return image;
 	}
-	public void setImage(@Nullable String image){
+	public void setImage(@Nullable Uri image){
 		this.image = image;
 	}
 	public String getText(){

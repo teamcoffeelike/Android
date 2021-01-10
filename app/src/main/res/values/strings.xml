@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Caramel HOMEcchiato</string>
     <string name="join_form_email">이메일</string>
-    <string name="join_form_password">비밀번호 (3글자 이상)</string>
+    <string name="join_form_password">비밀번호</string>
     <string name="join_form_name">이름</string>
     <string name="join_form_password_confirm">비밀번호 확인</string>
     <string name="button_confirm">확인</string>

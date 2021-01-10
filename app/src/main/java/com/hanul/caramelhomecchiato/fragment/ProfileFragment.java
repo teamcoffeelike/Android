@@ -29,6 +29,7 @@ import com.hanul.caramelhomecchiato.network.NetUtils;
 import com.hanul.caramelhomecchiato.network.UserService;
 import com.hanul.caramelhomecchiato.util.Auth;
 import com.hanul.caramelhomecchiato.util.BaseCallback;
+import com.hanul.caramelhomecchiato.util.GlideUtils;
 import com.hanul.caramelhomecchiato.util.SpinnerHandler;
 
 import retrofit2.Call;
@@ -112,19 +113,11 @@ public class ProfileFragment extends Fragment{
 	}
 
 	private void applyProfile(){
-		String profileImage = profile==null ? null : profile.getUser().getProfileImage();
-		if(profileImage==null){
-			Glide.with(this)
-					.load(R.drawable.default_profile_image)
-					.circleCrop()
-					.into(imageViewProfile);
-		}else{
-			Glide.with(this)
-					.load(profileImage)
-					.circleCrop()
-					.placeholder(R.drawable.default_profile_image)
-					.into(imageViewProfile);
-		}
+		Glide.with(this)
+				.load(profile==null ? null : profile.getUser().getProfileImage())
+				.apply(GlideUtils.PROFILE_IMAGE)
+				.into(imageViewProfile);
+
 		textViewProfileName.setText(profile==null ? "" : profile.getUser().getName());
 		String motd = profile==null ? "" : profile.getMotd()==null ? "" : profile.getMotd();
 		textViewMotd.setText(motd);

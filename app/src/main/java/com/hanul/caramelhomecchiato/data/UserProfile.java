@@ -1,5 +1,6 @@
 package com.hanul.caramelhomecchiato.data;
 
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -64,14 +65,12 @@ public final class UserProfile implements Parcelable{
 		                                         Type typeOfT,
 		                                         JsonDeserializationContext context) throws JsonParseException{
 			JsonObject o = json.getAsJsonObject();
-			JsonElement id = o.get("id");
-			JsonElement name = o.get("name");
 			JsonElement profileImage = o.get("profileImage");
 			JsonElement motd = o.get("motd");
 			return new UserProfile(
-					new User(id.getAsInt(),
-							name.getAsString(),
-							profileImage==null ? null : profileImage.getAsString()),
+					new User(o.get("id").getAsInt(),
+							o.get("name").getAsString(),
+							profileImage==null ? null : context.deserialize(profileImage, Uri.class)),
 					motd==null ? null : motd.getAsString());
 		}
 	}

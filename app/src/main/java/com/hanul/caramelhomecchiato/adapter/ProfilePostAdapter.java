@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.bumptech.glide.Glide;
 import com.hanul.caramelhomecchiato.R;
 import com.hanul.caramelhomecchiato.data.Post;
 
@@ -29,7 +30,9 @@ public class ProfilePostAdapter extends BaseAdapter<Post>{
 		}
 
 		@Override protected void setItem(int position, Post post){
-			// TODO 첨부 사진
+			Glide.with(itemView)
+					.load(post.getImage())
+					.into(imageViewPost); // TODO 테스트
 		}
 	}
 }

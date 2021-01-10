@@ -14,8 +14,9 @@ import androidx.fragment.app.Fragment;
 import com.bumptech.glide.Glide;
 import com.hanul.caramelhomecchiato.R;
 import com.hanul.caramelhomecchiato.data.User;
+import com.hanul.caramelhomecchiato.util.GlideUtils;
 
-public class UserFragment extends Fragment{
+public class UserFragment extends Fragment{ // TODO ??
 	public static final String ARG_USER = "user";
 
 	public static UserFragment newInstance(User user){
@@ -41,18 +42,10 @@ public class UserFragment extends Fragment{
 			User user = arguments.getParcelable(ARG_USER);
 			if(user!=null){
 				// Set profile image
-				String profileImage = user.getProfileImage();
-				if(profileImage!=null)
-					Glide.with(this)
-							.load(profileImage)
-							.circleCrop()
-							.into(imageViewProfilePic);
-				else
-					Glide.with(this)
-							.load(R.drawable.ic_menu_profile)
-							.circleCrop()
-							.into(imageViewProfilePic);
-
+				Glide.with(this)
+						.load(user.getProfileImage())
+						.apply(GlideUtils.PROFILE_IMAGE)
+						.into(imageViewProfilePic);
 				// Set name
 				textViewName.setText(user.getName());
 			}

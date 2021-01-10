@@ -1,5 +1,6 @@
 package com.hanul.caramelhomecchiato.util;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -7,6 +8,7 @@ import android.net.Uri;
 
 import androidx.activity.ComponentActivity;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LifecycleOwner;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,6 +21,9 @@ public class UriPermissionHandler extends AutoDisposed{
 	}
 	public UriPermissionHandler(Fragment fragment){
 		super(fragment);
+	}
+	public UriPermissionHandler(Context context, LifecycleOwner lifecycleOwner){
+		super(context, lifecycleOwner);
 	}
 
 	public void grantPermissions(Intent intent, Uri uri, int flags){

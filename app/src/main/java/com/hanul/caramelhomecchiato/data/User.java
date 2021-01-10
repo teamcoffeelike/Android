@@ -1,5 +1,6 @@
 package com.hanul.caramelhomecchiato.data;
 
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -17,9 +18,9 @@ public final class User implements Parcelable{
 
 	private int id;
 	private String name;
-	@Nullable private String profileImage;
+	@Nullable private Uri profileImage;
 
-	public User(int id, String name, @Nullable String profileImage){
+	public User(int id, String name, @Nullable Uri profileImage){
 		this.id = id;
 		this.name = name;
 		this.profileImage = profileImage;
@@ -28,7 +29,7 @@ public final class User implements Parcelable{
 	protected User(Parcel in){
 		id = in.readInt();
 		name = in.readString();
-		profileImage = in.readString();
+		profileImage = in.readParcelable(Uri.class.getClassLoader());
 	}
 
 	@Override public int describeContents(){
@@ -37,7 +38,7 @@ public final class User implements Parcelable{
 	@Override public void writeToParcel(Parcel dest, int flags){
 		dest.writeInt(id);
 		dest.writeString(name);
-		dest.writeString(profileImage);
+		dest.writeParcelable(profileImage, flags);
 	}
 
 	public int getId(){
@@ -52,10 +53,10 @@ public final class User implements Parcelable{
 	public void setName(String name){
 		this.name = name;
 	}
-	@Nullable public String getProfileImage(){
+	@Nullable public Uri getProfileImage(){
 		return profileImage;
 	}
-	public void setProfileImage(@Nullable String profileImage){
+	public void setProfileImage(@Nullable Uri profileImage){
 		this.profileImage = profileImage;
 	}
 }

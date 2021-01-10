@@ -22,6 +22,7 @@ import com.hanul.caramelhomecchiato.data.Post;
 import com.hanul.caramelhomecchiato.network.PostService;
 import com.hanul.caramelhomecchiato.util.Auth;
 import com.hanul.caramelhomecchiato.util.BaseCallback;
+import com.hanul.caramelhomecchiato.util.GlideUtils;
 
 import retrofit2.Call;
 import retrofit2.Response;
@@ -113,25 +114,16 @@ public class PostAdapter extends BaseAdapter<Post>{
 		}
 
 		@Override protected void setItem(int position, Post post){
-			if(post.getAuthor().getProfileImage()!=null){
-				Glide.with(itemView)
-						.load(R.drawable.default_profile_image)
-						.placeholder(R.drawable.default_profile_image)
-						.circleCrop()
-						.into(imageViewPostUserProfile);
-			}else{
-				Glide.with(itemView)
-						.load(R.drawable.default_profile_image)
-						.circleCrop()
-						.into(imageViewPostUserProfile);
-			}
+			Glide.with(itemView)
+					.load(post.getAuthor().getProfileImage())
+					.apply(GlideUtils.PROFILE_IMAGE)
+					.into(imageViewPostUserProfile);
 			textViewPostUser.setText(post.getAuthor().getName());
 
-			if(post.getImage()!=null){
-				Glide.with(itemView)
-						.load(post.getImage())
-						.into(imageViewPost);
-			}
+			Glide.with(itemView)
+					.load(post.getImage())
+					.centerCrop()
+					.into(imageViewPost);
 
 			textViewPost.setText(post.getText());
 

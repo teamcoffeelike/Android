@@ -7,7 +7,6 @@ import androidx.annotation.Nullable;
 
 import com.google.gson.JsonObject;
 
-// TODO 로그아웃 시 재로그인?
 public final class Auth{
 	private static Auth authCache;
 

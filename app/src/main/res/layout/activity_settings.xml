@@ -7,39 +7,20 @@
 		android:layout_height="match_parent"
 		tools:context=".activity.SettingsActivity">
 
-	<ImageButton
-			android:id="@+id/settingsSubmit"
-			android:layout_width="50dp"
-			android:layout_height="50dp"
-			android:src="@drawable/ic_done"
-			style="?android:attr/borderlessButtonStyle"
-			app:layout_constraintEnd_toEndOf="parent"
-			app:layout_constraintTop_toTopOf="parent"/>
-
-	<ImageView
-			android:id="@+id/settingsUserProfile"
-			android:layout_width="150dp"
-			android:layout_height="150dp"
-			android:layout_marginTop="100dp"
-			android:src="@drawable/test_user"
-			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toTopOf="parent"
-			app:layout_constraintEnd_toEndOf="parent"/>
-
 	<androidx.constraintlayout.widget.ConstraintLayout
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
-			android:layout_marginTop="75dp"
 			android:maxWidth="300dp"
-			app:layout_constraintTop_toBottomOf="@+id/settingsUserProfile"
 			app:layout_constraintEnd_toEndOf="parent"
-			app:layout_constraintStart_toStartOf="parent">
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="parent"
+			app:layout_constraintBottom_toBottomOf="parent">
 
 		<Button
 				android:id="@+id/buttonEditProfileImage"
 				android:layout_width="0dp"
 				android:layout_height="wrap_content"
-				android:backgroundTint="@color/OrangeYellowCrayola"
+				app:backgroundTint="@color/OrangeYellowCrayola"
 				android:text="프로필"
 				android:textColor="@color/VanDykeBrown"
 				android:textSize="18sp"
@@ -52,7 +33,7 @@
 				android:layout_width="0dp"
 				android:layout_height="wrap_content"
 				android:layout_marginTop="55dp"
-				android:backgroundTint="@color/OrangeYellowCrayola"
+				app:backgroundTint="@color/OrangeYellowCrayola"
 				android:text="비밀번호 변경"
 				android:textColor="@color/VanDykeBrown"
 				android:textSize="18sp"
@@ -65,7 +46,7 @@
 				android:layout_width="0dp"
 				android:layout_height="wrap_content"
 				android:layout_marginTop="55dp"
-				android:backgroundTint="@color/OrangeYellowCrayola"
+				app:backgroundTint="@color/OrangeYellowCrayola"
 				android:text="로그아웃"
 				android:textColor="@color/VanDykeBrown"
 				android:textSize="18sp"

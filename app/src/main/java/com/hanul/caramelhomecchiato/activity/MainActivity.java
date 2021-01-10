@@ -1,6 +1,7 @@
 package com.hanul.caramelhomecchiato.activity;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -30,6 +31,7 @@ import com.hanul.caramelhomecchiato.network.NetUtils;
 import com.hanul.caramelhomecchiato.network.UserService;
 import com.hanul.caramelhomecchiato.util.Auth;
 import com.hanul.caramelhomecchiato.util.BaseCallback;
+import com.hanul.caramelhomecchiato.util.GlideUtils;
 
 import retrofit2.Call;
 import retrofit2.Response;
@@ -137,28 +139,17 @@ public class MainActivity extends AppCompatActivity{
 	public void setProfile(@Nullable UserProfile profile){
 		textViewProfileName.setText(profile==null ? "" : profile.getUser().getName());
 
-		String profileImage = profile==null ? null : profile.getUser().getProfileImage();
-		if(profileImage==null){
-			Glide.with(this)
-					.load(R.drawable.default_profile_image)
-					.circleCrop()
-					.into(imageViewAppBarUserProfile);
-			Glide.with(this)
-					.load(R.drawable.default_profile_image)
-					.circleCrop()
-					.into(imageViewProfile);
-		}else{
-			Glide.with(this)
-					.load(profileImage)
-					.placeholder(R.drawable.default_profile_image)
-					.circleCrop()
-					.into(imageViewAppBarUserProfile);
-			Glide.with(this)
-					.load(profileImage)
-					.placeholder(R.drawable.default_profile_image)
-					.circleCrop()
-					.into(imageViewProfile);
-		}
+		Uri profileImage = profile==null ? null : profile.getUser().getProfileImage();
+
+		Glide.with(this)
+				.load(profileImage)
+				.apply(GlideUtils.PROFILE_IMAGE)
+				.into(imageViewAppBarUserProfile);
+		Glide.with(this)
+				.load(profileImage)
+				.apply(GlideUtils.PROFILE_IMAGE)
+				.into(imageViewProfile);
+
 		profileFragment.setProfile(profile);
 	}
 
