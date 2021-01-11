@@ -24,4 +24,9 @@
 		<item name="colorAccent">@color/TerraCotta</item>
 	</style>
 
+	<style name="follow_button" parent="Widget.AppCompat.Button">
+		<item name="android:colorBackground">@color/follow_button_background_color</item>
+		<item name="android:textColor">@color/follow_button_text_color</item>
+	</style>
+
 </resources>

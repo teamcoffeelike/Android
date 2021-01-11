@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.hanul.caramelhomecchiato.R;
 import com.hanul.caramelhomecchiato.data.User;
 import com.hanul.caramelhomecchiato.util.GlideUtils;
@@ -42,7 +43,8 @@ public class SearchFriendAdapter extends BaseAdapter<User>{
 		@Override protected void setItem(int position, User user){
 			Glide.with(itemView)
 					.load(user.getProfileImage())
-					.apply(GlideUtils.PROFILE_IMAGE)
+					.apply(GlideUtils.profileImage())
+					.transition(DrawableTransitionOptions.withCrossFade())
 					.into(userProfileImage);
 			userName.setText(user.getName());
 		}

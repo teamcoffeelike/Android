@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.google.gson.JsonObject;
 import com.hanul.caramelhomecchiato.R;
 import com.hanul.caramelhomecchiato.activity.EditProfileActivity;
@@ -115,7 +116,8 @@ public class ProfileFragment extends Fragment{
 	private void applyProfile(){
 		Glide.with(this)
 				.load(profile==null ? null : profile.getUser().getProfileImage())
-				.apply(GlideUtils.PROFILE_IMAGE)
+				.apply(GlideUtils.profileImage())
+				.transition(DrawableTransitionOptions.withCrossFade())
 				.into(imageViewProfile);
 
 		textViewProfileName.setText(profile==null ? "" : profile.getUser().getName());

@@ -19,6 +19,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.gson.JsonObject;
 import com.hanul.caramelhomecchiato.R;
@@ -143,11 +144,13 @@ public class MainActivity extends AppCompatActivity{
 
 		Glide.with(this)
 				.load(profileImage)
-				.apply(GlideUtils.PROFILE_IMAGE)
+				.apply(GlideUtils.profileImage())
+				.transition(DrawableTransitionOptions.withCrossFade())
 				.into(imageViewAppBarUserProfile);
 		Glide.with(this)
 				.load(profileImage)
-				.apply(GlideUtils.PROFILE_IMAGE)
+				.apply(GlideUtils.profileImage())
+				.transition(DrawableTransitionOptions.withCrossFade())
 				.into(imageViewProfile);
 
 		profileFragment.setProfile(profile);

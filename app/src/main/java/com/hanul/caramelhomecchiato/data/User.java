@@ -20,10 +20,15 @@ public final class User implements Parcelable{
 	private String name;
 	@Nullable private Uri profileImage;
 
-	public User(int id, String name, @Nullable Uri profileImage){
+	@Nullable private Boolean isFollowingYou;
+	@Nullable private Boolean isFollowedByYou;
+
+	public User(int id, String name, @Nullable Uri profileImage, @Nullable Boolean isFollowingYou, @Nullable Boolean isFollowedByYou){
 		this.id = id;
 		this.name = name;
 		this.profileImage = profileImage;
+		this.isFollowingYou = isFollowingYou;
+		this.isFollowedByYou = isFollowedByYou;
 	}
 
 	protected User(Parcel in){
@@ -58,5 +63,27 @@ public final class User implements Parcelable{
 	}
 	public void setProfileImage(@Nullable Uri profileImage){
 		this.profileImage = profileImage;
+	}
+	@Nullable public Boolean getFollowingYou(){
+		return isFollowingYou;
+	}
+	public void setFollowingYou(@Nullable Boolean followingYou){
+		isFollowingYou = followingYou;
+	}
+	@Nullable public Boolean getFollowedByYou(){
+		return isFollowedByYou;
+	}
+	public void setFollowedByYou(@Nullable Boolean followedByYou){
+		isFollowedByYou = followedByYou;
+	}
+
+	@Override public String toString(){
+		return "User{"+
+				"id="+id+
+				", name='"+name+'\''+
+				", profileImage="+profileImage+
+				", isFollowingYou="+isFollowingYou+
+				", isFollowedByYou="+isFollowedByYou+
+				'}';
 	}
 }

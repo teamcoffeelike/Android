@@ -18,16 +18,19 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.google.gson.JsonObject;
 import com.hanul.caramelhomecchiato.R;
 import com.hanul.caramelhomecchiato.network.PostService;
+import com.hanul.caramelhomecchiato.util.BaseCallback;
+import com.hanul.caramelhomecchiato.util.GlideUtils;
 import com.hanul.caramelhomecchiato.util.IOUtils;
 import com.hanul.caramelhomecchiato.util.Validate;
 
 import java.io.IOException;
 
 import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.Response;
 
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
@@ -55,7 +58,13 @@ public class WritePostActivity extends AppCompatActivity{
 
 		imageViewPostImage = findViewById(R.id.imageViewPostImage);
 
-		findViewById(R.id.buttonPickImage).setOnClickListener(v -> pickImage(true));
+		Glide.with(this)
+				.load((Uri)null)
+				.apply(GlideUtils.postImage())
+				.transition(DrawableTransitionOptions.withCrossFade())
+				.into(imageViewPostImage);
+
+		imageViewPostImage.setOnClickListener(v -> pickImage(true));
 
 		EditText editTextPost = findViewById(R.id.editTextPost);
 
@@ -82,25 +91,27 @@ public class WritePostActivity extends AppCompatActivity{
 				return;
 			}
 			dialog.show();
-			PostService.writePost(postText, read).enqueue(new Callback<JsonObject>(){
-				@Override public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response){
-					JsonObject body = response.body();
-					if(body.has("error")){
-						Log.e(TAG, "profile: 예상치 못한 오류: "+body.get("error").getAsString());
-						Toast.makeText(WritePostActivity.this, "예상치 못한 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
-						dialog.dismiss();
-						return;
-					}
+			PostService.writePost(postText, read).enqueue(new BaseCallback(){
+				@Override public void onSuccessfulResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response, @NonNull JsonObject result){
 					finish();
 				}
+				@Override public void onErrorResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response, @NonNull String error){
+					Log.e(TAG, "profile: Error: "+error);
+					Toast.makeText(WritePostActivity.this, "예상치 못한 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
+					dialog.dismiss();
+				}
+				@Override public void onFailedResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response){
+					Log.e(TAG, "profile: Failure: "+response.errorBody());
+					Toast.makeText(WritePostActivity.this, "예상치 못한 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
+					dialog.dismiss();
+				}
 				@Override public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t){
-					Log.e(TAG, "profile: Failure ", t);
+					Log.e(TAG, "profile: Unexpected ", t);
 					Toast.makeText(WritePostActivity.this, "예상치 못한 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
 					dialog.dismiss();
 				}
 			});
 		});
-		findViewById(R.id.buttonCancel).setOnClickListener(v -> finish());
 	}
 
 	@Override protected void onDestroy(){
@@ -137,7 +148,11 @@ public class WritePostActivity extends AppCompatActivity{
 				if(uri!=null){
 					image = uri;
 					Log.d(TAG, "onActivityResult: Image = "+uri);
-					imageViewPostImage.setImageURI(uri);
+					Glide.with(this)
+							.load(uri)
+							.apply(GlideUtils.postImage())
+							.transition(DrawableTransitionOptions.withCrossFade())
+							.into(imageViewPostImage);
 					buttonSubmit.setEnabled(true);
 				}
 			}

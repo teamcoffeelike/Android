@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.widget.PopupMenu;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.google.gson.JsonObject;
 import com.hanul.caramelhomecchiato.R;
 import com.hanul.caramelhomecchiato.activity.ReactionActivity;
@@ -116,13 +117,15 @@ public class PostAdapter extends BaseAdapter<Post>{
 		@Override protected void setItem(int position, Post post){
 			Glide.with(itemView)
 					.load(post.getAuthor().getProfileImage())
-					.apply(GlideUtils.PROFILE_IMAGE)
+					.apply(GlideUtils.profileImage())
+					.transition(DrawableTransitionOptions.withCrossFade())
 					.into(imageViewPostUserProfile);
 			textViewPostUser.setText(post.getAuthor().getName());
 
 			Glide.with(itemView)
 					.load(post.getImage())
-					.centerCrop()
+					.apply(GlideUtils.postImage())
+					.transition(DrawableTransitionOptions.withCrossFade())
 					.into(imageViewPost);
 
 			textViewPost.setText(post.getText());

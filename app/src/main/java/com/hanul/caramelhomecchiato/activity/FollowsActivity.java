@@ -1,75 +1,63 @@
 package com.hanul.caramelhomecchiato.activity;
 
+import android.os.Bundle;
+
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
-
-import android.os.Bundle;
 
 import com.google.android.material.tabs.TabLayout;
 import com.hanul.caramelhomecchiato.R;
 import com.hanul.caramelhomecchiato.fragment.FollowerFragment;
 import com.hanul.caramelhomecchiato.fragment.FollowingFragment;
-
-import java.util.ArrayList;
+import com.hanul.caramelhomecchiato.util.Auth;
 
 public class FollowsActivity extends AppCompatActivity{
-	private ViewPager viewPager;
-	private ViewPagerAdapter pagerAdapter;
-	private TabLayout tabLayout;
-
+	private FollowerFragment followerFragment;
+	private FollowingFragment followingFragment;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_follows);
 
-		viewPager = findViewById(R.id.viewPager);
-		pagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
+		int loginUser = Auth.getInstance().expectLoginUser();
+		followerFragment = FollowerFragment.newInstance(loginUser);
+		followingFragment = FollowingFragment.newInstance(loginUser);
 
-		viewPager.setAdapter(pagerAdapter);
+		ViewPager viewPager = findViewById(R.id.viewPager);
 
-		tabLayout = findViewById(R.id.tabLayout);
+		viewPager.setAdapter(new ViewPagerAdapter());
+
+		TabLayout tabLayout = findViewById(R.id.tabLayout);
 		tabLayout.setupWithViewPager(viewPager);
-
 	}
 
-	private static final class ViewPagerAdapter extends FragmentStatePagerAdapter {
-		private ArrayList<Fragment> items = new ArrayList<>();
-		private ArrayList<String> tabText = new ArrayList<String>();
-
-		public ViewPagerAdapter(@NonNull FragmentManager fm) {
-			super(fm);
-			items.add(new FollowerFragment());
-			items.add(new FollowingFragment());
-
-			tabText.add("팔로워");
-			tabText.add("팔로잉");
+	private final class ViewPagerAdapter extends FragmentStatePagerAdapter{
+		public ViewPagerAdapter(){
+			super(getSupportFragmentManager(), BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
 		}
 
-		@Nullable
-		@Override
-		public CharSequence getPageTitle(int position) {
-			return tabText.get(position);
+		@Override public CharSequence getPageTitle(int position){
+			switch(position){
+				case 0: return "팔로워";
+				case 1: return "팔로잉";
+				default: throw new IndexOutOfBoundsException("position");
+			}
 		}
 
-		public void addItem(Fragment item) {
-			items.add(item);
+		@NonNull @Override public Fragment getItem(int position){
+			switch(position){
+				case 0: return followerFragment;
+				case 1: return followingFragment;
+				default: throw new IndexOutOfBoundsException("position");
+			}
 		}
 
-		@NonNull
-		@Override
-		public Fragment getItem(int position) {
-			return items.get(position);
-		}
-
-		@Override
-		public int getCount() {
-			return items.size();
+		@Override public int getCount(){
+			return 2;
 		}
 	}
 }

@@ -29,6 +29,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.google.gson.JsonObject;
 import com.hanul.caramelhomecchiato.CaramelHomecchiatoApp;
 import com.hanul.caramelhomecchiato.R;
@@ -98,7 +99,8 @@ public class EditProfileActivity extends AppCompatActivity{
 
 		Glide.with(this)
 				.load(profile.getUser().getProfileImage())
-				.apply(GlideUtils.PROFILE_IMAGE)
+				.apply(GlideUtils.profileImage())
+				.transition(DrawableTransitionOptions.withCrossFade())
 				.into(imageViewProfile);
 
 		EditText editTextName = findViewById(R.id.editTextName);
@@ -373,7 +375,8 @@ public class EditProfileActivity extends AppCompatActivity{
 						addToMedia(result);
 						Glide.with(this)
 								.load(result)
-								.apply(GlideUtils.PROFILE_IMAGE)
+								.apply(GlideUtils.profileImage())
+								.transition(DrawableTransitionOptions.withCrossFade())
 								.into(imageViewProfile);
 						newProfileImage = result;
 					}

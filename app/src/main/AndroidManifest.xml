@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.hanul.caramelhomecchiato">
 
     <uses-feature
@@ -54,7 +55,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.CaramelHOMEcchiato"
-        android:usesCleartextTraffic="true">
+        android:usesCleartextTraffic="true"
+        tools:targetApi="m">
 
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -81,6 +83,7 @@
         </activity>
         <activity android:name=".activity.LoginActivity" />
         <activity android:name=".activity.MainActivity" />
+        <activity android:name=".activity.ProfileActivity" />
         <activity android:name=".activity.ReactionActivity" />
         <activity android:name=".activity.RecipeActivity"/>
         <activity android:name=".activity.RecipeListActivity" />

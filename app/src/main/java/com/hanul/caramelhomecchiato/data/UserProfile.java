@@ -1,6 +1,5 @@
 package com.hanul.caramelhomecchiato.data;
 
-import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -9,7 +8,6 @@ import androidx.annotation.Nullable;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 
 import java.lang.reflect.Type;
@@ -57,6 +55,12 @@ public final class UserProfile implements Parcelable{
 		this.motd = motd;
 	}
 
+	@Override public String toString(){
+		return "UserProfile{"+
+				"user="+user+
+				", motd='"+motd+'\''+
+				'}';
+	}
 
 	public enum Json implements JsonDeserializer<UserProfile>{
 		INSTANCE;
@@ -64,13 +68,9 @@ public final class UserProfile implements Parcelable{
 		@Override public UserProfile deserialize(JsonElement json,
 		                                         Type typeOfT,
 		                                         JsonDeserializationContext context) throws JsonParseException{
-			JsonObject o = json.getAsJsonObject();
-			JsonElement profileImage = o.get("profileImage");
-			JsonElement motd = o.get("motd");
+			JsonElement motd = json.getAsJsonObject().get("motd");
 			return new UserProfile(
-					new User(o.get("id").getAsInt(),
-							o.get("name").getAsString(),
-							profileImage==null ? null : context.deserialize(profileImage, Uri.class)),
+					context.deserialize(json, User.class),
 					motd==null ? null : motd.getAsString());
 		}
 	}

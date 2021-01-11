@@ -13,6 +13,8 @@ import androidx.fragment.app.Fragment;
 import com.hanul.caramelhomecchiato.R;
 import com.hanul.caramelhomecchiato.data.RecipeCover;
 
+import java.util.Objects;
+
 public class RecipeCoverContentFragment extends Fragment{
 	public static final String ARG_COVER = "cover";
 
@@ -35,7 +37,7 @@ public class RecipeCoverContentFragment extends Fragment{
 		TextView textViewTitle = view.findViewById(R.id.textViewTitle);
 		textViewTitle.setText(cover.getTitle());
 
-		getFragmentManager().beginTransaction()
+		Objects.requireNonNull(getFragmentManager()).beginTransaction()
 				.add(R.id.author, UserFragment.newInstance(cover.getAuthor()))
 				.commit();
 

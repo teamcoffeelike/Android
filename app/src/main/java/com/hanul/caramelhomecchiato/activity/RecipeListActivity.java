@@ -43,11 +43,12 @@ public class RecipeListActivity extends AppCompatActivity{
 		recipeAdapter = new RecipeAdapter();
 		List<RecipeCover> recipeCovers = recipeAdapter.elements();
 
-		recipeCovers.add(new RecipeCover(1, RecipeCategory.ETC, "아메리카노", new User(1, "dd", null), 4, null));
-		recipeCovers.add(new RecipeCover(1, RecipeCategory.ETC, "카페라떼", new User(1, "dd", null), 4.5f, null));
-		recipeCovers.add(new RecipeCover(1, RecipeCategory.ETC, "카페모카", new User(1, "dd", null), 5, null));
-		recipeCovers.add(new RecipeCover(1, RecipeCategory.ETC, "딸기스무디", new User(1, "dd", null), 4.5f, null));
-		recipeCovers.add(new RecipeCover(1, RecipeCategory.ETC, "레몬아이스티", new User(1, "dd", null), 4, null));
+		User u = new User(1, "dd", null, null, null);
+		recipeCovers.add(new RecipeCover(1, RecipeCategory.ETC, "아메리카노", u, 4, null));
+		recipeCovers.add(new RecipeCover(1, RecipeCategory.ETC, "카페라떼", u, 4.5f, null));
+		recipeCovers.add(new RecipeCover(1, RecipeCategory.ETC, "카페모카", u, 5, null));
+		recipeCovers.add(new RecipeCover(1, RecipeCategory.ETC, "딸기스무디", u, 4.5f, null));
+		recipeCovers.add(new RecipeCover(1, RecipeCategory.ETC, "레몬아이스티", u, 4, null));
 
 		recyclerView.setAdapter(recipeAdapter);
 	}
