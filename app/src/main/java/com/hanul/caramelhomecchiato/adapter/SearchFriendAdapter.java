@@ -3,6 +3,7 @@ package com.hanul.caramelhomecchiato.adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -15,18 +16,27 @@ import com.hanul.caramelhomecchiato.util.GlideUtils;
 
 public class SearchFriendAdapter extends BaseAdapter<User>{
 	@NonNull @Override public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType){
-		return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.view_follow, parent, false));
+		return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.view_search, parent, false));
 	}
 
 
 	public static final class ViewHolder extends BaseAdapter.ViewHolder<User>{
 		private final ImageView userProfileImage;
 		private final TextView userName;
+		private final Button followButton;
 
 		public ViewHolder(@NonNull View itemView){
 			super(itemView);
-			userProfileImage = itemView.findViewById(R.id.imageViewFollowUserProfile);
-			userName = itemView.findViewById(R.id.textViewFollowUserName);
+			userProfileImage = itemView.findViewById(R.id.imageViewUserProfile);
+			userName = itemView.findViewById(R.id.textViewUserName);
+			followButton = itemView.findViewById(R.id.followButton);
+
+			followButton.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+
+				}
+			});
 		}
 
 		@Override protected void setItem(int position, User user){
