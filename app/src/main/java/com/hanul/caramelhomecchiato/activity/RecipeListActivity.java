@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -24,6 +25,9 @@ public class RecipeListActivity extends AppCompatActivity{
 
 	private RecipeAdapter recipeAdapter;
 
+	@Nullable private RecipeCategory category;
+	private boolean myRecipe;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
@@ -31,8 +35,8 @@ public class RecipeListActivity extends AppCompatActivity{
 
 		//레시피 카테고리 프래그먼트의 인텐트를 받아서 Parcelable 객체 저장
 		Intent intent = getIntent();
-		RecipeCategory category = (RecipeCategory)intent.getSerializableExtra(EXTRA_RECIPE_CATEGORY);
-		boolean myRecipe = intent.getBooleanExtra(EXTRA_MY_RECIPE, false);
+		this.category = (RecipeCategory)intent.getSerializableExtra(EXTRA_RECIPE_CATEGORY);
+		this.myRecipe = intent.getBooleanExtra(EXTRA_MY_RECIPE, false);
 		Log.d(TAG, "onCreate: Category = "+category+", myRecipe = "+myRecipe);
 
 		//레시피 리사이클러뷰 가져오기

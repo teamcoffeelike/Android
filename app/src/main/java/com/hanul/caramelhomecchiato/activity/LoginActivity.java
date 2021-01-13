@@ -15,7 +15,7 @@ import com.hanul.caramelhomecchiato.R;
 import com.hanul.caramelhomecchiato.network.LoginService;
 import com.hanul.caramelhomecchiato.util.Auth;
 import com.hanul.caramelhomecchiato.util.BaseCallback;
-import com.hanul.caramelhomecchiato.util.SpinnerHandler;
+import com.hanul.caramelhomecchiato.util.lifecyclehandler.SpinnerHandler;
 
 import retrofit2.Call;
 import retrofit2.Response;

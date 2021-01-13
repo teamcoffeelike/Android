@@ -21,12 +21,13 @@ import com.hanul.caramelhomecchiato.adapter.PostAdapter;
 import com.hanul.caramelhomecchiato.data.Post;
 import com.hanul.caramelhomecchiato.network.NetUtils;
 import com.hanul.caramelhomecchiato.network.PostService;
+import com.hanul.caramelhomecchiato.util.BaseCallback;
+import com.hanul.caramelhomecchiato.util.FollowingEventHandler;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.Response;
 
 public class RecentPostFragment extends Fragment{
@@ -39,8 +40,6 @@ public class RecentPostFragment extends Fragment{
 		View view = inflater.inflate(R.layout.fragment_popular_post, container, false);
 
 		Context context = getContext();
-
-		Log.d(TAG, "onCreateView: "+context);
 
 		if(context!=null){
 			RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
@@ -58,27 +57,39 @@ public class RecentPostFragment extends Fragment{
 	@Override public void onResume(){
 		super.onResume();
 
-		PostService.INSTANCE.recentPosts().enqueue(new Callback<JsonObject>(){
-			@Override public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response){
-				JsonObject body = response.body();
-				if(body.has("error")){
-					Log.e(TAG, "recentPosts: 예상치 못한 오류: "+body.get("error").getAsString());
-					Toast.makeText(getContext(), "예상치 못한 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
-					return;
-				}
+		PostService.INSTANCE.recentPosts().enqueue(new BaseCallback(){
+			@Override public void onSuccessfulResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response, @NonNull JsonObject result){
 				List<Post> posts = new ArrayList<>();
-				for(JsonElement e : body.get("posts").getAsJsonArray()){
-					posts.add(NetUtils.GSON.fromJson(e, Post.class));
+				for(JsonElement e : result.get("posts").getAsJsonArray()){
+					Post post = NetUtils.GSON.fromJson(e, Post.class);
+					FollowingEventHandler.dispatch(post.getAuthor());
+					posts.add(post);
 				}
 				setRecentPosts(posts);
 			}
+			@Override public void onErrorResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response, @NonNull String error){
+				Log.e(TAG, "recentPosts: Error "+error);
+				toastError();
+			}
+			@Override public void onFailedResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response){
+				Log.e(TAG, "recentPosts: Failure "+response.errorBody());
+				toastError();
+			}
 			@Override public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t){
-				Log.e(TAG, "recentPosts: Failure ", t);
+				Log.e(TAG, "recentPosts: Failure", t);
+				toastError();
+			}
+
+			private void toastError(){
 				Toast.makeText(getContext(), "예상치 못한 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
 			}
 		});
 	}
 
+	@Override public void onStop(){
+		super.onStop();
+		postAdapter.clearEvents();
+	}
 
 	@Nullable public List<Post> getRecentPosts(){
 		return recentPosts;

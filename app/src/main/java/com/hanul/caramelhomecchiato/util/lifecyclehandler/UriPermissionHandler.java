@@ -1,10 +1,11 @@
-package com.hanul.caramelhomecchiato.util;
+package com.hanul.caramelhomecchiato.util.lifecyclehandler;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
+import android.util.Log;
 
 import androidx.activity.ComponentActivity;
 import androidx.fragment.app.Fragment;
@@ -13,7 +14,9 @@ import androidx.lifecycle.LifecycleOwner;
 import java.util.HashMap;
 import java.util.Map;
 
-public class UriPermissionHandler extends AutoDisposed{
+public class UriPermissionHandler extends LifecycleHandler{
+	private static final String TAG = "UriPermissionHandler";
+	
 	private final Map<Uri, Flags> map = new HashMap<>();
 
 	public UriPermissionHandler(ComponentActivity activity){
@@ -27,6 +30,7 @@ public class UriPermissionHandler extends AutoDisposed{
 	}
 
 	public void grantPermissions(Intent intent, Uri uri, int flags){
+		Log.d(TAG, "grantPermissions: Granted permission to "+uri);
 		for(ResolveInfo resolveInfo : getContext()
 				.getPackageManager()
 				.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY)){
@@ -45,6 +49,7 @@ public class UriPermissionHandler extends AutoDisposed{
 	}
 
 	public void revokePermissions(){
+		Log.d(TAG, "revokePermissions: Revoked all "+map.size()+" granted permissions");
 		for(Map.Entry<Uri, Flags> e : map.entrySet()){
 			getContext().revokeUriPermission(e.getKey(), e.getValue().flags);
 		}

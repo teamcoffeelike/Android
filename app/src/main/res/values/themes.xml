@@ -14,19 +14,36 @@
 		<!-- Customize your theme here. -->
 	</style>
 
-	<style name="tab_text">
+	<style name="TabText">
 		<item name="android:textSize">16sp</item>
 		<item name="android:textStyle">bold</item>
 	</style>
 
 	<!-- editText 하이라이트 색상 변경 -->
-	<style name="edit_text">
+	<style name="EditText">
 		<item name="colorAccent">@color/TerraCotta</item>
 	</style>
 
-	<style name="follow_button" parent="Widget.AppCompat.Button">
-		<item name="android:colorBackground">@color/follow_button_background_color</item>
+	<style name="FollowButton" parent="Widget.AppCompat.Button.Colored">
+		<item name="android:text">@string/button_follow</item>
 		<item name="android:textColor">@color/follow_button_text_color</item>
+		<item name="backgroundTint">@color/follow_button_background_color</item>
+		<!--<item name="strokeColor">@color/TerraCotta</item>
+		<item name="strokeWidth">2dp</item>-->
+	</style>
+
+	<style name="Divider">
+		<item name="android:background">?android:attr/listDivider</item>
+	</style>
+
+	<style name="Divider.Horizontal" parent="Divider">
+		<item name="android:layout_width">match_parent</item>
+		<item name="android:layout_height">1dp</item>
+	</style>
+
+	<style name="Divider.Vertical" parent="Divider">
+		<item name="android:layout_width">1dp</item>
+		<item name="android:layout_height">match_parent</item>
 	</style>
 
 </resources>

@@ -14,9 +14,10 @@ import com.google.gson.JsonObject;
 import com.hanul.caramelhomecchiato.R;
 import com.hanul.caramelhomecchiato.network.KakaoIntegrationService;
 import com.hanul.caramelhomecchiato.util.Auth;
+import com.hanul.caramelhomecchiato.util.BaseCallback;
 import com.hanul.caramelhomecchiato.util.KakaoApiUtils;
-import com.hanul.caramelhomecchiato.util.SpinnerHandler;
 import com.hanul.caramelhomecchiato.util.Validate;
+import com.hanul.caramelhomecchiato.util.lifecyclehandler.SpinnerHandler;
 import com.kakao.sdk.auth.model.OAuthToken;
 import com.kakao.sdk.user.model.Account;
 import com.kakao.sdk.user.model.Profile;
@@ -24,7 +25,6 @@ import com.kakao.sdk.user.model.Profile;
 import java.io.Serializable;
 
 import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.Response;
 
 public class JoinKakaoActivity extends AppCompatActivity{
@@ -63,22 +63,34 @@ public class JoinKakaoActivity extends AppCompatActivity{
 
 				Call<JsonObject> call;
 				switch(mode){
-				case LOGIN:
-					call = KakaoIntegrationService.INSTANCE.loginWithKakao(oAuthToken.getAccessToken());
-					break;
-				case JOIN:
-					call = KakaoIntegrationService.INSTANCE.joinWithKakao(oAuthToken.getAccessToken(), null);
-					break;
-				default:
-					throw new IllegalStateException("Unreachable");
+					case LOGIN:
+						call = KakaoIntegrationService.INSTANCE.loginWithKakao(oAuthToken.getAccessToken());
+						break;
+					case JOIN:
+						call = KakaoIntegrationService.INSTANCE.joinWithKakao(oAuthToken.getAccessToken(), null);
+						break;
+					default:
+						throw new IllegalStateException("Unreachable");
 				}
 
-				call.enqueue(new Callback<JsonObject>(){
-					@Override public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response){
-						kakaoLoginCallback(oAuthToken, response.body());
+				call.enqueue(new BaseCallback(){
+					@Override public void onSuccessfulResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response, @NonNull JsonObject result){
+						kakaoLoginCallback(oAuthToken, result);
+					}
+					@Override public void onErrorResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response, @NonNull String error){
+						Log.e(TAG, "loginWithKakao: Error "+error);
+						handleError();
+					}
+					@Override public void onFailedResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response){
+						Log.e(TAG, "loginWithKakao: "+response.errorBody());
+						handleError();
 					}
 					@Override public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t){
 						Log.e(TAG, "loginWithKakao: Failure", t);
+						handleError();
+					}
+
+					private void handleError(){
 						Toast.makeText(JoinKakaoActivity.this, "예상치 못한 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
 						setResult(RESULT_CANCELED);
 						finish();
@@ -93,30 +105,30 @@ public class JoinKakaoActivity extends AppCompatActivity{
 		if(jsonObject.has("error")){
 			String loginError = jsonObject.get("error").getAsString();
 			switch(loginError){
-			// Login/Join 공통
-			case "needs_agreement": // 프로필 이용을 위한 동의가 필요
-				fetchProfileAndJoin(oAuthToken, true);
-				return;
-			case "bad_kakao_login_token":
-				Toast.makeText(this, "카카오 로그인이 해제되었습니다. 다시 시도해 주세요.", Toast.LENGTH_SHORT).show();
-				break;
-			case "kakao_service_unavailable":
-				Toast.makeText(this, "카카오 연동 서비스를 제공할 수 없습니다.", Toast.LENGTH_SHORT).show();
-				break;
-			// Join 한정
-			case "user_exists":
-				Toast.makeText(this, "동일한 계정의 유저가 이미 존재합니다.", Toast.LENGTH_SHORT).show();
-				break;
-			case "bad_name":
-				if(root.getVisibility()==View.VISIBLE){
-					Toast.makeText(this, "이름이 적합하지 않습니다.", Toast.LENGTH_SHORT).show();
-					spinnerHandler.dismiss();
-				}else showNameInputWidget(oAuthToken);
-				return;
-			default:
-				Log.e(TAG, "kakaoLoginCallback: 예상치 못한 오류: "+loginError);
-				Toast.makeText(this, "예상치 못한 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
-				break;
+				// Login/Join 공통
+				case "needs_agreement": // 프로필 이용을 위한 동의가 필요
+					fetchProfileAndJoin(oAuthToken, true);
+					return;
+				case "bad_kakao_login_token":
+					Toast.makeText(this, "카카오 로그인이 해제되었습니다. 다시 시도해 주세요.", Toast.LENGTH_SHORT).show();
+					break;
+				case "kakao_service_unavailable":
+					Toast.makeText(this, "카카오 연동 서비스를 제공할 수 없습니다.", Toast.LENGTH_SHORT).show();
+					break;
+				// Join 한정
+				case "user_exists":
+					Toast.makeText(this, "동일한 계정의 유저가 이미 존재합니다.", Toast.LENGTH_SHORT).show();
+					break;
+				case "bad_name":
+					if(root.getVisibility()==View.VISIBLE){
+						Toast.makeText(this, "이름이 적합하지 않습니다.", Toast.LENGTH_SHORT).show();
+						spinnerHandler.dismiss();
+					}else showNameInputWidget(oAuthToken);
+					return;
+				default:
+					Log.e(TAG, "kakaoLoginCallback: 예상치 못한 오류: "+loginError);
+					Toast.makeText(this, "예상치 못한 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
+					break;
 			}
 			setResult(RESULT_CANCELED);
 			finish();
@@ -155,12 +167,24 @@ public class JoinKakaoActivity extends AppCompatActivity{
 						return;
 					}
 					// 이름 명시하여 재시도
-					KakaoIntegrationService.INSTANCE.joinWithKakao(oAuthToken.getAccessToken(), nickname).enqueue(new Callback<JsonObject>(){
-						@Override public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response){
-							kakaoLoginCallback(oAuthToken, response.body());
+					KakaoIntegrationService.INSTANCE.joinWithKakao(oAuthToken.getAccessToken(), nickname).enqueue(new BaseCallback(){
+						@Override public void onSuccessfulResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response, @NonNull JsonObject result){
+							kakaoLoginCallback(oAuthToken, result);
+						}
+						@Override public void onErrorResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response, @NonNull String error){
+							Log.e(TAG, "profile: error "+error);
+							handleError();
+						}
+						@Override public void onFailedResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response){
+							Log.e(TAG, "profile: "+response.errorBody());
+							handleError();
 						}
 						@Override public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t){
 							Log.e(TAG, "profile: Failure ", t);
+							handleError();
+						}
+
+						private void handleError(){
 							Toast.makeText(JoinKakaoActivity.this, "예상치 못한 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
 							setResult(RESULT_CANCELED);
 							finish();
@@ -200,22 +224,26 @@ public class JoinKakaoActivity extends AppCompatActivity{
 			return;
 		}
 
-		KakaoIntegrationService.INSTANCE.joinWithKakao(oAuthToken.getAccessToken(), name).enqueue(new Callback<JsonObject>(){
-			@Override public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response){
-				JsonObject body = response.body();
-				if(body.has("error")){
-					Toast.makeText(JoinKakaoActivity.this, "예상치 못한 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
-					Log.e(TAG, "joinWithKakao: "+body.get("error").getAsString());
-					setResult(RESULT_CANCELED);
-					finish();
-					return;
-				}
-				Auth.getInstance().setLoginData(body);
+		KakaoIntegrationService.INSTANCE.joinWithKakao(oAuthToken.getAccessToken(), name).enqueue(new BaseCallback(){
+			@Override public void onSuccessfulResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response, @NonNull JsonObject result){
+				Auth.getInstance().setLoginData(result);
 				finish();
 			}
+			@Override public void onErrorResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response, @NonNull String error){
+				Log.e(TAG, "joinWithKakao: Error "+error);
+				handleError();
+			}
+			@Override public void onFailedResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response){
+				Log.e(TAG, "joinWithKakao: "+response.errorBody());
+				handleError();
+			}
 			@Override public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t){
-				Toast.makeText(JoinKakaoActivity.this, "예상치 못한 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
 				Log.e(TAG, "joinWithKakao: Failure", t);
+				handleError();
+			}
+
+			private void handleError(){
+				Toast.makeText(JoinKakaoActivity.this, "예상치 못한 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
 				setResult(RESULT_CANCELED);
 				finish();
 			}

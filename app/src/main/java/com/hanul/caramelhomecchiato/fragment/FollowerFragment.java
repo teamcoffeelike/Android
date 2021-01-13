@@ -18,11 +18,12 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.hanul.caramelhomecchiato.R;
 import com.hanul.caramelhomecchiato.adapter.BaseAdapter;
-import com.hanul.caramelhomecchiato.adapter.FollowerUserAdapter;
+import com.hanul.caramelhomecchiato.adapter.UserViewAdapter;
 import com.hanul.caramelhomecchiato.data.User;
 import com.hanul.caramelhomecchiato.network.NetUtils;
 import com.hanul.caramelhomecchiato.network.UserService;
 import com.hanul.caramelhomecchiato.util.BaseCallback;
+import com.hanul.caramelhomecchiato.util.FollowingEventHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,7 +59,7 @@ public class FollowerFragment extends Fragment{
 		View view = inflater.inflate(R.layout.fragment_follower, container, false);
 
 		RecyclerView recyclerViewFollower = view.findViewById(R.id.recyclerViewFollower);
-		adapter = new FollowerUserAdapter();
+		adapter = new UserViewAdapter();
 
 		recyclerViewFollower.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
 		recyclerViewFollower.setAdapter(adapter);
@@ -68,6 +69,7 @@ public class FollowerFragment extends Fragment{
 
 	@Override public void onResume(){
 		super.onResume();
+		setUsers(null);
 		enqueueTransaction(userId);
 	}
 
@@ -78,7 +80,9 @@ public class FollowerFragment extends Fragment{
 
 				JsonArray users = result.get("users").getAsJsonArray();
 				for(JsonElement userElement : users){
-					usersList.add(NetUtils.GSON.fromJson(userElement, User.class));
+					User user = NetUtils.GSON.fromJson(userElement, User.class);
+					usersList.add(user);
+					FollowingEventHandler.dispatch(user);
 				}
 				setUsers(usersList);
 			}
@@ -97,8 +101,11 @@ public class FollowerFragment extends Fragment{
 		});
 	}
 
-	protected void setUsers(List<User> users){
-		adapter.elements().addAll(users);
+	protected void setUsers(@Nullable List<User> users){
+		Log.d(TAG, "setUsers: Refreshing users");
+		List<User> elements = adapter.elements();
+		elements.clear();
+		if(users!=null) elements.addAll(users);
 		adapter.notifyDataSetChanged();
 	}
 }

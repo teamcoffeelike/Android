@@ -1,6 +1,5 @@
 package com.hanul.caramelhomecchiato.adapter;
 
-import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,7 +27,7 @@ public class RecipeAdapter extends BaseAdapter<RecipeCover>{
 
 		public ViewHolder(@NonNull View itemView){
 			super(itemView);
-			recipeImage = itemView.findViewById(R.id.recipeImage);
+			recipeImage = itemView.findViewById(R.id.imageViewRecipe);
 			title = itemView.findViewById(R.id.textViewRecipeTitle);
 			author = itemView.findViewById(R.id.textViewRecipeAuthor);
 			rating = itemView.findViewById(R.id.ratingBar);
@@ -37,7 +36,7 @@ public class RecipeAdapter extends BaseAdapter<RecipeCover>{
 		//레시피 사진, 제목, 사용자, 별점
 		@Override protected void setItem(int position, RecipeCover recipeCover){
 			Glide.with(itemView)
-					.load(Uri.parse(recipeCover.getPhoto()))
+					.load(recipeCover.getPhoto())
 					.into(recipeImage);
 			title.setText(recipeCover.getTitle());
 			author.setText(recipeCover.getAuthor().getName());

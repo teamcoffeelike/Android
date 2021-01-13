@@ -1,4 +1,4 @@
-package com.hanul.caramelhomecchiato.util;
+package com.hanul.caramelhomecchiato.util.lifecyclehandler;
 
 import android.content.Context;
 
@@ -12,20 +12,20 @@ import androidx.lifecycle.LifecycleOwner;
 
 import java.util.Objects;
 
-public abstract class AutoDisposed implements LifecycleEventObserver{
+public abstract class LifecycleHandler implements LifecycleEventObserver{
 	@Nullable private Context context;
 	@Nullable private final Fragment fragment;
 
-	public AutoDisposed(ComponentActivity activity){
+	public LifecycleHandler(ComponentActivity activity){
 		this(activity, activity, null);
 	}
-	public AutoDisposed(Fragment fragment){
+	public LifecycleHandler(Fragment fragment){
 		this(null, fragment, fragment);
 	}
-	public AutoDisposed(Context context, LifecycleOwner lifecycleOwner){
+	public LifecycleHandler(Context context, LifecycleOwner lifecycleOwner){
 		this(context, lifecycleOwner, null);
 	}
-	private AutoDisposed(@Nullable Context context, LifecycleOwner lifecycleOwner, @Nullable Fragment fragment){
+	private LifecycleHandler(@Nullable Context context, LifecycleOwner lifecycleOwner, @Nullable Fragment fragment){
 		this.context = context;
 		this.fragment = fragment;
 

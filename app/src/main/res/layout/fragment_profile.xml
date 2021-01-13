@@ -5,101 +5,128 @@
 	android:layout_width="match_parent"
 	android:layout_height="match_parent">
 
-	<androidx.constraintlayout.widget.ConstraintLayout
-		android:id="@+id/constraintLayout"
+	<LinearLayout
+		android:id="@+id/linearLayout"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:padding="20dp"
+		android:background="@color/white"
+		android:orientation="vertical"
+		android:translationZ="10dp"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toTopOf="parent">
 
-		<ImageView
-			android:id="@+id/imageViewProfile"
-			android:layout_width="100dp"
-			android:layout_height="100dp"
-			android:src="@drawable/default_profile_image"
-			app:layout_constraintBottom_toBottomOf="parent"
-			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toTopOf="parent" />
-
 		<androidx.constraintlayout.widget.ConstraintLayout
-			android:layout_width="0dp"
+			android:id="@+id/constraintLayout"
+			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:layout_marginStart="12dp"
-			android:layout_marginBottom="20dp"
-			app:layout_constraintBottom_toBottomOf="@+id/imageViewProfile"
-			app:layout_constraintEnd_toEndOf="parent"
-			app:layout_constraintStart_toEndOf="@+id/imageViewProfile">
+			android:padding="20dp">
 
-			<TextView
-				android:id="@+id/textViewProfileName"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:textColor="@color/VanDykeBrown"
-				android:textSize="20sp"
-				android:textStyle="bold"
-				app:layout_constraintBottom_toTopOf="@+id/textViewMotd"
-				app:layout_constraintStart_toStartOf="@+id/textViewMotd" />
-
-			<TextView
-				android:id="@+id/textViewMotd"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:maxLines="2"
-				android:textColor="@color/VanDykeBrown"
-				android:textSize="14sp"
-				android:visibility="gone"
+			<ImageView
+				android:id="@+id/imageViewProfile"
+				android:layout_width="100dp"
+				android:layout_height="100dp"
+				android:src="@drawable/default_profile_image"
 				app:layout_constraintBottom_toBottomOf="parent"
-				app:layout_constraintStart_toStartOf="parent" />
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintTop_toTopOf="parent" />
+
+			<androidx.constraintlayout.widget.ConstraintLayout
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:layout_marginStart="12dp"
+				android:layout_marginBottom="20dp"
+				app:layout_constraintBottom_toBottomOf="@+id/imageViewProfile"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintStart_toEndOf="@+id/imageViewProfile">
+
+				<TextView
+					android:id="@+id/textViewProfileName"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:textColor="@color/VanDykeBrown"
+					android:textSize="20sp"
+					android:textStyle="bold"
+					app:layout_constraintBottom_toTopOf="@+id/textViewMotd"
+					app:layout_constraintStart_toStartOf="@+id/textViewMotd" />
+
+				<TextView
+					android:id="@+id/textViewMotd"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:maxLines="2"
+					android:textColor="@color/VanDykeBrown"
+					android:textSize="14sp"
+					android:visibility="gone"
+					app:layout_constraintBottom_toBottomOf="parent"
+					app:layout_constraintStart_toStartOf="parent" />
+			</androidx.constraintlayout.widget.ConstraintLayout>
+
 		</androidx.constraintlayout.widget.ConstraintLayout>
 
-	</androidx.constraintlayout.widget.ConstraintLayout>
+		<View
+			style="@style/Divider.Horizontal"
+			app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
 
-	<androidx.constraintlayout.widget.ConstraintLayout
-		android:id="@+id/constraintLayout2"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:background="@color/OrangeYellowCrayola"
-		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toBottomOf="@+id/constraintLayout">
+		<androidx.constraintlayout.widget.ConstraintLayout
+			android:id="@+id/myProfileLayout"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content">
 
-		<Button
-			android:id="@+id/buttonEditProfile"
-			style="?android:attr/borderlessButtonStyle"
-			android:layout_width="wrap_content"
+			<Button
+				android:id="@+id/buttonEditProfile"
+				style="?android:attr/borderlessButtonStyle"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/button_edit_profile"
+				android:textColor="@color/VanDykeBrown"
+				app:backgroundTint="#00ff0000"
+				app:layout_constraintBottom_toBottomOf="parent"
+				app:layout_constraintEnd_toStartOf="@id/buttonNewPost"
+				app:layout_constraintTop_toTopOf="parent" />
+
+			<Button
+				android:id="@+id/buttonNewPost"
+				style="?android:attr/borderlessButtonStyle"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/button_write_post"
+				android:textColor="@color/VanDykeBrown"
+				android:textStyle=""
+				app:backgroundTint="#00ff0000"
+				app:layout_constraintBottom_toBottomOf="parent"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintHorizontal_bias="1.0"
+				app:layout_constraintTop_toTopOf="parent" />
+
+		</androidx.constraintlayout.widget.ConstraintLayout>
+
+		<androidx.constraintlayout.widget.ConstraintLayout
+			android:id="@+id/otherProfileLayout"
+			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			app:backgroundTint="#00ff0000"
-			android:text="프로필편집"
-			android:textColor="@color/VanDykeBrown"
-			app:layout_constraintBottom_toBottomOf="parent"
-			app:layout_constraintEnd_toStartOf="@id/buttonNewPost"
-			app:layout_constraintTop_toTopOf="parent" />
+			android:paddingHorizontal="20dp">
 
-		<Button
-			android:id="@+id/buttonNewPost"
-			style="?android:attr/borderlessButtonStyle"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			app:backgroundTint="#00ff0000"
-			android:text="글쓰기"
-			android:textColor="@color/VanDykeBrown"
-			android:textStyle=""
-			app:layout_constraintBottom_toBottomOf="parent"
-			app:layout_constraintEnd_toEndOf="parent"
-			app:layout_constraintHorizontal_bias="1.0"
-			app:layout_constraintTop_toTopOf="parent" />
+			<com.hanul.caramelhomecchiato.widget.FollowButton
+				android:id="@+id/buttonFollow"
+				style="@style/FollowButton"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				app:layout_constraintBottom_toBottomOf="parent"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintTop_toTopOf="parent" />
 
-	</androidx.constraintlayout.widget.ConstraintLayout>
+		</androidx.constraintlayout.widget.ConstraintLayout>
+
+	</LinearLayout>
 
 	<androidx.recyclerview.widget.RecyclerView
 		android:id="@+id/recyclerView"
 		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
+		android:layout_height="0dp"
 		android:layout_marginTop="10dp"
 		app:layout_constraintBottom_toBottomOf="parent"
-		app:layout_constraintTop_toBottomOf="@+id/constraintLayout2"
+		app:layout_constraintTop_toBottomOf="@+id/linearLayout"
 		app:layout_constraintVertical_bias="0.0"
 		tools:layout_editor_absoluteX="10dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

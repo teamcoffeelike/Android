@@ -1,4 +1,4 @@
-package com.hanul.caramelhomecchiato.util;
+package com.hanul.caramelhomecchiato.util.lifecyclehandler;
 
 import android.util.Log;
 
@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.JsonObject;
 import com.hanul.caramelhomecchiato.data.Post;
+import com.hanul.caramelhomecchiato.util.BaseCallback;
 
 import java.util.List;
 import java.util.Objects;
@@ -16,7 +17,7 @@ import java.util.Objects;
 import retrofit2.Call;
 import retrofit2.Response;
 
-public class PostScrollHandler extends AutoDisposed{
+public class PostScrollHandler extends LifecycleHandler{
 	private static final String TAG = "PostScrollHandler";
 
 	private final RecyclerView recyclerView;

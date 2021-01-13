@@ -106,7 +106,7 @@
 				android:layout_marginHorizontal="12dp"
 				android:layout_marginBottom="12dp"
 				android:gravity="end|bottom"
-				android:maxLines="1"
+				android:maxLines="2"
 				android:textColor="@color/Almond"
 				android:textSize="20sp"
 				app:layout_constraintBottom_toBottomOf="@+id/imageViewProfile"
@@ -120,9 +120,9 @@
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:layout_marginTop="30dp"
-			android:layout_marginRight="15dp"
+			android:layout_marginEnd="15dp"
 			android:text="@string/my_recipe"
-			android:textSize="20dp"
+			android:textSize="20sp"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
 
@@ -131,9 +131,9 @@
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:layout_marginTop="15dp"
-			android:layout_marginRight="15dp"
+			android:layout_marginEnd="15dp"
 			android:text="@string/follows"
-			android:textSize="20dp"
+			android:textSize="20sp"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintTop_toBottomOf="@+id/myRecipesMenu" />
 
@@ -142,9 +142,9 @@
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:layout_marginTop="15dp"
-			android:layout_marginRight="15dp"
+			android:layout_marginEnd="15dp"
 			android:text="@string/likes"
-			android:textSize="20dp"
+			android:textSize="20sp"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintTop_toBottomOf="@+id/followsMenu" />
 
@@ -153,9 +153,9 @@
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:layout_marginTop="15dp"
-			android:layout_marginRight="15dp"
+			android:layout_marginEnd="15dp"
 			android:text="@string/search"
-			android:textSize="20dp"
+			android:textSize="20sp"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintTop_toBottomOf="@+id/likesMenu" />
 
@@ -163,10 +163,10 @@
 			android:id="@+id/settingsMenu"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:layout_marginRight="10dp"
+			android:layout_marginEnd="10dp"
 			android:layout_marginBottom="15dp"
 			android:text="@string/settings"
-			android:textSize="20dp"
+			android:textSize="20sp"
 			app:layout_constraintBottom_toBottomOf="parent"
 			app:layout_constraintEnd_toEndOf="parent" />
 	</androidx.constraintlayout.widget.ConstraintLayout>

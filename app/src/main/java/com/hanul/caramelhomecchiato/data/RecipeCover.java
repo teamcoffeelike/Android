@@ -1,5 +1,6 @@
 package com.hanul.caramelhomecchiato.data;
 
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -20,14 +21,14 @@ public final class RecipeCover implements Parcelable{
 	private String title;
 	private User author;
 	private float rating;
-	@Nullable private String photo;
+	@Nullable private Uri photo;
 
 	public RecipeCover(int id,
 	                   RecipeCategory category,
 	                   String title,
 	                   User author,
 	                   float rating,
-	                   @Nullable String photo){
+	                   @Nullable Uri photo){
 		this.id = id;
 		this.category = category;
 		this.title = title;
@@ -42,7 +43,7 @@ public final class RecipeCover implements Parcelable{
 		title = in.readString();
 		author = in.readParcelable(User.class.getClassLoader());
 		rating = in.readFloat();
-		photo = in.readString();
+		photo = in.readParcelable(Uri.class.getClassLoader());
 	}
 
 	@Override public int describeContents(){
@@ -54,7 +55,7 @@ public final class RecipeCover implements Parcelable{
 		dest.writeString(title);
 		dest.writeParcelable(author, flags);
 		dest.writeFloat(rating);
-		dest.writeString(photo);
+		dest.writeParcelable(photo, flags);
 	}
 
 	public int getId(){
@@ -83,6 +84,17 @@ public final class RecipeCover implements Parcelable{
 	}
 	public float getRating(){ return rating; }
 	public void setRating(float rating){ this.rating = rating; }
-	@Nullable public String getPhoto(){ return photo; }
-	public void setPhoto(@Nullable String photo){ this.photo = photo; }
+	@Nullable public Uri getPhoto(){ return photo; }
+	public void setPhoto(@Nullable Uri photo){ this.photo = photo; }
+
+	@Override public String toString(){
+		return "RecipeCover{"+
+				"id="+id+
+				", category="+category+
+				", title='"+title+'\''+
+				", author="+author+
+				", rating="+rating+
+				", photo="+photo+
+				'}';
+	}
 }

@@ -4,28 +4,28 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	tools:context=".activity.LoadingActivity"
-	android:background="@color/Linen">
+	android:background="@color/Linen"
+	tools:context=".activity.LoadingActivity">
 
 	<ImageView
 		android:id="@+id/imageView"
 		android:layout_width="wrap_content"
 		android:layout_height="100dp"
 		android:layout_marginBottom="20dp"
+		android:contentDescription="@string/description_logo"
 		android:src="@drawable/logo"
 		app:layout_constraintBottom_toTopOf="@id/constraintLayout"
 		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintStart_toStartOf="parent"
-		android:contentDescription="훔친로고" />
+		app:layout_constraintStart_toStartOf="parent" />
 
 	<androidx.constraintlayout.widget.ConstraintLayout
 		android:id="@+id/constraintLayout"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		app:layout_constraintTop_toTopOf="parent"
-		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintBottom_toBottomOf="parent"
 		app:layout_constraintEnd_toEndOf="parent"
-		app:layout_constraintBottom_toBottomOf="parent">
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent">
 
 		<TextView
 			android:id="@+id/textView"
@@ -37,7 +37,8 @@
 			android:textStyle="bold"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toTopOf="parent" />
+			app:layout_constraintTop_toTopOf="parent"
+			tools:ignore="HardcodedText" />
 
 		<TextView
 			android:id="@+id/textView2"
@@ -48,7 +49,8 @@
 			android:textSize="34sp"
 			android:textStyle="bold"
 			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toBottomOf="@id/textView" />
+			app:layout_constraintTop_toBottomOf="@id/textView"
+			tools:ignore="HardcodedText" />
 
 		<TextView
 			android:layout_width="wrap_content"
@@ -58,9 +60,9 @@
 			android:textSize="34sp"
 			android:textStyle="bold"
 			app:layout_constraintStart_toEndOf="@id/textView2"
-			app:layout_constraintTop_toBottomOf="@id/textView" />
+			app:layout_constraintTop_toBottomOf="@id/textView"
+			tools:ignore="HardcodedText" />
 
 	</androidx.constraintlayout.widget.ConstraintLayout>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

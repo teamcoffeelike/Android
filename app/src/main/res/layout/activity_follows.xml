@@ -15,7 +15,7 @@
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toTopOf="parent"
 		app:tabTextColor="@color/VanDykeBrown"
-		app:tabTextAppearance="@style/tab_text"
+		app:tabTextAppearance="@style/TabText"
 		app:tabSelectedTextColor="@color/TerraCotta"
 		app:tabIndicatorColor="@color/TerraCotta">
 
@@ -23,13 +23,13 @@
 			android:id="@+id/tabFollower"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:text="팔로워" />
+			android:text="@string/tab_follower" />
 
 		<com.google.android.material.tabs.TabItem
 			android:id="@+id/tabFollowing"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:text="팔로잉" />
+			android:text="@string/tab_following" />
 	</com.google.android.material.tabs.TabLayout>
 
 	<androidx.viewpager.widget.ViewPager

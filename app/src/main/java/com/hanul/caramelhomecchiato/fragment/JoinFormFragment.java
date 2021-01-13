@@ -25,7 +25,7 @@ import com.hanul.caramelhomecchiato.activity.JoinActivity.JoinType;
 import com.hanul.caramelhomecchiato.network.JoinService;
 import com.hanul.caramelhomecchiato.util.Auth;
 import com.hanul.caramelhomecchiato.util.BaseCallback;
-import com.hanul.caramelhomecchiato.util.SpinnerHandler;
+import com.hanul.caramelhomecchiato.util.lifecyclehandler.SpinnerHandler;
 import com.hanul.caramelhomecchiato.util.Validate;
 
 import retrofit2.Call;

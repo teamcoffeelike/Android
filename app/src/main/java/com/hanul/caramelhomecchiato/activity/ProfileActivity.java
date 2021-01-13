@@ -15,6 +15,7 @@ import com.hanul.caramelhomecchiato.fragment.ProfileFragment;
 import com.hanul.caramelhomecchiato.network.NetUtils;
 import com.hanul.caramelhomecchiato.network.UserService;
 import com.hanul.caramelhomecchiato.util.BaseCallback;
+import com.hanul.caramelhomecchiato.util.FollowingEventHandler;
 
 import retrofit2.Call;
 import retrofit2.Response;
@@ -47,7 +48,9 @@ public class ProfileActivity extends AppCompatActivity{
 		super.onResume();
 		UserService.INSTANCE.profile(userId).enqueue(new BaseCallback(){
 			@Override public void onSuccessfulResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response, @NonNull JsonObject result){
-				fragment.setProfile(NetUtils.GSON.fromJson(result, UserProfile.class));
+				UserProfile profile = NetUtils.GSON.fromJson(result, UserProfile.class);
+				FollowingEventHandler.dispatch(profile);
+				fragment.setProfile(profile);
 			}
 			@Override public void onErrorResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response, @NonNull String error){
 				Log.e(TAG, "profile: Error: "+error);

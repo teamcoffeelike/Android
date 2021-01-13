@@ -4,9 +4,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
 import com.google.gson.JsonObject;
@@ -15,8 +15,11 @@ import com.hanul.caramelhomecchiato.R;
 import com.hanul.caramelhomecchiato.network.LoginService;
 import com.hanul.caramelhomecchiato.util.Auth;
 
+import java.util.Objects;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Future;
+
 import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.Response;
 
 /**
@@ -33,33 +36,58 @@ public class LoadingActivity extends AppCompatActivity{
 		setContentView(R.layout.activity_loading);
 
 		CaramelHomecchiatoApp app = (CaramelHomecchiatoApp)getApplication();
-		app.executorService.submit(() -> Glide.get(app.getApplicationContext()).clearDiskCache());
+		Executor main = ContextCompat.getMainExecutor(this);
+
+		Future<?> clearDiskCacheFuture = app.executorService.submit(() -> Glide.get(app.getApplicationContext()).clearDiskCache());
 
 		String authToken = Auth.getInstance().getAuthToken();
+
+		@Nullable Future<?> tryLoginFuture;
 		if(authToken!=null){
 			Log.d(TAG, "doInBackground: AuthToken("+authToken+") 발견. 로그인 시도.");
 
-			Call<JsonObject> call = LoginService.INSTANCE.loginWithAuthToken(authToken);
-			call.enqueue(new Callback<JsonObject>(){
-				@Override public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response){
-					JsonObject body = response.body();
-					if(body.has("error")){
-						Log.e(TAG, "loginWithAuthToken: AuthToken 로그인 실패: "+body.get("error").getAsString());
-						startActivityForResult(new Intent(LoadingActivity.this, LoginActivity.class), LOGIN_REQ);
-						return;
+			tryLoginFuture = app.executorService.submit(() -> {
+				Call<JsonObject> call = LoginService.INSTANCE.loginWithAuthToken(authToken);
+				try{
+					Response<JsonObject> response = call.execute();
+
+					if(response.isSuccessful()){
+						JsonObject result = Objects.requireNonNull(response.body());
+						if(result.has("error")){
+							Log.e(TAG, "loginWithAuthToken: AuthToken 로그인 실패: "+result.get("error").getAsString());
+						}else{
+							Auth.getInstance().setLoginData(result);
+						}
+					}else{
+						Log.e(TAG, "loginWithAuthToken: AuthToken 로그인 실패: "+response.errorBody());
 					}
-					Auth.getInstance().setLoginData(body);
-					postLoad();
-				}
-				@Override public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t){
-					Log.e(TAG, "loginWithAuthToken: Error ", t);
-					startActivityForResult(new Intent(LoadingActivity.this, LoginActivity.class), LOGIN_REQ);
+				}catch(Exception ex){
+					Log.e(TAG, "loginWithAuthToken: Error ", ex);
 				}
 			});
 		}else{
 			Log.d(TAG, "doInBackground: AuthToken 없음.");
-			startActivityForResult(new Intent(this, LoginActivity.class), LOGIN_REQ);
+			tryLoginFuture = null;
 		}
+
+		app.executorService.submit(() -> {
+			try{
+				Thread.sleep(2000);
+				clearDiskCacheFuture.get();
+				if(tryLoginFuture!=null) tryLoginFuture.get();
+
+				main.execute(() -> {
+					if(Auth.getInstance().getLoginUser()!=null){
+						postLoad();
+					}else{
+						startActivityForResult(new Intent(LoadingActivity.this, LoginActivity.class), LOGIN_REQ);
+					}
+				});
+			}catch(Exception e){
+				Log.e(TAG, "onCreate: ", e);
+				System.exit(1);
+			}
+		});
 	}
 
 	@Override protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data){

@@ -35,6 +35,7 @@ public class FollowsActivity extends AppCompatActivity{
 		tabLayout.setupWithViewPager(viewPager);
 	}
 
+
 	private final class ViewPagerAdapter extends FragmentStatePagerAdapter{
 		public ViewPagerAdapter(){
 			super(getSupportFragmentManager(), BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);

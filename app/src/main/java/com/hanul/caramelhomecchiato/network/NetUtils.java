@@ -35,7 +35,7 @@ public final class NetUtils{
 
 	public static final OkHttpClient OK_HTTP_CLIENT = new OkHttpClient.Builder()
 			.cookieJar(new JavaNetCookieJar(new CookieManager()))
-			.addNetworkInterceptor(RequestLogger.INSTANCE)
+			//.addNetworkInterceptor(RequestLogger.INSTANCE)
 			.build();
 
 	public static final Retrofit RETROFIT = new Retrofit.Builder()

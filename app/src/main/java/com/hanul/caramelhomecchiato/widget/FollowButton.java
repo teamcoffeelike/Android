@@ -5,11 +5,11 @@ import android.util.AttributeSet;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.AppCompatButton;
 
+import com.google.android.material.button.MaterialButton;
 import com.hanul.caramelhomecchiato.R;
 
-public class FollowButton extends AppCompatButton{
+public class FollowButton extends MaterialButton{
 	private static final int[] STATE_FOLLOWING = {R.attr.state_following};
 
 	private boolean mFollowing = false;

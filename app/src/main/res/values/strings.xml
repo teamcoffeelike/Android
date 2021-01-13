@@ -36,4 +36,17 @@
     <string name="login">로그인</string>
     <string name="join">회원가입</string>
 	<string name="join_form_phone_number">핸드폰 번호</string>
+	<string name="description_logo">훔친로고</string>
+    <string name="setting_profile">프로필</string>
+    <string name="setting_change_password">비밀번호 변경</string>
+    <string name="setting_logout">로그아웃</string>
+	<string name="current_password">현재 비밀번호</string>
+    <string name="new_password">새로운 비밀번호</string>
+    <string name="password_check_failed">비밀번호가 일치하지 않습니다!</string>
+    <string name="button_follow">팔로우</string>
+    <string name="button_following">팔로우 중</string>
+	<string name="button_write_post">글쓰기</string>
+    <string name="button_edit_profile">프로필 편집</string>
+    <string name="tab_follower">팔로워</string>
+    <string name="tab_following">팔로잉</string>
 </resources>

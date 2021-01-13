@@ -37,9 +37,9 @@ public class RecipeCoverContentFragment extends Fragment{
 		TextView textViewTitle = view.findViewById(R.id.textViewTitle);
 		textViewTitle.setText(cover.getTitle());
 
-		Objects.requireNonNull(getFragmentManager()).beginTransaction()
+		/*Objects.requireNonNull(getFragmentManager()).beginTransaction()
 				.add(R.id.author, UserFragment.newInstance(cover.getAuthor()))
-				.commit();
+				.commit(); TODO*/
 
 		return view;
 	}

@@ -37,9 +37,9 @@ import com.hanul.caramelhomecchiato.data.UserProfile;
 import com.hanul.caramelhomecchiato.network.UserService;
 import com.hanul.caramelhomecchiato.util.GlideUtils;
 import com.hanul.caramelhomecchiato.util.IOUtils;
-import com.hanul.caramelhomecchiato.util.SpinnerHandler;
-import com.hanul.caramelhomecchiato.util.UriPermissionHandler;
 import com.hanul.caramelhomecchiato.util.Validate;
+import com.hanul.caramelhomecchiato.util.lifecyclehandler.SpinnerHandler;
+import com.hanul.caramelhomecchiato.util.lifecyclehandler.UriPermissionHandler;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -171,7 +171,7 @@ public class EditProfileActivity extends AppCompatActivity{
 	@Override public void onBackPressed(){
 		if(newProfileImage!=null||nameChanged||motdChanged){
 			new AlertDialog.Builder(EditProfileActivity.this)
-					.setTitle("작성한 내용을 저장하지 않고 창을 닫겠습니까?")
+					.setTitle("변경한 내용을 저장하지 않고 창을 닫겠습니까?")
 					.setPositiveButton("예", (dialog, which) -> {
 						finish();
 					})
@@ -208,26 +208,32 @@ public class EditProfileActivity extends AppCompatActivity{
 		executorService.submit(() -> {
 			List<String> toasts = new ArrayList<>();
 
-			boolean allSucceed =
-					(setProfileImage==null||checkTransactionResult(setProfileImage,
+			boolean profileImageSucceed = setProfileImage==null||
+					checkTransactionResult(setProfileImage,
 							"setProfileImage",
 							"프로필 이미지",
-							toasts))&
-							(setName==null||checkTransactionResult(setName,
-									"setName",
-									"이름",
-									toasts))&
-							(setMotd==null||checkTransactionResult(setMotd,
-									"setMotd",
-									"소개글",
-									toasts));
+							toasts);
+			boolean nameSucceed = setName==null||
+					checkTransactionResult(setName,
+							"setName",
+							"이름",
+							toasts);
+			boolean motdSucceed = setMotd==null||
+					checkTransactionResult(setMotd,
+							"setMotd",
+							"소개글",
+							toasts);
 
 			ContextCompat.getMainExecutor(this).execute(() -> {
 				for(String toast : toasts){
 					Toast.makeText(this, toast, Toast.LENGTH_SHORT).show();
 				}
 
-				if(allSucceed) finish();
+				if(profileImageSucceed&&setProfileImage==null){
+					GlideUtils.resetProfileImageSignature(); // TODO 외않되 >:(
+				}
+
+				if(profileImageSucceed&&nameSucceed&&motdSucceed) finish();
 				else spinnerHandler.dismiss();
 			});
 		});
@@ -317,17 +323,7 @@ public class EditProfileActivity extends AppCompatActivity{
 	}
 
 	private File generateNewImageFile(String type){
-		String timeStamp = DATE_FORMAT.format(new Date());
-		String imageFileName = "Caramel_"+type+"_"+timeStamp+".jpg";
-
-		File storageDir = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), "caramel");
-		if(!storageDir.exists()){
-			Log.i("mCurrentPhotoPath", storageDir.toString());
-			//noinspection ResultOfMethodCallIgnored
-			storageDir.mkdirs();
-		}
-
-		return new File(storageDir, imageFileName);
+		return new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), "Caramel_"+type+"_"+DATE_FORMAT.format(new Date())+".jpg");
 	}
 
 	// TODO 작동안함
@@ -386,6 +382,7 @@ public class EditProfileActivity extends AppCompatActivity{
 			}
 		}else{
 			spinnerHandler.dismiss();
+			permissionHandler.revokePermissions();
 		}
 
 	}

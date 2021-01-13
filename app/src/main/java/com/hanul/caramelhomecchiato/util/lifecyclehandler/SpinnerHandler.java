@@ -1,4 +1,4 @@
-package com.hanul.caramelhomecchiato.util;
+package com.hanul.caramelhomecchiato.util.lifecyclehandler;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -7,7 +7,7 @@ import androidx.activity.ComponentActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LifecycleOwner;
 
-public class SpinnerHandler extends AutoDisposed{
+public class SpinnerHandler extends LifecycleHandler{
 	private ProgressDialog spinnerDialog;
 
 	public SpinnerHandler(ComponentActivity activity){

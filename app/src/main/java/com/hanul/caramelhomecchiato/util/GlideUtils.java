@@ -4,7 +4,6 @@ import android.app.Application;
 import android.graphics.drawable.Drawable;
 
 import com.bumptech.glide.request.RequestOptions;
-import com.bumptech.glide.request.transition.DrawableCrossFadeFactory;
 import com.hanul.caramelhomecchiato.R;
 import com.hanul.caramelhomecchiato.drawable.EmptyAttachmentDrawable;
 
@@ -17,7 +16,7 @@ public final class GlideUtils{
 	private static RequestOptions profileImage;
 	private static RequestOptions postImage;
 
-	private static DrawableCrossFadeFactory crossFade;
+	private static Int64Key key = new Int64Key(System.currentTimeMillis());
 
 	public static void init(Application app){
 		emptyAttachment = new EmptyAttachmentDrawable(app.getApplicationContext(),
@@ -29,6 +28,7 @@ public final class GlideUtils{
 				.placeholder(R.drawable.default_profile_image)
 				.fallback(R.drawable.default_profile_image)
 				.error(R.drawable.default_profile_image)
+				.signature(key)
 				.circleCrop();
 
 		postImage = new RequestOptions()
@@ -46,5 +46,8 @@ public final class GlideUtils{
 		return Objects.requireNonNull(postImage);
 	}
 
-	// TODO Received null model 로그폭탄: RequestListener?
+	public static void resetProfileImageSignature(){
+		key = new Int64Key(System.currentTimeMillis());
+		profileImage = profileImage.signature(key);
+	}
 }
