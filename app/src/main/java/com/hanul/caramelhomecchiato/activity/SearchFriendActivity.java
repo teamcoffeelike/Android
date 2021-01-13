@@ -9,17 +9,14 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.hanul.caramelhomecchiato.R;
-import com.hanul.caramelhomecchiato.adapter.SearchFriendAdapter;
-import com.hanul.caramelhomecchiato.data.Post;
+import com.hanul.caramelhomecchiato.adapter.UserViewAdapter;
 import com.hanul.caramelhomecchiato.data.User;
-import com.hanul.caramelhomecchiato.data.UserProfile;
 import com.hanul.caramelhomecchiato.network.NetUtils;
 import com.hanul.caramelhomecchiato.network.UserService;
 import com.hanul.caramelhomecchiato.util.BaseCallback;
@@ -34,7 +31,7 @@ public class SearchFriendActivity extends AppCompatActivity{
 	private static final String TAG = "SearchFriendActivity";
 
 	private EditText editTextSearchName;
-	private SearchFriendAdapter searchFriendAdapter;
+	private UserViewAdapter adapter;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState){
@@ -43,16 +40,14 @@ public class SearchFriendActivity extends AppCompatActivity{
 
 		editTextSearchName = findViewById(R.id.editTextSearchName);
 		RecyclerView recyclerView = findViewById(R.id.searchFriendRecyclerView);
-		searchFriendAdapter = new SearchFriendAdapter();
-		recyclerView.setAdapter(searchFriendAdapter);
+		adapter = new UserViewAdapter();
+		recyclerView.setAdapter(adapter);
 		recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
 		editTextSearchName.addTextChangedListener(new TextWatcher(){
-			@Override
-			public void beforeTextChanged(CharSequence s, int start, int count, int after){}
+			@Override public void beforeTextChanged(CharSequence s, int start, int count, int after){}
 
-			@Override
-			public void onTextChanged(CharSequence s, int start, int before, int count){
+			@Override public void onTextChanged(CharSequence s, int start, int before, int count){
 				Log.d(TAG, "onTextChanged: " + s);
 				UserService.INSTANCE.searchUserByName(s.toString()).enqueue(new BaseCallback() {
 					@Override public void onSuccessfulResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response, @NonNull JsonObject result) {
@@ -77,16 +72,15 @@ public class SearchFriendActivity extends AppCompatActivity{
 				});
 			}
 
-			@Override
-			public void afterTextChanged(Editable s){}
+			@Override public void afterTextChanged(Editable s){}
 		});
 
 	}
 
 	private void setUsers(List<User> users) {
-		List<User> elements = searchFriendAdapter.elements();
+		List<User> elements = adapter.elements();
 		elements.clear();
 		elements.addAll(users);
-		searchFriendAdapter.notifyDataSetChanged();
+		adapter.notifyDataSetChanged();
 	}
 }
