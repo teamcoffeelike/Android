@@ -48,9 +48,10 @@ public class SearchFriendActivity extends AppCompatActivity{
 			@Override public void beforeTextChanged(CharSequence s, int start, int count, int after){}
 
 			@Override public void onTextChanged(CharSequence s, int start, int before, int count){
-				Log.d(TAG, "onTextChanged: " + s);
-				UserService.INSTANCE.searchUserByName(s.toString()).enqueue(new BaseCallback() {
-					@Override public void onSuccessfulResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response, @NonNull JsonObject result) {
+				if(s.length()==0){
+					clear();
+				}else UserService.INSTANCE.searchUserByName(s.toString()).enqueue(new BaseCallback(){
+					@Override public void onSuccessfulResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response, @NonNull JsonObject result){
 						List<User> users = new ArrayList<>();
 						for(JsonElement e : result.get("users").getAsJsonArray()){
 							users.add(NetUtils.GSON.fromJson(e, User.class));
@@ -74,13 +75,18 @@ public class SearchFriendActivity extends AppCompatActivity{
 
 			@Override public void afterTextChanged(Editable s){}
 		});
-
 	}
 
-	private void setUsers(List<User> users) {
+	private void setUsers(List<User> users){
 		List<User> elements = adapter.elements();
 		elements.clear();
 		elements.addAll(users);
+		adapter.notifyDataSetChanged();
+	}
+
+	private void clear(){
+		List<User> elements = adapter.elements();
+		elements.clear();
 		adapter.notifyDataSetChanged();
 	}
 }
