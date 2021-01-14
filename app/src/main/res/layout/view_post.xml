@@ -53,7 +53,7 @@
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toTopOf="parent" />
-
+<!--
 		<ImageButton
 			android:id="@+id/buttonLike"
 			style="?android:attr/borderlessButtonStyle"
@@ -62,6 +62,21 @@
 			android:src="@drawable/ic_like"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toBottomOf="@id/textViewPost" />
+		-->
+		<xyz.hanks.library.bang.SmallBangView
+			android:id="@+id/buttonLikeAnimation"
+			android:layout_width="30dp"
+			android:layout_height="30dp"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toBottomOf="@id/textViewPost">
+
+			<ImageView
+				android:id="@+id/buttonLike"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_gravity="center"
+				android:src="@drawable/ic_like_selector"/>
+		</xyz.hanks.library.bang.SmallBangView>
 
 		<TextView
 			android:id="@+id/textViewLikes"
@@ -73,8 +88,8 @@
 			android:textStyle="bold"
 			app:layout_constraintBottom_toBottomOf="parent"
 			app:layout_constraintEnd_toEndOf="parent"
-			app:layout_constraintStart_toEndOf="@id/buttonLike"
-			app:layout_constraintTop_toTopOf="@id/buttonLike" />
+			app:layout_constraintStart_toEndOf="@id/buttonLikeAnimation"
+			app:layout_constraintTop_toTopOf="@id/buttonLikeAnimation" />
 
 	</androidx.constraintlayout.widget.ConstraintLayout>
 

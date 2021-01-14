@@ -34,6 +34,7 @@ import java.util.Set;
 
 import retrofit2.Call;
 import retrofit2.Response;
+import xyz.hanks.library.bang.SmallBangView;
 
 public class PostAdapter extends BaseAdapter<Post>{
 	private static final String TAG = "PostAdapter";
@@ -83,6 +84,8 @@ public class PostAdapter extends BaseAdapter<Post>{
 
 		private final ImageButton buttonPostOption;
 
+		private final SmallBangView buttonLikeAnimation;
+
 		public ViewHolder(@NonNull View itemView){
 			super(itemView);
 			userViewHandler = new UserViewHandler(itemView);
@@ -107,6 +110,8 @@ public class PostAdapter extends BaseAdapter<Post>{
 
 			buttonPostOption = itemView.findViewById(R.id.buttonPostOption);
 
+			buttonLikeAnimation = itemView.findViewById(R.id.buttonLikeAnimation);
+
 			// TODO 작성자에게만 수정/삭제 권한이 있어야함!
 			buttonPostOption.setOnClickListener(v -> {
 				PopupMenu popupMenu = new PopupMenu(itemView.getContext(), v);
@@ -127,9 +132,18 @@ public class PostAdapter extends BaseAdapter<Post>{
 				popupMenu.show();
 			});
 
-			buttonLike.setOnClickListener(v -> {
+			/*buttonLike.setOnClickListener(v -> {
 				// TODO
 				Toast.makeText(this.itemView.getContext(), ";)", Toast.LENGTH_SHORT).show();
+			});*/
+
+			buttonLikeAnimation.setOnClickListener(v -> {
+				if(buttonLikeAnimation.isSelected()){
+					buttonLikeAnimation.setSelected(false);
+				}else{
+					buttonLikeAnimation.setSelected(true);
+					buttonLikeAnimation.likeAnimation();
+				}
 			});
 		}
 
