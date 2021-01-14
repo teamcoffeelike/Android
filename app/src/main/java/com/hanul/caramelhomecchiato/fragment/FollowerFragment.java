@@ -102,7 +102,6 @@ public class FollowerFragment extends Fragment{
 	}
 
 	protected void setUsers(@Nullable List<User> users){
-		Log.d(TAG, "setUsers: Refreshing users");
 		List<User> elements = adapter.elements();
 		elements.clear();
 		if(users!=null) elements.addAll(users);

@@ -1,5 +1,7 @@
 package com.hanul.caramelhomecchiato.network;
 
+import androidx.annotation.Nullable;
+
 import com.google.gson.JsonObject;
 
 import okhttp3.MediaType;
@@ -18,7 +20,10 @@ public interface PostService {
 	PostService INSTANCE = NetUtils.RETROFIT.create(PostService.class);
 
 	@GET("recentPosts")
-	Call<JsonObject> recentPosts();
+	Call<JsonObject> recentPosts(@Query("since") @Nullable Long since, @Query("pages") @Nullable Integer pages);
+
+	@GET("usersPosts")
+	Call<JsonObject> usersPosts(@Query("since") @Nullable Long since, @Query("pages") @Nullable Integer pages, @Query("id") int id);
 
 	@GET("post")
 	Call<JsonObject> post(@Query("id") int id);

@@ -3,8 +3,7 @@
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
-	android:orientation="vertical"
-	android:paddingBottom="20dp">
+	android:orientation="vertical">
 
 	<androidx.constraintlayout.widget.ConstraintLayout
 		android:layout_width="match_parent"
@@ -53,18 +52,9 @@
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toTopOf="parent" />
-<!--
-		<ImageButton
-			android:id="@+id/buttonLike"
-			style="?android:attr/borderlessButtonStyle"
-			android:layout_width="30dp"
-			android:layout_height="30dp"
-			android:src="@drawable/ic_like"
-			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toBottomOf="@id/textViewPost" />
-		-->
+
 		<xyz.hanks.library.bang.SmallBangView
-			android:id="@+id/buttonLikeAnimation"
+			android:id="@+id/smallBangView"
 			android:layout_width="30dp"
 			android:layout_height="30dp"
 			app:layout_constraintStart_toStartOf="parent"
@@ -75,7 +65,8 @@
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:layout_gravity="center"
-				android:src="@drawable/ic_like_selector"/>
+				android:src="@drawable/ic_like_selector"
+				android:contentDescription="@string/description_like" />
 		</xyz.hanks.library.bang.SmallBangView>
 
 		<TextView
@@ -86,11 +77,13 @@
 			android:text="@string/n_likes"
 			android:textColor="@color/TerraCotta"
 			android:textStyle="bold"
-			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintBottom_toBottomOf="@id/smallBangView"
 			app:layout_constraintEnd_toEndOf="parent"
-			app:layout_constraintStart_toEndOf="@id/buttonLikeAnimation"
-			app:layout_constraintTop_toTopOf="@id/buttonLikeAnimation" />
+			app:layout_constraintStart_toEndOf="@id/smallBangView"
+			app:layout_constraintTop_toTopOf="@id/smallBangView" />
 
 	</androidx.constraintlayout.widget.ConstraintLayout>
+
+	<View style="@style/Divider.Horizontal" />
 
 </LinearLayout>

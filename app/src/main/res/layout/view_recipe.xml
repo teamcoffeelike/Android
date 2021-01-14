@@ -14,12 +14,11 @@
 		<ImageView
 			android:id="@+id/imageViewRecipe"
 			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:adjustViewBounds="true"
-			android:src="@drawable/hot_coffee_pic"
+			android:layout_height="300dp"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toTopOf="parent" />
+			app:layout_constraintTop_toTopOf="parent"
+			android:background="@color/empty_attachment"/>
 
 		<TextView
 			android:id="@+id/textViewRecipeTitle"

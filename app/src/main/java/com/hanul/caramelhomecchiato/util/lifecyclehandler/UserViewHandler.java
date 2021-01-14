@@ -66,18 +66,14 @@ public class UserViewHandler{
 
 		this.buttonFollow = buttonFollow;
 
-		attachCommonEvents();
-	}
-
-	private void attachCommonEvents(){
-		if(userLayout!=null)
-			userLayout.setOnClickListener(v -> {
+		if(this.userLayout!=null)
+			this.userLayout.setOnClickListener(v -> {
 				if(this.user!=null){
-					context.startActivity(new Intent(context, ProfileActivity.class)
+					this.context.startActivity(new Intent(this.context, ProfileActivity.class)
 							.putExtra(ProfileActivity.EXTRA_USER_ID, user.getId()));
 				}
 			});
-		buttonFollow.setOnClickListener(v -> {
+		this.buttonFollow.setOnClickListener(v -> {
 			if(this.user==null) return;
 
 			Boolean followedByYou = this.user.getFollowedByYou();
@@ -100,7 +96,7 @@ public class UserViewHandler{
 				}
 
 				private void toastError(){
-					Toast.makeText(context, "예상치 못한 오류로 인해 팔로우에 실패했습니다.", Toast.LENGTH_SHORT).show();
+					Toast.makeText(UserViewHandler.this.context, "예상치 못한 오류로 인해 팔로우에 실패했습니다.", Toast.LENGTH_SHORT).show();
 				}
 			});
 			FollowingEventHandler.dispatch(user.getId(), following);

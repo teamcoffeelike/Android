@@ -25,7 +25,7 @@ import com.google.gson.JsonObject;
 import com.hanul.caramelhomecchiato.R;
 import com.hanul.caramelhomecchiato.data.UserProfile;
 import com.hanul.caramelhomecchiato.fragment.ProfileFragment;
-import com.hanul.caramelhomecchiato.fragment.RecentPostFragment;
+import com.hanul.caramelhomecchiato.fragment.PostListFragment;
 import com.hanul.caramelhomecchiato.fragment.RecipeCategoryFragment;
 import com.hanul.caramelhomecchiato.fragment.TimerFragment;
 import com.hanul.caramelhomecchiato.network.NetUtils;
@@ -40,7 +40,7 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity{
 	private static final String TAG = "MainActivity";
 
-	private RecentPostFragment recentPostFragment;
+	private PostListFragment postListFragment;
 	private RecipeCategoryFragment recipeCategoryFragment;
 	private TimerFragment timerFragment;
 	private ProfileFragment profileFragment;
@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity{
 		textViewProfileName = findViewById(R.id.textViewProfileName);
 		imageViewProfile = findViewById(R.id.imageViewProfile);
 
-		recentPostFragment = new RecentPostFragment();
+		postListFragment = new PostListFragment();
 		recipeCategoryFragment = new RecipeCategoryFragment();
 		timerFragment = new TimerFragment();
 		profileFragment = new ProfileFragment();
@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity{
 		BottomNavigationView bottomNav = findViewById(R.id.bottomNavigation);
 		bottomNav.setOnNavigationItemSelectedListener(item -> {
 			int id = item.getItemId();
-			if(id==R.id.posts) show(recentPostFragment);
+			if(id==R.id.posts) show(postListFragment);
 			else if(id==R.id.recipes) show(recipeCategoryFragment);
 			else if(id==R.id.timer) show(timerFragment);
 			else if(id==R.id.profile) show(profileFragment);
@@ -113,7 +113,7 @@ public class MainActivity extends AppCompatActivity{
 
 		setProfile(null);
 
-		show(recentPostFragment);
+		show(postListFragment);
 	}
 
 	@Override protected void onResume(){

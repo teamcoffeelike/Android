@@ -4,6 +4,7 @@ import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 public class Post implements Parcelable{
@@ -20,25 +21,28 @@ public class Post implements Parcelable{
 	private User author;
 	@Nullable private Uri image;
 	private String text;
+	private long postDate;
 	private int likes;
 	private int reactions;
 
-	public Post(int id, User author, @Nullable Uri image, String text, int likes, int reactions){
+	public Post(int id, User author, @Nullable Uri image, String text, long postDate, int likes, int reactions){
 		this.id = id;
 		this.author = author;
 		this.image = image;
 		this.text = text;
+		this.postDate = postDate;
 		this.likes = likes;
 		this.reactions = reactions;
 	}
 
 	protected Post(Parcel parcel){
-		id = parcel.readInt();
-		author = parcel.readParcelable(User.class.getClassLoader());
-		image = parcel.readParcelable(Uri.class.getClassLoader());
-		text = parcel.readString();
-		likes = parcel.readInt();
-		reactions = parcel.readInt();
+		this.id = parcel.readInt();
+		this.author = parcel.readParcelable(User.class.getClassLoader());
+		this.image = parcel.readParcelable(Uri.class.getClassLoader());
+		this.text = parcel.readString();
+		this.postDate = parcel.readLong();
+		this.likes = parcel.readInt();
+		this.reactions = parcel.readInt();
 	}
 
 	@Override public int describeContents(){
@@ -49,6 +53,7 @@ public class Post implements Parcelable{
 		dest.writeParcelable(author, flags);
 		dest.writeParcelable(image, flags);
 		dest.writeString(text);
+		dest.writeLong(postDate);
 		dest.writeInt(likes);
 		dest.writeInt(reactions);
 	}
@@ -77,6 +82,12 @@ public class Post implements Parcelable{
 	public void setText(String text){
 		this.text = text;
 	}
+	public long getPostDate(){
+		return postDate;
+	}
+	public void setPostDate(long postDate){
+		this.postDate = postDate;
+	}
 	public int getLikes(){
 		return likes;
 	}
@@ -88,5 +99,17 @@ public class Post implements Parcelable{
 	}
 	public void setReactions(int reactions){
 		this.reactions = reactions;
+	}
+
+	@NonNull @Override public String toString(){
+		return "Post{"+
+				"id="+id+
+				", author="+author+
+				", image="+image+
+				", text='"+text+'\''+
+				", postDate="+postDate+
+				", likes="+likes+
+				", reactions="+reactions+
+				'}';
 	}
 }

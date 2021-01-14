@@ -8,6 +8,6 @@
 		android:id="@+id/imageViewPost"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
-		android:background="@color/Asparagus"
-		android:src="@drawable/ade"/>
+		android:background="@color/empty_attachment" />
+
 </com.hanul.caramelhomecchiato.widget.SquareLayout>

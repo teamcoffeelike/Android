@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -21,19 +22,23 @@ import com.hanul.caramelhomecchiato.R;
 import com.hanul.caramelhomecchiato.activity.EditProfileActivity;
 import com.hanul.caramelhomecchiato.activity.WritePostActivity;
 import com.hanul.caramelhomecchiato.adapter.ProfilePostAdapter;
+import com.hanul.caramelhomecchiato.data.Post;
 import com.hanul.caramelhomecchiato.data.UserProfile;
 import com.hanul.caramelhomecchiato.network.NetUtils;
+import com.hanul.caramelhomecchiato.network.PostService;
 import com.hanul.caramelhomecchiato.network.UserService;
 import com.hanul.caramelhomecchiato.util.Auth;
 import com.hanul.caramelhomecchiato.util.BaseCallback;
+import com.hanul.caramelhomecchiato.util.lifecyclehandler.PostScrollHandler;
 import com.hanul.caramelhomecchiato.util.lifecyclehandler.SpinnerHandler;
 import com.hanul.caramelhomecchiato.util.lifecyclehandler.UserViewHandler;
-import com.hanul.caramelhomecchiato.widget.FollowButton;
+
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Response;
 
-public class ProfileFragment extends Fragment{
+public class ProfileFragment extends Fragment implements PostScrollHandler.Listener<Post>{
 	private static final String TAG = "ProfileFragment";
 
 	private TextView textViewMotd;
@@ -41,20 +46,29 @@ public class ProfileFragment extends Fragment{
 	private View myProfileLayout;
 	private View otherProfileLayout;
 
+	private TextView textViewEndOfList;
+
 	@Nullable private UserProfile profile;
 
 	private final SpinnerHandler spinnerHandler = new SpinnerHandler(this);
 	private UserViewHandler userViewHandler;
+	private final PostScrollHandler postScrollHandler = new PostScrollHandler(this,
+			since -> PostService.INSTANCE.usersPosts(since, 12, profile.getUser().getId()),
+			this);
+	private ProfilePostAdapter profilePostAdapter;
 
 	@Nullable @Override public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState){
 		View view = inflater.inflate(R.layout.fragment_profile, container, false);
+
+		Context ctx = getContext();
+		if(ctx==null) throw new IllegalStateException("ProfileFragment에 context 없음");
 
 		textViewMotd = view.findViewById(R.id.textViewMotd);
 
 		myProfileLayout = view.findViewById(R.id.myProfileLayout);
 		otherProfileLayout = view.findViewById(R.id.otherProfileLayout);
 
-		FollowButton buttonFollow = view.findViewById(R.id.buttonFollow);
+		textViewEndOfList = view.findViewById(R.id.textViewEndOfList);
 
 		view.findViewById(R.id.buttonEditProfile).setOnClickListener(v -> {
 			spinnerHandler.show();
@@ -88,24 +102,36 @@ public class ProfileFragment extends Fragment{
 			startActivity(new Intent(getContext(), WritePostActivity.class));
 		});
 
-		Context ctx = getContext();
-		if(ctx==null) throw new IllegalStateException("ProfileFragment에 context 없음");
-
 		RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
 		recyclerView.setLayoutManager(new GridLayoutManager(ctx, 3, RecyclerView.VERTICAL, false));
 
-		ProfilePostAdapter adapter = new ProfilePostAdapter();
-		recyclerView.setAdapter(adapter); // TODO adapter
+		profilePostAdapter = new ProfilePostAdapter();
+		recyclerView.setAdapter(profilePostAdapter);
 
 		userViewHandler = new UserViewHandler(ctx,
 				view.findViewById(R.id.imageViewProfile),
 				view.findViewById(R.id.textViewProfileName),
 				null,
-				buttonFollow);
+				view.findViewById(R.id.buttonFollow));
 
-		applyProfile();
+		NestedScrollView scrollView = view.findViewById(R.id.scrollView);
+		scrollView.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener)(v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+			int bottom = v.getChildAt(0).getBottom();
+			int y = v.getHeight()+scrollY;
+
+			if(bottom-2000<=y){
+				if(profile!=null) postScrollHandler.enqueue();
+			}
+		});
+
+		applyProfile(true);
 
 		return view;
+	}
+
+	@Override public void onResume(){
+		super.onResume();
+		postScrollHandler.enqueue();
 	}
 
 	@Override public void onDestroy(){
@@ -113,14 +139,41 @@ public class ProfileFragment extends Fragment{
 		userViewHandler.unsubscribeFollowEvent();
 	}
 
-	public void setProfile(@Nullable UserProfile profile){
-		this.profile = profile;
-		if(getActivity()!=null) applyProfile();
+	@Override public void append(List<Post> posts, boolean endOfList, boolean reset){
+		Log.d(TAG, "append: "+posts.size());
+		List<Post> elements = profilePostAdapter.elements();
+		if(reset) elements.clear();
+		elements.addAll(posts);
+		profilePostAdapter.notifyDataSetChanged();
+		if(endOfList){
+			textViewEndOfList.setVisibility(View.VISIBLE);
+			textViewEndOfList.setText(R.string.post_list_end);
+		}else{
+			textViewEndOfList.setVisibility(View.GONE);
+		}
 	}
 
-	private void applyProfile(){
+	@Override public void error(){
+		textViewEndOfList.setVisibility(View.VISIBLE);
+		textViewEndOfList.setText(R.string.post_list_error);
+	}
+
+	private void resetPosts(){
+		postScrollHandler.enqueue(true);
+	}
+
+	public void setProfile(@Nullable UserProfile profile){
+		int id = this.profile==null ? 0 : this.profile.getUser().getId();
+		int id2 = profile==null ? 0 : profile.getUser().getId();
+		this.profile = profile;
+		if(getActivity()!=null) applyProfile(id!=id2);
+	}
+
+	private void applyProfile(boolean reset){
 		UserProfile profile = this.profile;
 		userViewHandler.setUser(profile==null ? null : profile.getUser());
+
+		if(reset) resetPosts();
 
 		if(profile==null){
 			textViewMotd.setText("");
@@ -141,6 +194,7 @@ public class ProfileFragment extends Fragment{
 				myProfileLayout.setVisibility(View.GONE);
 				otherProfileLayout.setVisibility(View.VISIBLE);
 			}
+			postScrollHandler.enqueue();
 		}
 	}
 }

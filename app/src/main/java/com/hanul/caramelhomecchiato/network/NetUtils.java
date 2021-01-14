@@ -6,6 +6,7 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.hanul.caramelhomecchiato.BuildConfig;
+import com.hanul.caramelhomecchiato.data.RecipeCategory;
 import com.hanul.caramelhomecchiato.data.RecipeTask;
 import com.hanul.caramelhomecchiato.data.UserProfile;
 import com.hanul.caramelhomecchiato.util.UriJsonDeserializer;
@@ -30,6 +31,7 @@ public final class NetUtils{
 			.registerTypeAdapter(RecipeTask.class, RecipeTask.Json.INSTANCE)
 			.registerTypeAdapter(UserProfile.class, UserProfile.Json.INSTANCE)
 			.registerTypeAdapter(Uri.class, UriJsonDeserializer.INSTANCE)
+			.registerTypeAdapter(RecipeCategory.class, RecipeCategory.Json.INSTANCE)
 			.setLenient()
 			.create();
 

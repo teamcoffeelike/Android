@@ -1,16 +1,20 @@
 package com.hanul.caramelhomecchiato.adapter;
 
+import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.hanul.caramelhomecchiato.R;
+import com.hanul.caramelhomecchiato.activity.PostActivity;
 import com.hanul.caramelhomecchiato.data.Post;
+import com.hanul.caramelhomecchiato.util.GlideUtils;
 
 public class ProfilePostAdapter extends BaseAdapter<Post>{
 	@NonNull @Override public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType){
@@ -25,14 +29,18 @@ public class ProfilePostAdapter extends BaseAdapter<Post>{
 			super(itemView);
 			imageViewPost = itemView.findViewById(R.id.imageViewPost);
 			imageViewPost.setOnClickListener(v -> {
-				Toast.makeText(this.itemView.getContext(), ""+this.getLayoutPosition(), Toast.LENGTH_SHORT).show();
+				Context ctx = itemView.getContext();
+				ctx.startActivity(new Intent(ctx, PostActivity.class)
+						.putExtra(PostActivity.EXTRA_POST, getItem()));
 			});
 		}
 
 		@Override protected void setItem(int position, Post post){
 			Glide.with(itemView)
 					.load(post.getImage())
-					.into(imageViewPost); // TODO 테스트
+					.apply(GlideUtils.postImage())
+					.transition(DrawableTransitionOptions.withCrossFade())
+					.into(imageViewPost);
 		}
 	}
 }

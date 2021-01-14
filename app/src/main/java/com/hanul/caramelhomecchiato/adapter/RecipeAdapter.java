@@ -10,8 +10,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.hanul.caramelhomecchiato.R;
 import com.hanul.caramelhomecchiato.data.RecipeCover;
+import com.hanul.caramelhomecchiato.util.GlideUtils;
 
 public class RecipeAdapter extends BaseAdapter<RecipeCover>{
 	@NonNull @Override public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType){
@@ -37,6 +39,8 @@ public class RecipeAdapter extends BaseAdapter<RecipeCover>{
 		@Override protected void setItem(int position, RecipeCover recipeCover){
 			Glide.with(itemView)
 					.load(recipeCover.getPhoto())
+					.apply(GlideUtils.recipeCover())
+					.transition(DrawableTransitionOptions.withCrossFade())
 					.into(recipeImage);
 			title.setText(recipeCover.getTitle());
 			author.setText(recipeCover.getAuthor().getName());

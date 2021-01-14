@@ -15,6 +15,7 @@ public final class GlideUtils{
 	private static Drawable emptyAttachment;
 	private static RequestOptions profileImage;
 	private static RequestOptions postImage;
+	private static RequestOptions recipeCover;
 
 	private static Int64Key key = new Int64Key(System.currentTimeMillis());
 
@@ -36,6 +37,12 @@ public final class GlideUtils{
 				.fallback(emptyAttachment)
 				.error(emptyAttachment)
 				.centerCrop();
+
+		recipeCover = new RequestOptions()
+				.placeholder(emptyAttachment)
+				.fallback(emptyAttachment)
+				.error(emptyAttachment)
+				.centerCrop();
 	}
 
 	public static RequestOptions profileImage(){
@@ -44,6 +51,10 @@ public final class GlideUtils{
 
 	public static RequestOptions postImage(){
 		return Objects.requireNonNull(postImage);
+	}
+
+	public static RequestOptions recipeCover(){
+		return Objects.requireNonNull(recipeCover);
 	}
 
 	public static void resetProfileImageSignature(){
