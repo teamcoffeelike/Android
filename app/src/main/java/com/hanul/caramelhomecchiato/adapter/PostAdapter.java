@@ -21,6 +21,7 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.google.gson.JsonObject;
 import com.hanul.caramelhomecchiato.R;
 import com.hanul.caramelhomecchiato.activity.FullScreenImageActivity;
+import com.hanul.caramelhomecchiato.activity.WritePostActivity;
 import com.hanul.caramelhomecchiato.data.Post;
 import com.hanul.caramelhomecchiato.network.PostService;
 import com.hanul.caramelhomecchiato.util.Auth;
@@ -113,8 +114,11 @@ public class PostAdapter extends BaseAdapter<Post>{
 
 				popupMenu.setOnMenuItemClickListener(item -> {
 					int itemId = item.getItemId();
-					if(itemId==R.id.postModify){// TODO
-						Toast.makeText(itemView.getContext(), "글 수정 버튼 클릭", Toast.LENGTH_SHORT).show();
+					if(itemId==R.id.postModify){
+						Post post = getItem();
+						Intent intent = new Intent(itemView.getContext(), WritePostActivity.class);
+						intent.putExtra(WritePostActivity.EXTRA_POST, post);
+						itemView.getContext().startActivity(intent);
 					}else if(itemId==R.id.postDelete){
 						deletePost();
 					}

@@ -12,10 +12,9 @@ import retrofit2.http.GET;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
-import retrofit2.http.PartMap;
 import retrofit2.http.Query;
 
-public interface PostService{
+public interface PostService {
 	PostService INSTANCE = NetUtils.RETROFIT.create(PostService.class);
 
 	@GET("recentPosts")
@@ -27,7 +26,7 @@ public interface PostService{
 	/*
 	 * static으로 안 하면 retrofit이 지랄발광함. https://github.com/square/retrofit/issues/1768
 	 */
-	static Call<JsonObject> writePost(String text, byte[] image){
+	static Call<JsonObject> writePost(String text, byte[] image) {
 		return INSTANCE.writePost(
 				MultipartBody.Part.createFormData("text", text),
 				MultipartBody.Part.createFormData("image", "image",
@@ -42,6 +41,18 @@ public interface PostService{
 	@FormUrlEncoded
 	@POST("editPost")
 	Call<JsonObject> editPost(@Field("post") int post, @Field("text") String text);
+
+	static Call<JsonObject> editPostImage(int post, byte[] image){
+		return INSTANCE.editPostImage(
+				MultipartBody.Part.createFormData("post", Integer.toString(post)),
+				MultipartBody.Part.createFormData("image", "image",
+						RequestBody.create(image, MediaType.parse("image/*")))
+		);
+	}
+
+	@Multipart
+	@POST("editPostImage")
+	Call<JsonObject> editPostImage(@Part MultipartBody.Part post, @Part MultipartBody.Part image);
 
 	@FormUrlEncoded
 	@POST("deletePost")
