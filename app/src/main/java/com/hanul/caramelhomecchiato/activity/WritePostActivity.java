@@ -27,10 +27,12 @@ import com.google.gson.JsonObject;
 import com.hanul.caramelhomecchiato.CaramelHomecchiatoApp;
 import com.hanul.caramelhomecchiato.R;
 import com.hanul.caramelhomecchiato.data.Post;
+import com.hanul.caramelhomecchiato.event.PostEditEvent;
 import com.hanul.caramelhomecchiato.network.PostService;
 import com.hanul.caramelhomecchiato.util.BaseCallback;
 import com.hanul.caramelhomecchiato.util.GlideUtils;
 import com.hanul.caramelhomecchiato.util.IOUtils;
+import com.hanul.caramelhomecchiato.util.SignatureManagers;
 import com.hanul.caramelhomecchiato.util.Validate;
 import com.hanul.caramelhomecchiato.util.lifecyclehandler.SpinnerHandler;
 
@@ -78,12 +80,6 @@ public class WritePostActivity extends AppCompatActivity{
 		editTextPost = findViewById(R.id.editTextPost);
 		buttonSubmit = findViewById(R.id.buttonSubmit);
 
-		Glide.with(this)
-				.load(post==null ? null : post.getImage())
-				.apply(GlideUtils.postImage())
-				.transition(DrawableTransitionOptions.withCrossFade())
-				.into(imageViewPostImage);
-
 		imageViewPostImage.setOnClickListener(v -> pickImage(true));
 
 		editTextPost.addTextChangedListener(new TextWatcher(){
@@ -94,7 +90,22 @@ public class WritePostActivity extends AppCompatActivity{
 			}
 			@Override public void afterTextChanged(Editable s){}
 		});
-		if(post!=null) editTextPost.setText(post.getText());
+		if(post!=null){
+			editTextPost.setText(post.getText());
+
+			Glide.with(this)
+					.load(post.getImage())
+					.apply(GlideUtils.postImage())
+					.signature(SignatureManagers.POST_IMAGE.getKeyForId(post.getId()))
+					.transition(DrawableTransitionOptions.withCrossFade())
+					.into(imageViewPostImage);
+		}else{
+			Glide.with(this)
+					.load((Uri)null)
+					.apply(GlideUtils.postImage())
+					.transition(DrawableTransitionOptions.withCrossFade())
+					.into(imageViewPostImage);
+		}
 
 		buttonSubmit.setOnClickListener(v -> {
 			if(!Validate.postText(editTextPost.getText())){
@@ -138,6 +149,11 @@ public class WritePostActivity extends AppCompatActivity{
 						}else if(!editPostSucceed)
 							Toast.makeText(this, "포스트 내용 변경 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
 						else{
+							if(editPostImage!=null){
+								SignatureManagers.POST_IMAGE.updateKeyForId(post.getId());
+							}
+							PostEditEvent.dispatch(post);
+
 							setResult(RESULT_OK);
 							finish();
 						}

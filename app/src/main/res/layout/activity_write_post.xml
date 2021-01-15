@@ -25,9 +25,10 @@
 			<ImageView
 				android:id="@+id/imageViewPostImage"
 				android:layout_width="match_parent"
-				android:layout_height="200dp"
+				android:layout_height="250dp"
 				android:background="@color/empty_attachment"
-				app:layout_constraintTop_toTopOf="parent"/>
+				app:layout_constraintTop_toTopOf="parent"
+				android:scaleType="centerCrop"/>
 
 			<ScrollView
 				android:layout_width="match_parent"

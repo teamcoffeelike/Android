@@ -11,7 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.gson.JsonObject;
 import com.hanul.caramelhomecchiato.R;
 import com.hanul.caramelhomecchiato.data.UserProfile;
-import com.hanul.caramelhomecchiato.event.FollowingEventDispatcher;
+import com.hanul.caramelhomecchiato.event.FollowingEvent;
 import com.hanul.caramelhomecchiato.fragment.ProfileFragment;
 import com.hanul.caramelhomecchiato.network.NetUtils;
 import com.hanul.caramelhomecchiato.network.UserService;
@@ -51,7 +51,7 @@ public class ProfileActivity extends AppCompatActivity{
 		UserService.INSTANCE.profile(userId).enqueue(new BaseCallback(){
 			@Override public void onSuccessfulResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response, @NonNull JsonObject result){
 				UserProfile profile = NetUtils.GSON.fromJson(result, UserProfile.class);
-				FollowingEventDispatcher.dispatch(profile);
+				FollowingEvent.dispatch(profile);
 				fragment.setProfile(profile);
 			}
 			@Override public void onErrorResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response, @NonNull String error){

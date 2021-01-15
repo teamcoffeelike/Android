@@ -11,8 +11,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.WeakHashMap;
 
-public final class PostDeleteEventDispatcher{
-	private PostDeleteEventDispatcher(){}
+public final class PostDeleteEvent{
+	private PostDeleteEvent(){}
 
 	private static final Map<Integer, WeakReference<PostDeleteEventBus>> busMap = new LinkedHashMap<>();
 	@Nullable private static WeakReference<PostDeleteEventBus> globalBus;

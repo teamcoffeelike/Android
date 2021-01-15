@@ -25,11 +25,12 @@ import com.hanul.caramelhomecchiato.activity.FullScreenImageActivity;
 import com.hanul.caramelhomecchiato.activity.PostActivity;
 import com.hanul.caramelhomecchiato.activity.WritePostActivity;
 import com.hanul.caramelhomecchiato.data.Post;
-import com.hanul.caramelhomecchiato.event.PostDeleteEventDispatcher;
+import com.hanul.caramelhomecchiato.event.PostDeleteEvent;
 import com.hanul.caramelhomecchiato.network.PostService;
 import com.hanul.caramelhomecchiato.util.Auth;
 import com.hanul.caramelhomecchiato.util.BaseCallback;
 import com.hanul.caramelhomecchiato.util.GlideUtils;
+import com.hanul.caramelhomecchiato.util.SignatureManagers;
 
 import java.util.Objects;
 
@@ -99,9 +100,14 @@ public class PostViewHandler{
 
 		if(fullScreenMode){
 			imageViewPost.setAdjustViewBounds(true);
+
+			// TODO:
+			//   Glide는 WRAP_CONTENT를 그닥 좋아하지 않는 듯.
 			ViewGroup.LayoutParams layoutParams = imageViewPost.getLayoutParams();
 			layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
 			imageViewPost.setLayoutParams(layoutParams);
+
+			imageViewPost.setScaleType(ImageView.ScaleType.FIT_CENTER);
 			imageViewPost.setOnClickListener(v -> {
 				if(post!=null){
 					Uri image = post.getImage();
@@ -113,6 +119,7 @@ public class PostViewHandler{
 			});
 			divider.setVisibility(View.GONE);
 		}else{
+			imageViewPost.setScaleType(ImageView.ScaleType.CENTER_CROP);
 			imageViewPost.setOnClickListener(v -> {
 				if(post!=null){
 					context.startActivity(new Intent(context, PostActivity.class)
@@ -168,13 +175,14 @@ public class PostViewHandler{
 		this.post = post;
 
 		userViewHandler.setUser(post==null ? null : post.getAuthor());
-		Glide.with(context)
-				.load(post==null ? null : post.getImage())
-				.apply(fullScreenMode ? GlideUtils.fullScreenPostImage() : GlideUtils.postImage())
-				.transition(DrawableTransitionOptions.withCrossFade())
-				.into(imageViewPost);
 
 		if(post!=null){
+			Glide.with(context)
+					.load(post.getImage())
+					.apply(fullScreenMode ? GlideUtils.fullScreenPostImage() : GlideUtils.postImage())
+					.signature(SignatureManagers.POST_IMAGE.getKeyForId(post.getId()))
+					.transition(DrawableTransitionOptions.withCrossFade())
+					.into(imageViewPost);
 			textViewPost.setText(post.getText());
 
 			textViewLikes.setText(context.getString(R.string.n_likes, post.getLikes()));
@@ -182,6 +190,12 @@ public class PostViewHandler{
 			buttonPostOption.setVisibility(
 					post.getAuthor().getId()!=Auth.getInstance().expectLoginUser() ?
 							View.GONE : View.VISIBLE); // TODO ????
+		}else{
+			Glide.with(context)
+					.load((Uri)null)
+					.apply(fullScreenMode ? GlideUtils.fullScreenPostImage() : GlideUtils.postImage())
+					.transition(DrawableTransitionOptions.withCrossFade())
+					.into(imageViewPost);
 		}
 	}
 
@@ -194,7 +208,7 @@ public class PostViewHandler{
 					PostService.INSTANCE.deletePost(post.getId()).enqueue(new BaseCallback(){
 						@Override public void onSuccessfulResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response, @NonNull JsonObject result){
 							Toast.makeText(context, "포스트를 삭제했습니다.", Toast.LENGTH_SHORT).show();
-							PostDeleteEventDispatcher.dispatch(post);
+							PostDeleteEvent.dispatch(post);
 						}
 						@Override public void onErrorResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response, @NonNull String error){
 							Log.e(TAG, "deletePost: 예상치 못한 오류: "+error);

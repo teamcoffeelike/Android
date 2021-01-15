@@ -9,8 +9,8 @@ import java.lang.ref.WeakReference;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public final class FollowingEventDispatcher{
-	private FollowingEventDispatcher(){}
+public final class FollowingEvent{
+	private FollowingEvent(){}
 
 	private static final Map<Integer, WeakReference<FollowingEventBus>> busMap = new LinkedHashMap<>();
 

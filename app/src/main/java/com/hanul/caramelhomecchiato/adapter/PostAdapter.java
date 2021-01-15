@@ -8,21 +8,21 @@ import androidx.annotation.NonNull;
 
 import com.hanul.caramelhomecchiato.R;
 import com.hanul.caramelhomecchiato.data.Post;
-import com.hanul.caramelhomecchiato.event.PostDeleteEventDispatcher;
+import com.hanul.caramelhomecchiato.event.ProfileImageChangeEvent;
 import com.hanul.caramelhomecchiato.event.Ticket;
+import com.hanul.caramelhomecchiato.util.Auth;
 import com.hanul.caramelhomecchiato.util.lifecyclehandler.PostViewHandler;
 
 import java.util.List;
 
-public class PostAdapter extends BaseAdapter<Post>{
-	private final Ticket postDeleteEventTicket = PostDeleteEventDispatcher.subscribeAll(postId -> {
+public class PostAdapter extends AbstractPostAdapter{
+	@SuppressWarnings("unused") private final Ticket profileImageChangeTicket = ProfileImageChangeEvent.subscribe(() -> {
+		int loginUser = Auth.getInstance().expectLoginUser();
 		List<Post> elements = elements();
 		for(int i = 0; i<elements.size(); i++){
 			Post post = elements.get(i);
-			if(post.getId()==postId){
-				elements.remove(i);
-				notifyItemRemoved(i);
-				return;
+			if(post.getAuthor().getId()==loginUser){
+				notifyItemChanged(i);
 			}
 		}
 	});

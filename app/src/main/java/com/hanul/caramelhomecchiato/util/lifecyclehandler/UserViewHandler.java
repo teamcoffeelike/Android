@@ -21,8 +21,9 @@ import com.hanul.caramelhomecchiato.data.User;
 import com.hanul.caramelhomecchiato.event.Ticket;
 import com.hanul.caramelhomecchiato.network.UserService;
 import com.hanul.caramelhomecchiato.util.BaseCallback;
-import com.hanul.caramelhomecchiato.event.FollowingEventDispatcher;
+import com.hanul.caramelhomecchiato.event.FollowingEvent;
 import com.hanul.caramelhomecchiato.util.GlideUtils;
+import com.hanul.caramelhomecchiato.util.SignatureManagers;
 import com.hanul.caramelhomecchiato.widget.FollowButton;
 
 import retrofit2.Call;
@@ -100,7 +101,7 @@ public class UserViewHandler{
 					Toast.makeText(UserViewHandler.this.context, "예상치 못한 오류로 인해 팔로우에 실패했습니다.", Toast.LENGTH_SHORT).show();
 				}
 			});
-			FollowingEventDispatcher.dispatch(user.getId(), following);
+			FollowingEvent.dispatch(user.getId(), following);
 		});
 	}
 
@@ -117,6 +118,7 @@ public class UserViewHandler{
 			Glide.with(context)
 					.load(user.getProfileImage())
 					.apply(GlideUtils.profileImage())
+					.signature(SignatureManagers.PROFILE_IMAGE.getKeyForId(user.getId()))
 					.transition(DrawableTransitionOptions.withCrossFade())
 					.into(imageViewProfile);
 
@@ -137,7 +139,7 @@ public class UserViewHandler{
 			Boolean followedByYou = user.getFollowedByYou();
 			if(followedByYou!=null){
 				buttonFollow.setVisibility(View.VISIBLE);
-				ticket = FollowingEventDispatcher.subscribe(user.getId(), following -> {
+				ticket = FollowingEvent.subscribe(user.getId(), following -> {
 					this.user.setFollowedByYou(following);
 					buttonFollow.setFollowing(following);
 					buttonFollow.setText(context.getString(following ? R.string.button_following : R.string.button_follow));

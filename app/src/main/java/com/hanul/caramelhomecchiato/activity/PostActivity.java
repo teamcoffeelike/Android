@@ -11,7 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.gson.JsonObject;
 import com.hanul.caramelhomecchiato.R;
 import com.hanul.caramelhomecchiato.data.Post;
-import com.hanul.caramelhomecchiato.event.PostDeleteEventDispatcher;
+import com.hanul.caramelhomecchiato.event.PostDeleteEvent;
 import com.hanul.caramelhomecchiato.event.Ticket;
 import com.hanul.caramelhomecchiato.network.NetUtils;
 import com.hanul.caramelhomecchiato.network.PostService;
@@ -42,7 +42,7 @@ public class PostActivity extends AppCompatActivity{
 		this.postViewHandler = new PostViewHandler(this, true);
 
 		if(postDeleteEventTicket!=null) postDeleteEventTicket.unsubscribe();
-		postDeleteEventTicket = PostDeleteEventDispatcher.subscribe(postId, postId -> finish());
+		postDeleteEventTicket = PostDeleteEvent.subscribe(postId, postId -> finish());
 	}
 
 	@Override protected void onResume(){

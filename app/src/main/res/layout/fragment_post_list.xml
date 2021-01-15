@@ -19,18 +19,39 @@
 				android:id="@+id/recyclerView"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:nestedScrollingEnabled="false"/>
+				android:nestedScrollingEnabled="false" />
 
 			<TextView
-				android:id="@+id/textViewEndOfList"
+				android:id="@+id/textViewError"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:layout_marginTop="20dp"
 				android:layout_marginBottom="50dp"
-				app:layout_goneMarginTop="0dp"
-				app:layout_goneMarginBottom="0dp"
 				android:gravity="center"
-				android:visibility="gone"/>
+				android:text="@string/post_list_error"
+				android:visibility="gone"
+				app:layout_goneMarginBottom="0dp"
+				app:layout_goneMarginTop="0dp" />
+
+			<androidx.constraintlayout.widget.ConstraintLayout
+				android:id="@+id/endOfList"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginTop="50dp"
+				android:layout_marginBottom="50dp"
+				android:visibility="gone"
+				app:layout_goneMarginBottom="0dp"
+				app:layout_goneMarginTop="0dp">
+
+				<View
+					android:layout_width="5dp"
+					android:layout_height="5dp"
+					android:background="@drawable/gray_circle"
+					app:layout_constraintEnd_toEndOf="parent"
+					app:layout_constraintStart_toStartOf="parent"
+					app:layout_constraintTop_toTopOf="parent" />
+
+			</androidx.constraintlayout.widget.ConstraintLayout>
 
 		</LinearLayout>
 

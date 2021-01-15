@@ -48,7 +48,8 @@ public class ProfileFragment extends Fragment implements PostScrollHandler.Liste
 	private View myProfileLayout;
 	private View otherProfileLayout;
 
-	private TextView textViewEndOfList;
+	private TextView textViewError;
+	private View endOfList;
 
 	@Nullable private UserProfile profile;
 
@@ -70,7 +71,8 @@ public class ProfileFragment extends Fragment implements PostScrollHandler.Liste
 		myProfileLayout = view.findViewById(R.id.myProfileLayout);
 		otherProfileLayout = view.findViewById(R.id.otherProfileLayout);
 
-		textViewEndOfList = view.findViewById(R.id.textViewEndOfList);
+		textViewError = view.findViewById(R.id.textViewError);
+		endOfList = view.findViewById(R.id.endOfList);
 
 		view.findViewById(R.id.buttonEditProfile).setOnClickListener(v -> {
 			spinnerHandler.show();
@@ -154,17 +156,14 @@ public class ProfileFragment extends Fragment implements PostScrollHandler.Liste
 			profilePostAdapter.notifyItemRangeInserted(size, posts.size());
 		}
 		profilePostAdapter.notifyDataSetChanged();
-		if(endOfList){
-			textViewEndOfList.setVisibility(View.VISIBLE);
-			textViewEndOfList.setText(R.string.post_list_end);
-		}else{
-			textViewEndOfList.setVisibility(View.GONE);
-		}
+
+		textViewError.setVisibility(View.GONE);
+		this.endOfList.setVisibility(endOfList ? View.VISIBLE : View.GONE);
 	}
 
 	@Override public void error(){
-		textViewEndOfList.setVisibility(View.VISIBLE);
-		textViewEndOfList.setText(R.string.post_list_error);
+		textViewError.setVisibility(View.VISIBLE);
+		endOfList.setVisibility(View.GONE);
 	}
 
 	public void setProfile(@Nullable UserProfile profile){

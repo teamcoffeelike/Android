@@ -34,9 +34,12 @@ import com.google.gson.JsonObject;
 import com.hanul.caramelhomecchiato.CaramelHomecchiatoApp;
 import com.hanul.caramelhomecchiato.R;
 import com.hanul.caramelhomecchiato.data.UserProfile;
+import com.hanul.caramelhomecchiato.event.ProfileImageChangeEvent;
 import com.hanul.caramelhomecchiato.network.UserService;
+import com.hanul.caramelhomecchiato.util.Auth;
 import com.hanul.caramelhomecchiato.util.GlideUtils;
 import com.hanul.caramelhomecchiato.util.IOUtils;
+import com.hanul.caramelhomecchiato.util.SignatureManagers;
 import com.hanul.caramelhomecchiato.util.Validate;
 import com.hanul.caramelhomecchiato.util.lifecyclehandler.SpinnerHandler;
 import com.hanul.caramelhomecchiato.util.lifecyclehandler.UriPermissionHandler;
@@ -100,6 +103,7 @@ public class EditProfileActivity extends AppCompatActivity{
 		Glide.with(this)
 				.load(profile.getUser().getProfileImage())
 				.apply(GlideUtils.profileImage())
+				.signature(SignatureManagers.PROFILE_IMAGE.getKeyForId(profile.getUser().getId()))
 				.transition(DrawableTransitionOptions.withCrossFade())
 				.into(imageViewProfile);
 
@@ -229,8 +233,9 @@ public class EditProfileActivity extends AppCompatActivity{
 					Toast.makeText(this, toast, Toast.LENGTH_SHORT).show();
 				}
 
-				if(profileImageSucceed&&setProfileImage==null){
-					GlideUtils.resetProfileImageSignature(); // TODO 외않되 >:(
+				if(profileImageSucceed&&setProfileImage!=null){
+					SignatureManagers.PROFILE_IMAGE.updateKeyForId(Auth.getInstance().expectLoginUser());
+					ProfileImageChangeEvent.dispatch();
 				}
 
 				if(profileImageSucceed&&nameSucceed&&motdSucceed) finish();

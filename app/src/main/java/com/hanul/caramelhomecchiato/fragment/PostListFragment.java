@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.hanul.caramelhomecchiato.R;
 import com.hanul.caramelhomecchiato.adapter.PostAdapter;
 import com.hanul.caramelhomecchiato.data.Post;
-import com.hanul.caramelhomecchiato.event.FollowingEventDispatcher;
+import com.hanul.caramelhomecchiato.event.FollowingEvent;
 import com.hanul.caramelhomecchiato.network.PostService;
 import com.hanul.caramelhomecchiato.util.lifecyclehandler.PostScrollHandler;
 
@@ -25,7 +25,8 @@ import java.util.List;
 
 public class PostListFragment extends Fragment implements PostScrollHandler.Listener<Post>{
 	private PostAdapter postAdapter;
-	private TextView textViewEndOfList;
+	private TextView textViewError;
+	private View endOfList;
 
 	private final PostScrollHandler postScrollHandler = new PostScrollHandler(this,
 			since -> PostService.INSTANCE.recentPosts(since, 10),
@@ -37,7 +38,8 @@ public class PostListFragment extends Fragment implements PostScrollHandler.List
 		Context context = getContext();
 		if(context==null) throw new IllegalStateException("RecentPostFragment에 context 없음");
 
-		textViewEndOfList = view.findViewById(R.id.textViewEndOfList);
+		textViewError = view.findViewById(R.id.textViewError);
+		endOfList = view.findViewById(R.id.endOfList);
 
 		RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
 		recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
@@ -65,7 +67,7 @@ public class PostListFragment extends Fragment implements PostScrollHandler.List
 
 	@Override public void append(List<Post> posts, boolean endOfList, boolean reset){
 		for(Post post : posts){
-			FollowingEventDispatcher.dispatch(post.getAuthor());
+			FollowingEvent.dispatch(post.getAuthor());
 		}
 		List<Post> elements = postAdapter.elements();
 		int size = elements.size();
@@ -78,16 +80,12 @@ public class PostListFragment extends Fragment implements PostScrollHandler.List
 			elements.addAll(posts);
 			postAdapter.notifyItemRangeInserted(size, posts.size());
 		}
-		if(endOfList){
-			textViewEndOfList.setVisibility(View.VISIBLE);
-			textViewEndOfList.setText(R.string.post_list_end);
-		}else{
-			textViewEndOfList.setVisibility(View.GONE);
-		}
+		textViewError.setVisibility(View.GONE);
+		this.endOfList.setVisibility(endOfList ? View.VISIBLE : View.GONE);
 	}
 
 	@Override public void error(){
-		textViewEndOfList.setVisibility(View.VISIBLE);
-		textViewEndOfList.setText(R.string.post_list_error);
+		textViewError.setVisibility(View.VISIBLE);
+		endOfList.setVisibility(View.GONE);
 	}
 }

@@ -19,13 +19,16 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.Key;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.gson.JsonObject;
 import com.hanul.caramelhomecchiato.R;
 import com.hanul.caramelhomecchiato.data.UserProfile;
-import com.hanul.caramelhomecchiato.fragment.ProfileFragment;
+import com.hanul.caramelhomecchiato.event.ProfileImageChangeEvent;
+import com.hanul.caramelhomecchiato.event.Ticket;
 import com.hanul.caramelhomecchiato.fragment.PostListFragment;
+import com.hanul.caramelhomecchiato.fragment.ProfileFragment;
 import com.hanul.caramelhomecchiato.fragment.RecipeCategoryFragment;
 import com.hanul.caramelhomecchiato.fragment.TimerFragment;
 import com.hanul.caramelhomecchiato.network.NetUtils;
@@ -33,6 +36,7 @@ import com.hanul.caramelhomecchiato.network.UserService;
 import com.hanul.caramelhomecchiato.util.Auth;
 import com.hanul.caramelhomecchiato.util.BaseCallback;
 import com.hanul.caramelhomecchiato.util.GlideUtils;
+import com.hanul.caramelhomecchiato.util.SignatureManagers;
 
 import retrofit2.Call;
 import retrofit2.Response;
@@ -49,6 +53,10 @@ public class MainActivity extends AppCompatActivity{
 	private ImageView imageViewProfile;
 	private DrawerLayout drawerLayout;
 	private ImageView imageViewAppBarUserProfile;
+
+	@Nullable private UserProfile profile;
+
+	@SuppressWarnings("unused") private final Ticket profileImageChangedTicket = ProfileImageChangeEvent.subscribe(this::redrawProfileImage);
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState){
@@ -138,20 +146,10 @@ public class MainActivity extends AppCompatActivity{
 	}
 
 	public void setProfile(@Nullable UserProfile profile){
-		textViewProfileName.setText(profile==null ? "" : profile.getUser().getName());
+		this.profile = profile;
+		textViewProfileName.setText(profile==null ? "" : this.profile.getUser().getName());
 
-		Uri profileImage = profile==null ? null : profile.getUser().getProfileImage();
-
-		Glide.with(this)
-				.load(profileImage)
-				.apply(GlideUtils.profileImage())
-				.transition(DrawableTransitionOptions.withCrossFade())
-				.into(imageViewAppBarUserProfile);
-		Glide.with(this)
-				.load(profileImage)
-				.apply(GlideUtils.profileImage())
-				.transition(DrawableTransitionOptions.withCrossFade())
-				.into(imageViewProfile);
+		redrawProfileImage();
 
 		profileFragment.setProfile(profile);
 	}
@@ -168,5 +166,36 @@ public class MainActivity extends AppCompatActivity{
 				.beginTransaction()
 				.replace(R.id.mainFrame, f)
 				.commit();
+	}
+
+	private void redrawProfileImage(){
+		Uri profileImage = profile==null ? null : profile.getUser().getProfileImage();
+
+		if(profileImage!=null){
+			Key signature = SignatureManagers.PROFILE_IMAGE.getKeyForId(profile.getUser().getId());
+			Glide.with(this)
+					.load(profileImage)
+					.apply(GlideUtils.profileImage())
+					.signature(signature)
+					.transition(DrawableTransitionOptions.withCrossFade())
+					.into(imageViewAppBarUserProfile);
+			Glide.with(this)
+					.load(profileImage)
+					.apply(GlideUtils.profileImage())
+					.signature(signature)
+					.transition(DrawableTransitionOptions.withCrossFade())
+					.into(imageViewProfile);
+		}else{
+			Glide.with(this)
+					.load((Uri)null)
+					.apply(GlideUtils.profileImage())
+					.transition(DrawableTransitionOptions.withCrossFade())
+					.into(imageViewAppBarUserProfile);
+			Glide.with(this)
+					.load((Uri)null)
+					.apply(GlideUtils.profileImage())
+					.transition(DrawableTransitionOptions.withCrossFade())
+					.into(imageViewProfile);
+		}
 	}
 }

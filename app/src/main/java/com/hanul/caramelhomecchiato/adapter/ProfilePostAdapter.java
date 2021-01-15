@@ -14,25 +14,10 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.hanul.caramelhomecchiato.R;
 import com.hanul.caramelhomecchiato.activity.PostActivity;
 import com.hanul.caramelhomecchiato.data.Post;
-import com.hanul.caramelhomecchiato.event.PostDeleteEventDispatcher;
-import com.hanul.caramelhomecchiato.event.Ticket;
 import com.hanul.caramelhomecchiato.util.GlideUtils;
+import com.hanul.caramelhomecchiato.util.SignatureManagers;
 
-import java.util.List;
-
-public class ProfilePostAdapter extends BaseAdapter<Post>{
-	private final Ticket postDeleteEventTicket = PostDeleteEventDispatcher.subscribeAll(postId -> {
-		List<Post> elements = elements();
-		for(int i = 0; i<elements.size(); i++){
-			Post post = elements.get(i);
-			if(post.getId()==postId){
-				elements.remove(i);
-				notifyItemRemoved(i);
-				return;
-			}
-		}
-	});
-
+public class ProfilePostAdapter extends AbstractPostAdapter{
 	@NonNull @Override public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType){
 		return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.view_profile_post, parent, false));
 	}
@@ -55,6 +40,7 @@ public class ProfilePostAdapter extends BaseAdapter<Post>{
 			Glide.with(itemView)
 					.load(post.getImage())
 					.apply(GlideUtils.postImage())
+					.signature(SignatureManagers.POST_IMAGE.getKeyForId(post.getId()))
 					.transition(DrawableTransitionOptions.withCrossFade())
 					.into(imageViewPost);
 		}
