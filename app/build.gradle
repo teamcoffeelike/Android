@@ -60,4 +60,6 @@ dependencies {
     implementation "com.kakao.sdk:v2-user:2.1.0" // 카카오 로그인
 
     implementation 'pub.hanks:smallbang:1.2.2'  // 좋아요
+
+    implementation 'com.akexorcist:bluetoothspp:1.0.0' //블루투스
 }

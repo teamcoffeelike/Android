@@ -1,5 +1,6 @@
 package com.hanul.caramelhomecchiato.activity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -95,6 +96,7 @@ public class MainActivity extends AppCompatActivity{
 		findViewById(R.id.likesMenu).setOnClickListener(v -> startActivity(new Intent(this, LikesActivity.class)));
 		findViewById(R.id.searchFriendsMenu).setOnClickListener(v -> startActivity(new Intent(this, SearchFriendActivity.class)));
 		findViewById(R.id.settingsMenu).setOnClickListener(v -> startActivity(new Intent(this, SettingsActivity.class)));
+		findViewById(R.id.warmerMenu).setOnClickListener(v -> startActivity(new Intent(this, WarmerActivity.class)));
 
 		// BottomNavigation & 프래그먼트 셋업
 		BottomNavigationView bottomNav = findViewById(R.id.bottomNavigation);
