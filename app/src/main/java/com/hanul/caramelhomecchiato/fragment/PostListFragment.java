@@ -17,8 +17,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.hanul.caramelhomecchiato.R;
 import com.hanul.caramelhomecchiato.adapter.PostAdapter;
 import com.hanul.caramelhomecchiato.data.Post;
+import com.hanul.caramelhomecchiato.event.FollowingEventDispatcher;
 import com.hanul.caramelhomecchiato.network.PostService;
-import com.hanul.caramelhomecchiato.util.FollowingEventHandler;
 import com.hanul.caramelhomecchiato.util.lifecyclehandler.PostScrollHandler;
 
 import java.util.List;
@@ -31,7 +31,7 @@ public class PostListFragment extends Fragment implements PostScrollHandler.List
 			since -> PostService.INSTANCE.recentPosts(since, 10),
 			this);
 
-	@Nullable @Override public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState){
+	@Override public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState){
 		View view = inflater.inflate(R.layout.fragment_post_list, container, false);
 
 		Context context = getContext();
@@ -60,22 +60,24 @@ public class PostListFragment extends Fragment implements PostScrollHandler.List
 
 	@Override public void onResume(){
 		super.onResume();
-		postScrollHandler.enqueue();
-	}
-
-	@Override public void onStop(){
-		super.onStop();
-		postAdapter.clearEvents();
+		postScrollHandler.enqueue(postAdapter.elements().isEmpty());
 	}
 
 	@Override public void append(List<Post> posts, boolean endOfList, boolean reset){
 		for(Post post : posts){
-			FollowingEventHandler.dispatch(post.getAuthor());
+			FollowingEventDispatcher.dispatch(post.getAuthor());
 		}
 		List<Post> elements = postAdapter.elements();
-		if(reset) elements.clear();
-		elements.addAll(posts);
-		postAdapter.notifyDataSetChanged();
+		int size = elements.size();
+		if(reset){
+			elements.clear();
+			postAdapter.notifyItemRangeRemoved(0, size);
+			elements.addAll(posts);
+			postAdapter.notifyItemRangeInserted(0, posts.size());
+		}else{
+			elements.addAll(posts);
+			postAdapter.notifyItemRangeInserted(size, posts.size());
+		}
 		if(endOfList){
 			textViewEndOfList.setVisibility(View.VISIBLE);
 			textViewEndOfList.setText(R.string.post_list_end);

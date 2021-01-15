@@ -13,8 +13,6 @@ import androidx.fragment.app.Fragment;
 import com.hanul.caramelhomecchiato.R;
 import com.hanul.caramelhomecchiato.data.RecipeCover;
 
-import java.util.Objects;
-
 public class RecipeCoverContentFragment extends Fragment{
 	public static final String ARG_COVER = "cover";
 

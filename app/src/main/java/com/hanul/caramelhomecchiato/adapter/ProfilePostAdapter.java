@@ -14,9 +14,25 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.hanul.caramelhomecchiato.R;
 import com.hanul.caramelhomecchiato.activity.PostActivity;
 import com.hanul.caramelhomecchiato.data.Post;
+import com.hanul.caramelhomecchiato.event.PostDeleteEventDispatcher;
+import com.hanul.caramelhomecchiato.event.Ticket;
 import com.hanul.caramelhomecchiato.util.GlideUtils;
 
+import java.util.List;
+
 public class ProfilePostAdapter extends BaseAdapter<Post>{
+	private final Ticket postDeleteEventTicket = PostDeleteEventDispatcher.subscribeAll(postId -> {
+		List<Post> elements = elements();
+		for(int i = 0; i<elements.size(); i++){
+			Post post = elements.get(i);
+			if(post.getId()==postId){
+				elements.remove(i);
+				notifyItemRemoved(i);
+				return;
+			}
+		}
+	});
+
 	@NonNull @Override public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType){
 		return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.view_profile_post, parent, false));
 	}
@@ -31,7 +47,7 @@ public class ProfilePostAdapter extends BaseAdapter<Post>{
 			imageViewPost.setOnClickListener(v -> {
 				Context ctx = itemView.getContext();
 				ctx.startActivity(new Intent(ctx, PostActivity.class)
-						.putExtra(PostActivity.EXTRA_POST, getItem()));
+						.putExtra(PostActivity.EXTRA_POST_ID, getItem().getId()));
 			});
 		}
 

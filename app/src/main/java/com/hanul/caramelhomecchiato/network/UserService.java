@@ -1,7 +1,6 @@
 package com.hanul.caramelhomecchiato.network;
 
 import com.google.gson.JsonObject;
-import com.hanul.caramelhomecchiato.data.UserProfile;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;

@@ -34,12 +34,12 @@
 					android:layout_width="36dp"
 					android:layout_height="36dp"
 					android:layout_gravity="end|center_vertical"
-					android:layout_marginEnd="8dp"
 					android:layout_marginVertical="8dp"
+					android:layout_marginEnd="8dp"
+					android:contentDescription="@string/description_profile_image"
 					android:src="@drawable/default_profile_image" />
 
 			</androidx.appcompat.widget.Toolbar>
-
 
 		</com.google.android.material.appbar.AppBarLayout>
 
@@ -66,6 +66,7 @@
 			app:layout_constraintLeft_toLeftOf="parent"
 			app:layout_constraintRight_toRightOf="parent"
 			app:menu="@menu/bottom_nav_menu" />
+
 	</androidx.constraintlayout.widget.ConstraintLayout>
 
 	<!--
@@ -95,6 +96,7 @@
 				android:layout_height="100dp"
 				android:layout_marginEnd="15dp"
 				android:layout_marginBottom="30dp"
+				android:contentDescription="@string/description_profile_image"
 				android:src="@drawable/default_profile_image"
 				app:layout_constraintBottom_toBottomOf="parent"
 				app:layout_constraintEnd_toEndOf="parent" />
@@ -109,10 +111,11 @@
 				android:maxLines="2"
 				android:textColor="@color/Almond"
 				android:textSize="20sp"
+				app:autoSizeTextType="uniform"
 				app:layout_constraintBottom_toBottomOf="@+id/imageViewProfile"
 				app:layout_constraintEnd_toStartOf="@+id/imageViewProfile"
-				app:layout_constraintStart_toStartOf="parent"
-				app:autoSizeTextType="uniform"/>
+				app:layout_constraintStart_toStartOf="parent" />
+
 		</androidx.constraintlayout.widget.ConstraintLayout>
 
 		<TextView
@@ -169,5 +172,7 @@
 			android:textSize="20sp"
 			app:layout_constraintBottom_toBottomOf="parent"
 			app:layout_constraintEnd_toEndOf="parent" />
+
 	</androidx.constraintlayout.widget.ConstraintLayout>
+
 </androidx.drawerlayout.widget.DrawerLayout>

@@ -29,7 +29,8 @@
 			app:layout_constraintBottom_toBottomOf="parent"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintTop_toTopOf="parent"
-			app:layout_goneMarginEnd="0dp" />
+			app:layout_goneMarginEnd="0dp"
+			android:contentDescription="@string/description_post_option" />
 
 	</androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -41,49 +42,66 @@
 
 	<androidx.constraintlayout.widget.ConstraintLayout
 		android:layout_width="match_parent"
-		android:layout_height="wrap_content">
+		android:layout_height="wrap_content"
+		android:clipChildren="false"
+		android:paddingVertical="8dp">
 
 		<TextView
 			android:id="@+id/textViewPost"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:layout_margin="8dp"
+			android:layout_marginHorizontal="8dp"
 			android:textColor="@color/VanDykeBrown"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toTopOf="parent" />
 
-		<xyz.hanks.library.bang.SmallBangView
-			android:id="@+id/smallBangView"
-			android:layout_width="30dp"
-			android:layout_height="30dp"
+		<androidx.constraintlayout.widget.ConstraintLayout
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginStart="5dp"
+			android:clipChildren="false"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toBottomOf="@id/textViewPost">
 
-			<ImageView
+			<xyz.hanks.library.bang.SmallBangView
 				android:id="@+id/buttonLike"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:layout_gravity="center"
-				android:src="@drawable/ic_like_selector"
-				android:contentDescription="@string/description_like" />
-		</xyz.hanks.library.bang.SmallBangView>
+				android:layout_width="20dp"
+				android:layout_height="20dp"
+				android:layout_margin="15dp"
+				android:clipChildren="false"
+				app:layout_constraintBottom_toBottomOf="parent"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintTop_toTopOf="parent">
 
-		<TextView
-			android:id="@+id/textViewLikes"
-			android:layout_width="0dp"
-			android:layout_height="wrap_content"
-			android:layout_marginEnd="12dp"
-			android:text="@string/n_likes"
-			android:textColor="@color/TerraCotta"
-			android:textStyle="bold"
-			app:layout_constraintBottom_toBottomOf="@id/smallBangView"
-			app:layout_constraintEnd_toEndOf="parent"
-			app:layout_constraintStart_toEndOf="@id/smallBangView"
-			app:layout_constraintTop_toTopOf="@id/smallBangView" />
+				<ImageView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_gravity="center"
+					android:contentDescription="@string/description_like"
+					android:src="@drawable/ic_like_selector" />
+			</xyz.hanks.library.bang.SmallBangView>
+
+			<TextView
+				android:id="@+id/textViewLikes"
+				android:layout_width="0dp"
+				android:layout_height="0dp"
+				android:gravity="center"
+				android:maxLines="1"
+				android:text="9989898989"
+				android:textColor="@color/TerraCotta"
+				android:textStyle="bold"
+				app:autoSizeTextType="uniform"
+				app:layout_constraintBottom_toBottomOf="parent"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintTop_toBottomOf="@+id/buttonLike" />
+
+		</androidx.constraintlayout.widget.ConstraintLayout>
 
 	</androidx.constraintlayout.widget.ConstraintLayout>
 
-	<View style="@style/Divider.Horizontal" />
+	<View android:id="@+id/divider" style="@style/Divider.Horizontal" />
 
 </LinearLayout>

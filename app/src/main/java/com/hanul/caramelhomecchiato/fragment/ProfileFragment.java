@@ -1,5 +1,6 @@
 package com.hanul.caramelhomecchiato.fragment;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -20,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.gson.JsonObject;
 import com.hanul.caramelhomecchiato.R;
 import com.hanul.caramelhomecchiato.activity.EditProfileActivity;
+import com.hanul.caramelhomecchiato.activity.ProfileActivity;
 import com.hanul.caramelhomecchiato.activity.WritePostActivity;
 import com.hanul.caramelhomecchiato.adapter.ProfilePostAdapter;
 import com.hanul.caramelhomecchiato.data.Post;
@@ -98,9 +100,9 @@ public class ProfileFragment extends Fragment implements PostScrollHandler.Liste
 			});
 		});
 
-		view.findViewById(R.id.buttonNewPost).setOnClickListener(v -> {
-			startActivity(new Intent(getContext(), WritePostActivity.class));
-		});
+		view.findViewById(R.id.buttonNewPost).setOnClickListener(v ->
+				startActivityForResult(new Intent(getContext(), WritePostActivity.class),
+						ProfileActivity.WRITE_POST_ACTIVITY));
 
 		RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
 		recyclerView.setLayoutManager(new GridLayoutManager(ctx, 3, RecyclerView.VERTICAL, false));
@@ -131,7 +133,7 @@ public class ProfileFragment extends Fragment implements PostScrollHandler.Liste
 
 	@Override public void onResume(){
 		super.onResume();
-		postScrollHandler.enqueue();
+		if(profile!=null) postScrollHandler.enqueue();
 	}
 
 	@Override public void onDestroy(){
@@ -140,10 +142,17 @@ public class ProfileFragment extends Fragment implements PostScrollHandler.Liste
 	}
 
 	@Override public void append(List<Post> posts, boolean endOfList, boolean reset){
-		Log.d(TAG, "append: "+posts.size());
 		List<Post> elements = profilePostAdapter.elements();
-		if(reset) elements.clear();
-		elements.addAll(posts);
+		int size = elements.size();
+		if(reset){
+			elements.clear();
+			profilePostAdapter.notifyItemRangeRemoved(0, size);
+			elements.addAll(posts);
+			profilePostAdapter.notifyItemRangeInserted(0, posts.size());
+		}else{
+			elements.addAll(posts);
+			profilePostAdapter.notifyItemRangeInserted(size, posts.size());
+		}
 		profilePostAdapter.notifyDataSetChanged();
 		if(endOfList){
 			textViewEndOfList.setVisibility(View.VISIBLE);
@@ -158,10 +167,6 @@ public class ProfileFragment extends Fragment implements PostScrollHandler.Liste
 		textViewEndOfList.setText(R.string.post_list_error);
 	}
 
-	private void resetPosts(){
-		postScrollHandler.enqueue(true);
-	}
-
 	public void setProfile(@Nullable UserProfile profile){
 		int id = this.profile==null ? 0 : this.profile.getUser().getId();
 		int id2 = profile==null ? 0 : profile.getUser().getId();
@@ -173,14 +178,13 @@ public class ProfileFragment extends Fragment implements PostScrollHandler.Liste
 		UserProfile profile = this.profile;
 		userViewHandler.setUser(profile==null ? null : profile.getUser());
 
-		if(reset) resetPosts();
-
 		if(profile==null){
 			textViewMotd.setText("");
 			textViewMotd.setVisibility(View.GONE);
 			myProfileLayout.setVisibility(View.GONE);
 			otherProfileLayout.setVisibility(View.GONE);
 		}else{
+			if(reset) postScrollHandler.enqueue(true);
 			String motd = profile.getMotd()==null ? "" : profile.getMotd();
 			textViewMotd.setText(motd);
 			textViewMotd.setVisibility(motd.isEmpty() ? View.GONE : View.VISIBLE);
@@ -195,6 +199,13 @@ public class ProfileFragment extends Fragment implements PostScrollHandler.Liste
 				otherProfileLayout.setVisibility(View.VISIBLE);
 			}
 			postScrollHandler.enqueue();
+		}
+	}
+
+	@Override public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data){
+		super.onActivityResult(requestCode, resultCode, data);
+		if(requestCode==ProfileActivity.WRITE_POST_ACTIVITY&&resultCode==Activity.RESULT_OK){
+			postScrollHandler.enqueue(true);
 		}
 	}
 }

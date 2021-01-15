@@ -15,6 +15,7 @@ public final class GlideUtils{
 	private static Drawable emptyAttachment;
 	private static RequestOptions profileImage;
 	private static RequestOptions postImage;
+	private static RequestOptions fullScreenPostImage;
 	private static RequestOptions recipeCover;
 
 	private static Int64Key key = new Int64Key(System.currentTimeMillis());
@@ -38,6 +39,11 @@ public final class GlideUtils{
 				.error(emptyAttachment)
 				.centerCrop();
 
+		fullScreenPostImage = new RequestOptions()
+				.placeholder(emptyAttachment)
+				.fallback(emptyAttachment)
+				.error(emptyAttachment);
+
 		recipeCover = new RequestOptions()
 				.placeholder(emptyAttachment)
 				.fallback(emptyAttachment)
@@ -51,6 +57,10 @@ public final class GlideUtils{
 
 	public static RequestOptions postImage(){
 		return Objects.requireNonNull(postImage);
+	}
+
+	public static RequestOptions fullScreenPostImage(){
+		return Objects.requireNonNull(fullScreenPostImage);
 	}
 
 	public static RequestOptions recipeCover(){

@@ -18,9 +18,10 @@ import com.google.gson.JsonObject;
 import com.hanul.caramelhomecchiato.R;
 import com.hanul.caramelhomecchiato.activity.ProfileActivity;
 import com.hanul.caramelhomecchiato.data.User;
+import com.hanul.caramelhomecchiato.event.Ticket;
 import com.hanul.caramelhomecchiato.network.UserService;
 import com.hanul.caramelhomecchiato.util.BaseCallback;
-import com.hanul.caramelhomecchiato.util.FollowingEventHandler;
+import com.hanul.caramelhomecchiato.event.FollowingEventDispatcher;
 import com.hanul.caramelhomecchiato.util.GlideUtils;
 import com.hanul.caramelhomecchiato.widget.FollowButton;
 
@@ -38,7 +39,7 @@ public class UserViewHandler{
 	private final FollowButton buttonFollow;
 
 	@Nullable private User user;
-	@Nullable private FollowingEventHandler.Ticket ticket;
+	@Nullable private Ticket ticket;
 
 	public UserViewHandler(ComponentActivity activity){
 		this(activity,
@@ -99,7 +100,7 @@ public class UserViewHandler{
 					Toast.makeText(UserViewHandler.this.context, "예상치 못한 오류로 인해 팔로우에 실패했습니다.", Toast.LENGTH_SHORT).show();
 				}
 			});
-			FollowingEventHandler.dispatch(user.getId(), following);
+			FollowingEventDispatcher.dispatch(user.getId(), following);
 		});
 	}
 
@@ -136,7 +137,7 @@ public class UserViewHandler{
 			Boolean followedByYou = user.getFollowedByYou();
 			if(followedByYou!=null){
 				buttonFollow.setVisibility(View.VISIBLE);
-				ticket = FollowingEventHandler.subscribe(user.getId(), following -> {
+				ticket = FollowingEventDispatcher.subscribe(user.getId(), following -> {
 					this.user.setFollowedByYou(following);
 					buttonFollow.setFollowing(following);
 					buttonFollow.setText(context.getString(following ? R.string.button_following : R.string.button_follow));

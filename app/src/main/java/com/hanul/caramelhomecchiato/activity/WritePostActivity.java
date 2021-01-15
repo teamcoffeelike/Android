@@ -1,14 +1,14 @@
 package com.hanul.caramelhomecchiato.activity;
 
 import android.Manifest;
-import android.content.ContentResolver;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -16,14 +16,16 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.WorkerThread;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.google.gson.JsonObject;
+import com.hanul.caramelhomecchiato.CaramelHomecchiatoApp;
 import com.hanul.caramelhomecchiato.R;
-import com.hanul.caramelhomecchiato.adapter.PostAdapter;
 import com.hanul.caramelhomecchiato.data.Post;
 import com.hanul.caramelhomecchiato.network.PostService;
 import com.hanul.caramelhomecchiato.util.BaseCallback;
@@ -33,6 +35,7 @@ import com.hanul.caramelhomecchiato.util.Validate;
 import com.hanul.caramelhomecchiato.util.lifecyclehandler.SpinnerHandler;
 
 import java.io.IOException;
+import java.util.concurrent.Future;
 
 import retrofit2.Call;
 import retrofit2.Response;
@@ -48,12 +51,15 @@ public class WritePostActivity extends AppCompatActivity{
 	private static final int PICK_IMAGE = 4;
 
 	private ImageView imageViewPostImage;
-	@Nullable private Uri image;
+	private EditText editTextPost;
+	private Button buttonSubmit;
 
 	private final SpinnerHandler spinnerHandler = new SpinnerHandler(this);
-	private Button buttonSubmit;
-	private EditText editTextPost;
-	private PostAdapter postAdapter;
+
+	@Nullable private Post post;
+
+	@Nullable private Uri image;
+	private boolean postEdited = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState){
@@ -61,75 +67,100 @@ public class WritePostActivity extends AppCompatActivity{
 		setContentView(R.layout.activity_write_post);
 
 		Parcelable postExtra = getIntent().getParcelableExtra(EXTRA_POST);
+		if(postExtra!=null){
+			if(!(postExtra instanceof Post)){
+				throw new IllegalStateException("WritePostActivity에 Post 제공되지 않음");
+			}
+			post = (Post)postExtra;
+		}
 
 		imageViewPostImage = findViewById(R.id.imageViewPostImage);
+		editTextPost = findViewById(R.id.editTextPost);
+		buttonSubmit = findViewById(R.id.buttonSubmit);
 
 		Glide.with(this)
-				.load((Uri)null)
+				.load(post==null ? null : post.getImage())
 				.apply(GlideUtils.postImage())
 				.transition(DrawableTransitionOptions.withCrossFade())
 				.into(imageViewPostImage);
 
 		imageViewPostImage.setOnClickListener(v -> pickImage(true));
 
-		editTextPost = findViewById(R.id.editTextPost);
-		buttonSubmit = findViewById(R.id.buttonSubmit);
-
-
-		if(postExtra!=null){
-			if(!(postExtra instanceof Post)){
-				throw new IllegalStateException("WritePostActivity에 Post 제공되지 않음");
+		editTextPost.addTextChangedListener(new TextWatcher(){
+			@Override public void beforeTextChanged(CharSequence s, int start, int count, int after){}
+			@Override public void onTextChanged(CharSequence s, int start, int before, int count){
+				postEdited = true;
+				buttonSubmit.setEnabled(true);
 			}
-			Post post = (Post)postExtra;
+			@Override public void afterTextChanged(Editable s){}
+		});
+		if(post!=null) editTextPost.setText(post.getText());
 
-			editTextPost.setText(post.getText());
+		buttonSubmit.setOnClickListener(v -> {
+			if(!Validate.postText(editTextPost.getText())){
+				Toast.makeText(WritePostActivity.this, "메시지가 너무 깁니다.", Toast.LENGTH_SHORT).show();
+				return;
+			}
 
-			Glide.with(this)
-					.load(post.getImage())
-					.apply(GlideUtils.postImage())
-					.transition(DrawableTransitionOptions.withCrossFade())
-					.into(imageViewPostImage);
+			String text = editTextPost.getText().toString();
 
-			buttonSubmit.setOnClickListener(new View.OnClickListener(){
-				@Override
-				public void onClick(View v){
-					//TODO 버튼 눌렀을때 수정한 내용 저장
-					String postText = editTextPost.getText().toString();
-					if(!Validate.postText(postText)){
-						Toast.makeText(WritePostActivity.this, "메시지가 너무 깁니다.", Toast.LENGTH_SHORT).show();
-						return;
-					}
+			if(post!=null){
+				CaramelHomecchiatoApp app = (CaramelHomecchiatoApp)getApplication();
 
+				@Nullable Future<Response<JsonObject>> editPostImage = image==null ?
+						null :
+						app.executorService.submit(() -> {
+							byte[] read = IOUtils.read(getContentResolver(), image);
+							return PostService.editPostImage(post.getId(), read).execute();
+						});
 
-					spinnerHandler.show();
+				@Nullable Future<Response<JsonObject>> editPost = postEdited ?
+						app.executorService.submit(() -> PostService.INSTANCE.editPost(post.getId(), text).execute()) :
+						null;
+
+				if(editPostImage==null&&editPost==null){
+					finish();
+					return;
 				}
-			});
 
-		}else{
-			buttonSubmit.setOnClickListener(v -> {
+				spinnerHandler.show();
+				app.executorService.submit(() -> {
+					boolean editPostImageSucceed = check(editPostImage, "editPostImage");
+					boolean editPostSucceed = check(editPost, "editPost");
+
+					ContextCompat.getMainExecutor(this).execute(() -> {
+						spinnerHandler.dismiss();
+						if(!editPostImageSucceed){
+							if(!editPostSucceed)
+								Toast.makeText(this, "포스트 변경 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
+							else
+								Toast.makeText(this, "포스트 이미지 변경 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
+						}else if(!editPostSucceed)
+							Toast.makeText(this, "포스트 내용 변경 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
+						else{
+							setResult(RESULT_OK);
+							finish();
+						}
+					});
+				});
+			}else{
 				if(image==null){
 					Toast.makeText(this, "이미지를 첨부해 주세요.", Toast.LENGTH_SHORT).show();
 					return;
 				}
 
-				String postText = editTextPost.getText().toString();
-				if(!Validate.postText(postText)){
-					Toast.makeText(this, "메시지가 너무 깁니다.", Toast.LENGTH_SHORT).show();
-					return;
-				}
-
-				ContentResolver contentResolver = getContentResolver();
 				byte[] read;
 				try{
-					read = IOUtils.read(contentResolver, image);
+					read = IOUtils.read(getContentResolver(), image);
 				}catch(IOException e){
 					e.printStackTrace();
 					Toast.makeText(this, "이미지를 읽어들이는 중 예상치 못한 오류가 발생하여 포스트를 작성할 수 없습니다.", Toast.LENGTH_SHORT).show();
 					return;
 				}
 				spinnerHandler.show();
-				PostService.writePost(postText, read).enqueue(new BaseCallback(){
+				PostService.writePost(text, read).enqueue(new BaseCallback(){
 					@Override public void onSuccessfulResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response, @NonNull JsonObject result){
+						setResult(RESULT_OK);
 						finish();
 					}
 					@Override public void onErrorResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response, @NonNull String error){
@@ -150,8 +181,32 @@ public class WritePostActivity extends AppCompatActivity{
 						spinnerHandler.dismiss();
 					}
 				});
-			});
-		}
+			}
+		});
+	}
+
+	@WorkerThread
+	@SuppressWarnings("ConstantConditions")
+	private boolean check(@Nullable Future<Response<JsonObject>> editFuture, String it){
+		if(editFuture!=null){
+			try{
+				Response<JsonObject> response = editFuture.get();
+				if(!response.isSuccessful()){
+					Log.e(TAG, it+": "+response.errorBody());
+					return false;
+				}
+				JsonObject result = response.body();
+				if(result.has("error")){
+					Log.e(TAG, it+": Error: "+result.get("error").getAsString());
+					return false;
+				}
+
+				return true;
+			}catch(Exception e){
+				Log.e(TAG, it+": ", e);
+				return false;
+			}
+		}else return true;
 	}
 
 	private void pickImage(boolean requestPermission){
@@ -186,7 +241,7 @@ public class WritePostActivity extends AppCompatActivity{
 							.apply(GlideUtils.postImage())
 							.transition(DrawableTransitionOptions.withCrossFade())
 							.into(imageViewPostImage);
-					buttonSubmit.setEnabled(true);
+					updateSubmitButton();
 				}
 			}
 		}
@@ -197,5 +252,11 @@ public class WritePostActivity extends AppCompatActivity{
 		if(requestCode==GRANT_IMAGE_PERMS){
 			pickImage(false);
 		}
+	}
+
+	private void updateSubmitButton(){
+		buttonSubmit.setEnabled(post!=null ?
+				image!=null||(postEdited&&Validate.postText(editTextPost.getText())) :
+				image!=null&&(postEdited&&Validate.postText(editTextPost.getText())));
 	}
 }
