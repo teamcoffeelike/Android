@@ -138,13 +138,26 @@ public class PostViewHandler{
 		buttonPostOption.setOnClickListener(v -> popupMenu.show());
 
 		buttonLike.setOnClickListener(v -> {
-			// TODO
-			if(buttonLike.isSelected()){
-				buttonLike.setSelected(false);
-			}else{
-				buttonLike.setSelected(true);
-				buttonLike.likeAnimation();
-			}
+			Boolean likedByYou = this.post.getLikedByYou();
+			Log.d(TAG, "PostViewHandler: " + likedByYou);
+			boolean newLike = !likedByYou;
+			PostService.INSTANCE.likePost(this.post.getId(), newLike).enqueue(new BaseCallback(){
+				@Override public void onSuccessfulResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response, @NonNull JsonObject result){
+					Log.d(TAG, "likePost: success");
+				}
+				@Override public void onErrorResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response, @NonNull String error){
+					Log.e(TAG, "likePost: "+error);
+				}
+				@Override public void onFailedResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response){
+					Log.e(TAG, "likePost: "+response.errorBody());
+				}
+				@Override public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t){
+					Log.e(TAG, "likePost: ", t);
+				}
+			});
+			this.post.setLikedByYou(newLike);
+			buttonLike.setSelected(newLike);
+			if(newLike) buttonLike.likeAnimation();
 		});
 	}
 
