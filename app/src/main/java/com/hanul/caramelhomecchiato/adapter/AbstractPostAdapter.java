@@ -71,7 +71,7 @@ public abstract class AbstractPostAdapter extends BaseAdapter<Post>{
 			Post p2 = elements.get(i);
 			if(p2.getId()==post.getId()){
 				Log.d(TAG, "onPostFetchSucceed: Applying change");
-				elements.set(i, p2);
+				elements.set(i, post);
 				notifyItemChanged(i);
 				return;
 			}
