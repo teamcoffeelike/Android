@@ -202,27 +202,26 @@ public class WritePostActivity extends AppCompatActivity{
 	}
 
 	@WorkerThread
-	@SuppressWarnings("ConstantConditions")
-	private boolean check(@Nullable Future<Response<JsonObject>> editFuture, String it){
-		if(editFuture!=null){
-			try{
-				Response<JsonObject> response = editFuture.get();
-				if(!response.isSuccessful()){
-					Log.e(TAG, it+": "+response.errorBody());
-					return false;
-				}
-				JsonObject result = response.body();
-				if(result.has("error")){
-					Log.e(TAG, it+": Error: "+result.get("error").getAsString());
-					return false;
-				}
-
-				return true;
-			}catch(Exception e){
-				Log.e(TAG, it+": ", e);
+	@SuppressWarnings({"ConstantConditions", "RedundantSuppression"})
+	private boolean check(@Nullable Future<Response<JsonObject>> editFuture, String logCategory){
+		if(editFuture==null) return true;
+		try{
+			Response<JsonObject> response = editFuture.get();
+			if(!response.isSuccessful()){
+				Log.e(TAG, logCategory+": "+response.errorBody());
 				return false;
 			}
-		}else return true;
+			JsonObject result = response.body();
+			if(result.has("error")){
+				Log.e(TAG, logCategory+": Error: "+result.get("error").getAsString());
+				return false;
+			}
+
+			return true;
+		}catch(Exception e){
+			Log.e(TAG, logCategory+": ", e);
+			return false;
+		}
 	}
 
 	private void pickImage(boolean requestPermission){

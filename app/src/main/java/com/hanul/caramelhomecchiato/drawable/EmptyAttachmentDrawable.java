@@ -76,13 +76,13 @@ public class EmptyAttachmentDrawable extends Drawable{
 	@RequiresApi(api = Build.VERSION_CODES.LOLLIPOP) @Override public void setTint(int tintColor){icon.setTint(tintColor);}
 	@RequiresApi(api = Build.VERSION_CODES.LOLLIPOP) @Override public void setTintList(@Nullable ColorStateList tint){icon.setTintList(tint);}
 	@RequiresApi(api = Build.VERSION_CODES.LOLLIPOP) @Override public void setTintMode(@Nullable PorterDuff.Mode tintMode){icon.setTintMode(tintMode);}
-	@Override public void setTintBlendMode(@Nullable BlendMode blendMode){icon.setTintBlendMode(blendMode);}
+	@RequiresApi(api = Build.VERSION_CODES.Q) @Override public void setTintBlendMode(@Nullable BlendMode blendMode){icon.setTintBlendMode(blendMode);}
 	@RequiresApi(api = Build.VERSION_CODES.LOLLIPOP) @Nullable @Override public ColorFilter getColorFilter(){return icon.getColorFilter();}
 	@Override public void clearColorFilter(){icon.clearColorFilter();}
 	@RequiresApi(api = Build.VERSION_CODES.LOLLIPOP) @Override public void setHotspot(float x, float y){icon.setHotspot(x, y);}
 	@RequiresApi(api = Build.VERSION_CODES.LOLLIPOP) @Override public void setHotspotBounds(int left, int top, int right, int bottom){icon.setHotspotBounds(left, top, right, bottom);}
 	@RequiresApi(api = Build.VERSION_CODES.M) @Override public void getHotspotBounds(@NonNull Rect outRect){icon.getHotspotBounds(outRect);}
-	@Override public boolean isProjected(){return icon.isProjected();}
+	@RequiresApi(api = Build.VERSION_CODES.Q) @Override public boolean isProjected(){return icon.isProjected();}
 	@Override public boolean isStateful(){return icon.isStateful();}
 	@Override public boolean setState(@NonNull int[] stateSet){return icon.setState(stateSet);}
 	@NonNull @Override public int[] getState(){return icon.getState();}
@@ -100,7 +100,7 @@ public class EmptyAttachmentDrawable extends Drawable{
 	@Override public int getMinimumWidth(){return icon.getMinimumWidth();}
 	@Override public int getMinimumHeight(){return icon.getMinimumHeight();}
 	@Override public boolean getPadding(@NonNull Rect padding){return icon.getPadding(padding);}
-	@NonNull @Override public Insets getOpticalInsets(){return icon.getOpticalInsets();}
+	@RequiresApi(api = Build.VERSION_CODES.Q) @NonNull @Override public Insets getOpticalInsets(){return icon.getOpticalInsets();}
 	@RequiresApi(api = Build.VERSION_CODES.LOLLIPOP) @Override public void getOutline(@NonNull Outline outline){icon.getOutline(outline);}
 	@NonNull @Override public Drawable mutate(){return icon.mutate();}
 	@Override public void inflate(@NonNull Resources r, @NonNull XmlPullParser parser, @NonNull AttributeSet attrs) throws IOException, XmlPullParserException{icon.inflate(r, parser, attrs);}
