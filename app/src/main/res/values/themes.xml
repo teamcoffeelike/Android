@@ -46,4 +46,10 @@
 		<item name="android:layout_height">match_parent</item>
 	</style>
 
+	<style name="RatingBar" parent="Theme.AppCompat">
+		<item name="android:progressBackgroundTint">#88333333</item>
+		<item name="android:progressTint">@color/MinionYellow</item>
+		<item name="android:secondaryProgressTint">#88333333</item>
+	</style>
+
 </resources>

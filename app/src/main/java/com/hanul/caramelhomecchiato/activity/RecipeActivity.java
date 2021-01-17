@@ -3,88 +3,104 @@ package com.hanul.caramelhomecchiato.activity;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentStatePagerAdapter;
-import androidx.viewpager.widget.ViewPager;
+import androidx.fragment.app.FragmentActivity;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.hanul.caramelhomecchiato.R;
 import com.hanul.caramelhomecchiato.data.Recipe;
-import com.hanul.caramelhomecchiato.fragment.RecipeCoverContentFragment;
-import com.hanul.caramelhomecchiato.fragment.RecipeCoverImageFragment;
+import com.hanul.caramelhomecchiato.data.RecipeCategory;
+import com.hanul.caramelhomecchiato.data.RecipeCover;
+import com.hanul.caramelhomecchiato.data.RecipeStep;
+import com.hanul.caramelhomecchiato.data.User;
+import com.hanul.caramelhomecchiato.fragment.RecipeCoverFragment;
+import com.hanul.caramelhomecchiato.fragment.RecipeStepFragment;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 
 public class RecipeActivity extends AppCompatActivity{
-	public static final String EXTRA_RECIPE = "recipe";
+	private static final String TAG = "RecipeActivity";
+
+	public static final String EXTRA_RECIPE_ID = "recipeId";
+
+	private int recipeId;
+
+	private PagerAdapter adapter;
+
+	@Nullable private Recipe recipe;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_recipe);
 
-		Recipe recipe = getIntent().getParcelableExtra(EXTRA_RECIPE);
-		if(recipe==null) throw new IllegalStateException("No recipe provided for RecipeActivity");
+		recipeId = getIntent().getIntExtra(EXTRA_RECIPE_ID, 0);
+		if(recipeId==0) throw new IllegalStateException("RecipeActivity에 recipeId 제공되지 않음");
 
-		ViewPager viewPagerImage = findViewById(R.id.viewPagerImage);
-		ViewPager viewPagerContent = findViewById(R.id.viewPagerContent);
+		ViewPager2 viewPager = findViewById(R.id.viewPager);
 
-		viewPagerImage.addOnPageChangeListener(new ViewPagerSynchronizer(viewPagerImage, viewPagerContent));
-		viewPagerContent.addOnPageChangeListener(new ViewPagerSynchronizer(viewPagerContent, viewPagerImage));
-
-		// Generate fragments
-		List<Fragment> images = new ArrayList<>();
-		List<Fragment> contents = new ArrayList<>();
-
-		images.add(RecipeCoverImageFragment.newInstance(recipe.getCover()));
-		contents.add(RecipeCoverContentFragment.newInstance(recipe.getCover()));
-
-		FragmentManager fm = getSupportFragmentManager();
-
-		viewPagerImage.setAdapter(new PagerAdapter(images, fm));
-		viewPagerImage.setAdapter(new PagerAdapter(contents, fm));
+		adapter = new PagerAdapter(this);
+		viewPager.setAdapter(adapter);
 	}
 
-	// https://stackoverflow.com/a/26513243/12224135
-	private static final class ViewPagerSynchronizer implements ViewPager.OnPageChangeListener{
-		private final ViewPager thisViewPager;
-		private final ViewPager otherViewPager;
-
-		private int scrollState = ViewPager.SCROLL_STATE_IDLE;
-
-		public ViewPagerSynchronizer(ViewPager thisViewPager, ViewPager otherViewPager){
-			this.thisViewPager = thisViewPager;
-			this.otherViewPager = otherViewPager;
-		}
-
-		@Override public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels){
-			if(scrollState==ViewPager.SCROLL_STATE_IDLE) return;
-			otherViewPager.scrollTo(thisViewPager.getScrollX(), otherViewPager.getScrollY());
-		}
-		@Override public void onPageSelected(int position){ }
-		@Override public void onPageScrollStateChanged(int state){
-			scrollState = state;
-			if(state==ViewPager.SCROLL_STATE_IDLE){
-				otherViewPager.setCurrentItem(thisViewPager.getCurrentItem(), false);
+	@Override protected void onResume(){
+		super.onResume();
+		setRecipe(new Recipe(
+				new RecipeCover(1,
+						RecipeCategory.ETC,
+						"asdf",
+						new User(1, "t", null, null, null),
+						1.5f,
+						null),
+				Arrays.asList(
+						new RecipeStep(1, null, "첫번째"+getString(R.string.very_long_text), null),
+						new RecipeStep(2, null, "두번째"+getString(R.string.very_long_text), null),
+						new RecipeStep(3, null, "세번째"+getString(R.string.very_long_text), null)
+				)));
+		/*RecipeService.INSTANCE.recipe(recipeId).enqueue(new BaseCallback(){
+			@Override public void onSuccessfulResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response, @NonNull JsonObject result){
+				setRecipe(NetUtils.GSON.fromJson(result, Recipe.class));
 			}
-		}
+			@Override public void onErrorResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response, @NonNull String error){
+				Log.e(TAG, "recipe: "+error);
+				error();
+			}
+			@Override public void onFailedResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response){
+				Log.e(TAG, "recipe: "+response.errorBody());
+				error();
+			}
+			@Override public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t){
+				Log.e(TAG, "recipe: ", t);
+				error();
+			}
+
+			private void error(){
+				Toast.makeText(RecipeActivity.this, "레시피를 불러오는 도중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
+			}
+		});*/
 	}
 
-	private static final class PagerAdapter extends FragmentStatePagerAdapter{
-		private final List<Fragment> fragments;
+	private void setRecipe(Recipe recipe){
+		this.recipe = recipe;
+		adapter.notifyDataSetChanged();
+	}
 
-		public PagerAdapter(List<Fragment> fragments, @NonNull FragmentManager fm){
-			super(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
-			this.fragments = fragments;
+
+	private final class PagerAdapter extends FragmentStateAdapter{
+		public PagerAdapter(@NonNull FragmentActivity fragmentActivity){
+			super(fragmentActivity);
 		}
 
-		@NonNull @Override public Fragment getItem(int position){
-			return fragments.get(position);
+		@NonNull @Override public Fragment createFragment(int position){
+			if(position==0) return RecipeCoverFragment.newInstance(recipe);
+			return RecipeStepFragment.newInstance(recipe, position-1);
 		}
-		@Override public int getCount(){
-			return fragments.size();
+
+		@Override public int getItemCount(){
+			return recipe==null ? 0 : recipe.steps().size()+1;
 		}
 	}
 }

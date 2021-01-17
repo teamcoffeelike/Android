@@ -9,7 +9,7 @@ public final class Validate{
 	private static final Pattern EMAIL_REGEX = Pattern.compile("\\s*[^@]+@[^@]+\\s*");
 	private static final Pattern PHONE_NUMBER_REGEX = Pattern.compile("\\s*(0\\d\\d)[ -]?(\\d{4})[ -]?(\\d{4})\\s*");
 	private static final Pattern PASSWORD_REGEX = Pattern.compile(".{3,63}");
-	private static final Pattern POST_TEXT_REGEX = Pattern.compile("\\s*.{0,1000}\\s*");
+	private static final Pattern POST_TEXT_REGEX = Pattern.compile("(?:\\s|\\S){0,1000}");
 	private static final Pattern MOTD_REGEX = Pattern.compile("\\s*.{0,100}\\s*");
 
 	public static boolean name(CharSequence name){

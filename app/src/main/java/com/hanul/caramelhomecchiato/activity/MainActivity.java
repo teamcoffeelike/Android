@@ -3,6 +3,7 @@ package com.hanul.caramelhomecchiato.activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.widget.ImageView;
@@ -44,6 +45,8 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity{
 	private static final String TAG = "MainActivity";
 
+	private static final String SAVED_STATE_MENU_INDEX = "menuIndex";
+
 	private PostListFragment postListFragment;
 	private RecipeCategoryFragment recipeCategoryFragment;
 	private TimerFragment timerFragment;
@@ -58,8 +61,10 @@ public class MainActivity extends AppCompatActivity{
 
 	@SuppressWarnings("unused") private final Ticket profileImageChangedTicket = ProfileImageChangeEvent.subscribe(this::redrawProfileImage);
 
+	private int menuIndex = -1;
+
 	@Override
-	protected void onCreate(Bundle savedInstanceState){
+	protected void onCreate(@Nullable Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
@@ -108,10 +113,10 @@ public class MainActivity extends AppCompatActivity{
 		BottomNavigationView bottomNav = findViewById(R.id.bottomNavigation);
 		bottomNav.setOnNavigationItemSelectedListener(item -> {
 			int id = item.getItemId();
-			if(id==R.id.posts) show(postListFragment);
-			else if(id==R.id.recipes) show(recipeCategoryFragment);
-			else if(id==R.id.timer) show(timerFragment);
-			else if(id==R.id.profile) show(profileFragment);
+			if(id==R.id.posts) show(0);
+			else if(id==R.id.recipes) show(1);
+			else if(id==R.id.timer) show(2);
+			else if(id==R.id.profile) show(3);
 			else{
 				Log.e(TAG, "onCreate: Invalid navigation item "+id);
 				return false;
@@ -121,7 +126,17 @@ public class MainActivity extends AppCompatActivity{
 
 		setProfile(null);
 
-		show(postListFragment);
+		show(0);
+	}
+
+	@Override protected void onSaveInstanceState(@NonNull Bundle outState){
+		super.onSaveInstanceState(outState);
+		outState.putInt(SAVED_STATE_MENU_INDEX, menuIndex);
+	}
+
+	@Override protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState){
+		super.onRestoreInstanceState(savedInstanceState);
+		show(savedInstanceState.getInt(SAVED_STATE_MENU_INDEX, 0));
 	}
 
 	@Override protected void onResume(){
@@ -161,11 +176,36 @@ public class MainActivity extends AppCompatActivity{
 		}else return super.onKeyDown(keyCode, event);
 	}
 
-	private void show(Fragment f){
-		getSupportFragmentManager()
-				.beginTransaction()
-				.replace(R.id.mainFrame, f)
-				.commit();
+	private void show(int menuIndex){
+		show(menuIndex, false);
+	}
+	private void show(int menuIndex, boolean force){
+		if(this.menuIndex!=menuIndex||force){
+			this.menuIndex = menuIndex;
+
+			Fragment fragment;
+			switch(menuIndex){
+				case 0:
+					fragment = this.postListFragment;
+					break;
+				case 1:
+					fragment = this.recipeCategoryFragment;
+					break;
+				case 2:
+					fragment = this.timerFragment;
+					break;
+				case 3:
+					fragment = this.profileFragment;
+					break;
+				default:
+					throw new IllegalArgumentException("menuIndex");
+			}
+
+			getSupportFragmentManager()
+					.beginTransaction()
+					.replace(R.id.mainFrame, fragment)
+					.commit();
+		}
 	}
 
 	private void redrawProfileImage(){

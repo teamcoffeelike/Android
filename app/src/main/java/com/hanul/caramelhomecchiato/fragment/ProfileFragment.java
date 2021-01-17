@@ -23,6 +23,7 @@ import com.hanul.caramelhomecchiato.R;
 import com.hanul.caramelhomecchiato.activity.EditProfileActivity;
 import com.hanul.caramelhomecchiato.activity.ProfileActivity;
 import com.hanul.caramelhomecchiato.activity.WritePostActivity;
+import com.hanul.caramelhomecchiato.activity.WriteRecipeActivity;
 import com.hanul.caramelhomecchiato.adapter.ProfilePostAdapter;
 import com.hanul.caramelhomecchiato.data.Post;
 import com.hanul.caramelhomecchiato.data.UserProfile;
@@ -105,6 +106,8 @@ public class ProfileFragment extends Fragment implements PostScrollHandler.Liste
 		view.findViewById(R.id.buttonNewPost).setOnClickListener(v ->
 				startActivityForResult(new Intent(getContext(), WritePostActivity.class),
 						ProfileActivity.WRITE_POST_ACTIVITY));
+
+		view.findViewById(R.id.buttonNewRecipe).setOnClickListener(v -> startActivity(new Intent(getContext(), WriteRecipeActivity.class)));
 
 		RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
 		recyclerView.setLayoutManager(new GridLayoutManager(ctx, 3, RecyclerView.VERTICAL, false));

@@ -1,18 +1,20 @@
 package com.hanul.caramelhomecchiato.adapter;
 
+import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.hanul.caramelhomecchiato.R;
+import com.hanul.caramelhomecchiato.activity.RecipeActivity;
 import com.hanul.caramelhomecchiato.data.RecipeCover;
 import com.hanul.caramelhomecchiato.util.GlideUtils;
 import com.hanul.caramelhomecchiato.util.lifecyclehandler.UserViewHandler;
@@ -39,8 +41,9 @@ public class RecipeAdapter extends BaseAdapter<RecipeCover>{
 			rating = itemView.findViewById(R.id.ratingBar);
 
 			recipeImage.setOnClickListener(v -> {
-				// TODO
-				Toast.makeText(itemView.getContext(), "hi :)", Toast.LENGTH_SHORT).show();
+				Context context = itemView.getContext();
+				context.startActivity(new Intent(context, RecipeActivity.class)
+						.putExtra(RecipeActivity.EXTRA_RECIPE_ID, getItem().getId()));
 			});
 		}
 
