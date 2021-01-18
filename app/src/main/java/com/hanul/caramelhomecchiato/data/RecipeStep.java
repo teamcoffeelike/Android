@@ -1,11 +1,10 @@
 package com.hanul.caramelhomecchiato.data;
 
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import androidx.annotation.Nullable;
-
-import java.net.URI;
 
 public class RecipeStep implements Parcelable{
 	public static final Creator<RecipeStep> CREATOR = new Creator<RecipeStep>(){
@@ -18,12 +17,12 @@ public class RecipeStep implements Parcelable{
 	};
 
 	private int index;
-	@Nullable private URI image;
+	@Nullable private Uri image;
 	private String text;
 	@Nullable private RecipeTask task;
 
 	public RecipeStep(int index,
-	                  @Nullable URI image,
+	                  @Nullable Uri image,
 	                  String text,
 	                  @Nullable RecipeTask task){
 		this.index = index;
@@ -33,12 +32,14 @@ public class RecipeStep implements Parcelable{
 	}
 	protected RecipeStep(Parcel in){
 		index = in.readInt();
+		image = in.readParcelable(Uri.class.getClassLoader());
 		text = in.readString();
 		task = in.readParcelable(RecipeTask.class.getClassLoader());
 	}
 
 	@Override public void writeToParcel(Parcel dest, int flags){
 		dest.writeInt(index);
+		dest.writeParcelable(image, flags);
 		dest.writeString(text);
 		dest.writeParcelable(task, flags);
 	}
@@ -52,10 +53,10 @@ public class RecipeStep implements Parcelable{
 	public void setIndex(int index){
 		this.index = index;
 	}
-	@Nullable public URI getImage(){
+	@Nullable public Uri getImage(){
 		return image;
 	}
-	public void setImage(@Nullable URI image){
+	public void setImage(@Nullable Uri image){
 		this.image = image;
 	}
 	public String getText(){

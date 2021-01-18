@@ -68,4 +68,5 @@
 	<string name="button_submit">등록</string>
 	<string name="click_to_select_image">클릭해서 이미지 첨부</string>
 	<string name="description_post_image">포스트 이미지</string>
+	<string name="hint_edit_recipe_title">레시피 타이틀</string>
 </resources>

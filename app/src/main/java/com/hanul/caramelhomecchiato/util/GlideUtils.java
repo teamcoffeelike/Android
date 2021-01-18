@@ -1,7 +1,9 @@
 package com.hanul.caramelhomecchiato.util;
 
 import android.app.Application;
+import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.util.DisplayMetrics;
 
 import com.bumptech.glide.request.RequestOptions;
 import com.hanul.caramelhomecchiato.R;
@@ -12,16 +14,20 @@ import java.util.Objects;
 public final class GlideUtils{
 	private GlideUtils(){}
 
+	private static final int ATTACHMENT_PLACEHOLDER_ICON_SIZE = 100;
+
 	private static RequestOptions profileImage;
 	private static RequestOptions postImage;
 	private static RequestOptions fullScreenPostImage;
 	private static RequestOptions recipeCover;
 
 	public static void init(Application app){
-		Drawable emptyAttachment = new EmptyAttachmentDrawable(app.getApplicationContext(),
+		Context ctx = app.getApplicationContext();
+		int dp = (int)Math.round(ATTACHMENT_PLACEHOLDER_ICON_SIZE*((double)ctx.getResources().getDisplayMetrics().densityDpi/DisplayMetrics.DENSITY_DEFAULT));
+		Drawable emptyAttachment = new EmptyAttachmentDrawable(ctx,
 				R.drawable.placeholder,
-				250,
-				250);
+				dp,
+				dp);
 
 		profileImage = new RequestOptions()
 				.placeholder(R.drawable.default_profile_image)
