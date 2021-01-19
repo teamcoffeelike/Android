@@ -145,26 +145,34 @@ public class PostViewHandler{
 		buttonPostOption.setOnClickListener(v -> popupMenu.show());
 
 		buttonLike.setOnClickListener(v -> {
-			Boolean likedByYou = this.post.getLikedByYou();
-			Log.d(TAG, "PostViewHandler: " + likedByYou);
-			boolean newLike = !likedByYou;
-			PostService.INSTANCE.likePost(this.post.getId(), newLike).enqueue(new BaseCallback(){
-				@Override public void onSuccessfulResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response, @NonNull JsonObject result){
-					Log.d(TAG, "likePost: success");
+			if(this.post != null){
+				Boolean likedByYou = this.post.getLikedByYou();
+				if(likedByYou!=null){
+					Log.d(TAG, "PostViewHandler: " + likedByYou);
+					boolean newLike = !likedByYou;
+					PostService.INSTANCE.likePost(this.post.getId(), newLike).enqueue(new BaseCallback(){
+						@Override public void onSuccessfulResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response, @NonNull JsonObject result){
+							Log.d(TAG, "likePost: success");
+						}
+						@Override public void onErrorResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response, @NonNull String error){
+							Log.e(TAG, "likePost: "+error);
+						}
+						@Override public void onFailedResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response){
+							Log.e(TAG, "likePost: "+response.errorBody());
+						}
+						@Override public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t){
+							Log.e(TAG, "likePost: ", t);
+						}
+					});
+					this.post.setLikedByYou(newLike);
+					this.post.setLikes(this.post.getLikes()+(newLike ? 1 : -1));
+					buttonLike.setSelected(newLike);
+					textViewLikes.setText(context.getString(R.string.n_likes, this.post.getLikes()));
+					if(newLike){
+						buttonLike.likeAnimation();
+					}
 				}
-				@Override public void onErrorResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response, @NonNull String error){
-					Log.e(TAG, "likePost: "+error);
-				}
-				@Override public void onFailedResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response){
-					Log.e(TAG, "likePost: "+response.errorBody());
-				}
-				@Override public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t){
-					Log.e(TAG, "likePost: ", t);
-				}
-			});
-			this.post.setLikedByYou(newLike);
-			buttonLike.setSelected(newLike);
-			if(newLike) buttonLike.likeAnimation();
+			}
 		});
 	}
 
@@ -185,6 +193,7 @@ public class PostViewHandler{
 					.into(imageViewPost);
 			textViewPost.setText(post.getText());
 
+			buttonLike.setSelected(post.getLikedByYou()!=null&&post.getLikedByYou());
 			textViewLikes.setText(context.getString(R.string.n_likes, post.getLikes()));
 
 			buttonPostOption.setVisibility(
