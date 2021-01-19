@@ -3,6 +3,8 @@ package com.hanul.caramelhomecchiato.data;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.annotation.NonNull;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -55,5 +57,12 @@ public class Recipe implements Parcelable{
 	}
 	public List<RecipeStep> steps(){
 		return steps;
+	}
+
+	@NonNull @Override public String toString(){
+		return "Recipe{"+
+				"cover="+cover+
+				", steps="+steps+
+				'}';
 	}
 }

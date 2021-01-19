@@ -8,6 +8,8 @@
 		android:id="@+id/imageLayout"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
+		android:background="@color/white"
+		android:translationZ="10dp"
 		app:layout_constraintTop_toTopOf="parent">
 
 		<ImageView
@@ -49,13 +51,20 @@
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toTopOf="parent" />
 
-		<include
-			layout="@layout/view_user"
+		<FrameLayout
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
+			android:background="@drawable/placeholder_user_box"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toBottomOf="@+id/textViewTitle" />
+			app:layout_constraintTop_toBottomOf="@+id/textViewTitle">
+
+			<include
+				layout="@layout/view_user"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content" />
+
+		</FrameLayout>
 
 	</androidx.constraintlayout.widget.ConstraintLayout>
 

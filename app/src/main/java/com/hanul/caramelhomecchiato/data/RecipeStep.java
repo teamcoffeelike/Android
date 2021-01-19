@@ -71,4 +71,13 @@ public class RecipeStep implements Parcelable{
 	public void setTask(@Nullable RecipeTask task){
 		this.task = task;
 	}
+
+	@Override public String toString(){
+		return "RecipeStep{"+
+				"index="+index+
+				", image="+image+
+				", text='"+text+'\''+
+				", task="+task+
+				'}';
+	}
 }

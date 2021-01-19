@@ -34,13 +34,15 @@
 			app:layout_constraintBottom_toBottomOf="parent"
 			app:layout_constraintEnd_toStartOf="@id/buttonSubmit"
 			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toBottomOf="@id/divider" />
+			app:layout_constraintTop_toTopOf="parent" />
+
 
 		<Button
 			android:id="@+id/buttonSubmit"
 			style="?android:attr/borderlessButtonStyle"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
+			android:enabled="false"
 			android:text="@string/button_submit"
 			android:textColor="@color/VanDykeBrown"
 			app:layout_constraintBottom_toBottomOf="parent"
