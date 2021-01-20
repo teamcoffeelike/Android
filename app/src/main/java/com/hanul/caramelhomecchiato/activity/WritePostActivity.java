@@ -212,11 +212,13 @@ public class WritePostActivity extends AppCompatActivity{
 	}
 
 	@Override public void onBackPressed(){
-		new AlertDialog.Builder(this)
-				.setTitle("작성중인 레시피를 등록하지 않고 창을 닫으시겠습니까?")
-				.setPositiveButton("예", (dialog, which) -> finish())
-				.setNegativeButton("계속 작성", (dialog, which) -> {})
-				.show();
+		if(image!=null||editTextPost.getText().length()>0)
+			new AlertDialog.Builder(this)
+					.setTitle("작성중인 포스트를 등록하지 않고 창을 닫으시겠습니까?")
+					.setPositiveButton("예", (dialog, which) -> finish())
+					.setNegativeButton("계속 작성", (dialog, which) -> {})
+					.show();
+		else super.onBackPressed();
 	}
 
 	@WorkerThread

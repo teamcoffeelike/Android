@@ -25,6 +25,7 @@
 				android:id="@+id/imageViewProfile"
 				android:layout_width="100dp"
 				android:layout_height="100dp"
+				android:contentDescription="@string/description_profile_image"
 				android:src="@drawable/default_profile_image"
 				app:layout_constraintBottom_toBottomOf="parent"
 				app:layout_constraintStart_toStartOf="parent"
@@ -129,7 +130,6 @@
 
 	</LinearLayout>
 
-
 	<androidx.core.widget.NestedScrollView
 		android:id="@+id/scrollView"
 		android:layout_width="match_parent"
@@ -140,8 +140,8 @@
 		<LinearLayout
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:paddingTop="10dp"
-			android:orientation="vertical">
+			android:orientation="vertical"
+			android:paddingTop="10dp">
 
 			<androidx.recyclerview.widget.RecyclerView
 				android:id="@+id/recyclerView"
@@ -149,37 +149,9 @@
 				android:layout_height="wrap_content"
 				android:nestedScrollingEnabled="false" />
 
-			<TextView
-				android:id="@+id/textViewError"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:layout_marginTop="20dp"
-				android:layout_marginBottom="50dp"
-				android:gravity="center"
-				android:text="@string/post_list_error"
-				android:visibility="gone"
-				app:layout_goneMarginBottom="0dp"
-				app:layout_goneMarginTop="0dp" />
+			<include layout="@layout/post_list_error" />
 
-			<androidx.constraintlayout.widget.ConstraintLayout
-				android:id="@+id/endOfList"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:layout_marginTop="50dp"
-				android:layout_marginBottom="50dp"
-				android:visibility="gone"
-				app:layout_goneMarginBottom="0dp"
-				app:layout_goneMarginTop="0dp">
-
-				<View
-					android:layout_width="5dp"
-					android:layout_height="5dp"
-					android:background="@drawable/gray_circle"
-					app:layout_constraintEnd_toEndOf="parent"
-					app:layout_constraintStart_toStartOf="parent"
-					app:layout_constraintTop_toTopOf="parent" />
-
-			</androidx.constraintlayout.widget.ConstraintLayout>
+			<include layout="@layout/end_of_list" />
 
 		</LinearLayout>
 

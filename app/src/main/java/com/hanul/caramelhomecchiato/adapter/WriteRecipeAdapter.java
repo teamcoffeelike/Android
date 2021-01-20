@@ -12,7 +12,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
@@ -84,7 +83,7 @@ public class WriteRecipeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 			backgroundLayout = itemView.findViewById(R.id.backgroundLayout);
 
 			imageViewCover.setOnClickListener(v -> {
-				writer.chooseTitleImage(() -> {
+				writer.chooseCoverImage(() -> {
 					updateImage(writer.getRecipe().getCover());
 				});
 			});
@@ -131,8 +130,7 @@ public class WriteRecipeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 		}
 
 		private void updateImage(RecipeCover cover){
-			Uri photo = cover.getPhoto();
-			Log.d(TAG, "updateImage: "+photo);
+			Uri photo = cover.getCoverImage();
 			Glide.with(itemView)
 					.load(photo)
 					.apply(GlideUtils.recipeCover())
@@ -207,8 +205,8 @@ public class WriteRecipeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 		protected void bind(RecipeStep step){
 			updateImage(step);
 
-			this.index = step.getIndex();
-			textViewDebug.setText("Step "+step.getIndex());
+			this.index = step.getStep();
+			textViewDebug.setText("Step "+step.getStep());
 		}
 
 		private void updateImage(RecipeStep step){

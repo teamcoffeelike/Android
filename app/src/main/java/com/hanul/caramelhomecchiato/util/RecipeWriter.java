@@ -16,6 +16,6 @@ public interface RecipeWriter{
 	void setStepText(int index, String text);
 	void setStepTask(int index, @Nullable RecipeTask task);
 
-	void chooseTitleImage(Runnable onSucceed);
+	void chooseCoverImage(Runnable onSucceed);
 	void chooseStepImage(int index, Runnable onSucceed);
 }

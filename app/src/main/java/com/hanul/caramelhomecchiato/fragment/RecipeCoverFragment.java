@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
@@ -45,13 +46,15 @@ public class RecipeCoverFragment extends Fragment{
 
 		Recipe recipe = (Recipe)recipeArg;
 
+		View backgroundLayout = view.findViewById(R.id.backgroundLayout);
 		TextView textViewTitle = view.findViewById(R.id.textViewTitle);
 		ImageView imageViewCover = view.findViewById(R.id.imageViewCover);
-		TextView textViewPageIndex = view.findViewById(R.id.textViewPageIndex);
+
+		backgroundLayout.setBackgroundColor(ContextCompat.getColor(requireContext(), recipe.getCover().getCategory().getColor()));
 
 		textViewTitle.setText(recipe.getCover().getTitle());
 
-		Uri photo = recipe.getCover().getPhoto();
+		Uri photo = recipe.getCover().getCoverImage();
 
 		Glide.with(this)
 				.load(photo)
@@ -63,8 +66,6 @@ public class RecipeCoverFragment extends Fragment{
 				startActivity(new Intent(getContext(), FullScreenImageActivity.class).putExtra(FullScreenImageActivity.EXTRA_IMAGE_URI, photo));
 			});
 		}
-
-		textViewPageIndex.setText(getString(R.string.recipe_index, 1, recipe.steps().size()+1));
 
 		userViewHandler = new UserViewHandler(view);
 		userViewHandler.setUser(recipe.getCover().getAuthor());

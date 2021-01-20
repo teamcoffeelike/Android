@@ -62,11 +62,13 @@
 	<string name="description_post_option">포스트 옵션</string>
 	<string name="description_recipe_category_icon">레시피 카테고리 아이콘</string>
 	<string name="button_write_recipe">새 레시피</string>
-	<string name="recipe_index">%d/%d</string>
+	<string name="recipe_index">%d / %d</string>
 	<string name="description_recipe_image">레시피 이미지</string>
 	<string name="hint_edit_post">입력하세요</string>
 	<string name="button_submit">등록</string>
 	<string name="click_to_select_image">클릭해서 이미지 첨부</string>
 	<string name="description_post_image">포스트 이미지</string>
 	<string name="hint_edit_recipe_title">레시피 타이틀</string>
+	<string name="recipe_list_error">레시피를 불러오는 도중 오류가 발생했습니다.</string>
+	<string name="description_recipe_option">레시피 옵션</string>
 </resources>

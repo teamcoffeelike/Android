@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -27,11 +28,11 @@ import com.hanul.caramelhomecchiato.data.RecipeStep;
 import com.hanul.caramelhomecchiato.data.RecipeTask;
 import com.hanul.caramelhomecchiato.data.User;
 import com.hanul.caramelhomecchiato.network.RecipeService;
-import com.hanul.caramelhomecchiato.util.BaseCallback;
 import com.hanul.caramelhomecchiato.util.RecipeWriter;
 import com.hanul.caramelhomecchiato.util.Validate;
 import com.hanul.caramelhomecchiato.util.lifecyclehandler.SpinnerHandler;
 
+import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
@@ -74,12 +75,16 @@ public class WriteRecipeActivity extends AppCompatActivity implements RecipeWrit
 						new RecipeCover(0,
 								RecipeCategory.values()[RNG.nextInt(RecipeCategory.values().length)],
 								"",
+								null,
 								new User(0,
 										"",
 										null,
 										null,
 										null),
-								5f,
+								0,
+								null,
+								0,
+								null,
 								null),
 						new RecipeStep(0,
 								null,
@@ -138,33 +143,38 @@ public class WriteRecipeActivity extends AppCompatActivity implements RecipeWrit
 			spinnerHandler.show();
 
 			exec.submit(() -> {
+				Call<JsonObject> call;
 				try{
-					Call<JsonObject> call = writeRecipe.get();
-					call.enqueue(new BaseCallback(){
-						@Override public void onSuccessfulResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response, @NonNull JsonObject result){
-							finish();
-						}
-						@Override public void onErrorResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response, @NonNull String error){
-							Log.e(TAG, "writeRecipe: "+error);
-							fuck();
-						}
-						@Override public void onFailedResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response){
-							Log.e(TAG, "writeRecipe: "+response.errorBody());
-							fuck();
-						}
-						@Override public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t){
-							Log.e(TAG, "writeRecipe: ", t);
-							fuck();
-						}
-
-						void fuck(){
-							Toast.makeText(WriteRecipeActivity.this, "예상치 못한 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
-							spinnerHandler.dismiss();
-						}
-					});
+					call = writeRecipe.get();
 				}catch(Exception e){
-					Log.e(TAG, "writeRecipe: ", e);
+					Log.e(TAG, "writeRecipe: During Execution", e);
+					spinnerHandler.dismiss();
+					return;
 				}
+
+				try{
+					Response<JsonObject> response = call.execute();
+
+					if(response.isSuccessful()){
+						JsonObject body = Objects.requireNonNull(response.body());
+						if(body.has("error")){
+							String error = body.get("error").getAsString();
+							Log.e(TAG, "writeRecipe: "+error);
+						}else{
+							finish();
+							return;
+						}
+					}else{
+						Log.e(TAG, "writeRecipe: "+response.errorBody());
+					}
+				}catch(Exception ex){
+					Log.e(TAG, "writeRecipe: ", ex);
+				}
+
+				ContextCompat.getMainExecutor(this).execute(() -> {
+					Toast.makeText(WriteRecipeActivity.this, "예상치 못한 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
+					spinnerHandler.dismiss();
+				});
 			});
 		});
 	}
@@ -202,8 +212,8 @@ public class WriteRecipeActivity extends AppCompatActivity implements RecipeWrit
 	private void repositionSteps(){
 		for(int i = 0; i<recipe.steps().size(); i++){
 			RecipeStep step = recipe.steps().get(i);
-			if(step.getIndex()!=i){
-				step.setIndex(i);
+			if(step.getStep()!=i){
+				step.setStep(i);
 				adapter.notifyItemChanged(i+1);
 			}
 		}
@@ -215,7 +225,7 @@ public class WriteRecipeActivity extends AppCompatActivity implements RecipeWrit
 			Toast.makeText(this, "레시피 타이틀을 입력해 주세요.", Toast.LENGTH_SHORT).show();
 		}else if(!Validate.recipeTitle(cover.getTitle())){
 			Toast.makeText(this, "너무 길거나 사용할 수 없는 타이틀입니다.", Toast.LENGTH_SHORT).show();
-		}else if(cover.getPhoto()==null){
+		}else if(cover.getCoverImage()==null){
 			Toast.makeText(this, "레시피 표지 사진을 넣어 주세요.", Toast.LENGTH_SHORT).show();
 		}else return true;
 		return false;
@@ -278,10 +288,10 @@ public class WriteRecipeActivity extends AppCompatActivity implements RecipeWrit
 
 	@Nullable private Runnable chooseImageCallback;
 
-	private final ActivityResultLauncher<String[]> chooseTitleImage =
+	private final ActivityResultLauncher<String[]> chooseCoverImage =
 			registerForActivityResult(new OpenDocument(), result -> {
 				if(result!=null){
-					recipe.getCover().setPhoto(result);
+					recipe.getCover().setCoverImage(result);
 					if(chooseImageCallback!=null){
 						chooseImageCallback.run();
 						chooseImageCallback = null;
@@ -305,9 +315,9 @@ public class WriteRecipeActivity extends AppCompatActivity implements RecipeWrit
 				}
 			});
 
-	@Override public void chooseTitleImage(Runnable onSucceed){
+	@Override public void chooseCoverImage(Runnable onSucceed){
 		chooseImageCallback = onSucceed;
-		chooseTitleImage.launch(IMAGE_MIME_TYPE);
+		chooseCoverImage.launch(IMAGE_MIME_TYPE);
 	}
 	@Override public void chooseStepImage(int index, Runnable onSucceed){
 		chooseImageCallback = onSucceed;

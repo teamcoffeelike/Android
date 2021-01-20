@@ -4,6 +4,7 @@ import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 public class RecipeStep implements Parcelable{
@@ -16,29 +17,29 @@ public class RecipeStep implements Parcelable{
 		}
 	};
 
-	private int index;
+	private int step;
 	@Nullable private Uri image;
 	private String text;
 	@Nullable private RecipeTask task;
 
-	public RecipeStep(int index,
+	public RecipeStep(int step,
 	                  @Nullable Uri image,
 	                  String text,
 	                  @Nullable RecipeTask task){
-		this.index = index;
+		this.step = step;
 		this.image = image;
 		this.text = text;
 		this.task = task;
 	}
 	protected RecipeStep(Parcel in){
-		index = in.readInt();
+		step = in.readInt();
 		image = in.readParcelable(Uri.class.getClassLoader());
 		text = in.readString();
 		task = in.readParcelable(RecipeTask.class.getClassLoader());
 	}
 
 	@Override public void writeToParcel(Parcel dest, int flags){
-		dest.writeInt(index);
+		dest.writeInt(step);
 		dest.writeParcelable(image, flags);
 		dest.writeString(text);
 		dest.writeParcelable(task, flags);
@@ -47,11 +48,11 @@ public class RecipeStep implements Parcelable{
 		return 0;
 	}
 
-	public int getIndex(){
-		return index;
+	public int getStep(){
+		return step;
 	}
-	public void setIndex(int index){
-		this.index = index;
+	public void setStep(int step){
+		this.step = step;
 	}
 	@Nullable public Uri getImage(){
 		return image;
@@ -72,9 +73,9 @@ public class RecipeStep implements Parcelable{
 		this.task = task;
 	}
 
-	@Override public String toString(){
+	@NonNull @Override public String toString(){
 		return "RecipeStep{"+
-				"index="+index+
+				"step="+step+
 				", image="+image+
 				", text='"+text+'\''+
 				", task="+task+

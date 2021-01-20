@@ -52,12 +52,14 @@ public class RecipeAdapter extends BaseAdapter<RecipeCover>{
 			userViewHandler.setUser(recipeCover.getAuthor());
 
 			Glide.with(itemView)
-					.load(recipeCover.getPhoto())
+					.load(recipeCover.getCoverImage())
 					.apply(GlideUtils.recipeCover())
 					.transition(DrawableTransitionOptions.withCrossFade())
 					.into(recipeImage);
 			title.setText(recipeCover.getTitle());
-			rating.setRating(recipeCover.getRating());
+			if(recipeCover.getAverageRating()!=null)
+				rating.setRating(recipeCover.getAverageRating().floatValue());
+			else rating.setRating(0);
 		}
 	}
 }

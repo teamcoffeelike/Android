@@ -26,32 +26,33 @@
 			android:layout_width="48dp"
 			android:layout_height="1dp"
 			app:layout_constraintBottom_toBottomOf="parent"
-			app:layout_constraintStart_toEndOf="parent"/>
+			app:layout_constraintStart_toEndOf="parent" />
 
-		<FrameLayout
+		<LinearLayout
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
+			android:background="@drawable/recipe_list_rating_background"
+			android:orientation="horizontal"
 			android:scaleX=".5"
 			android:scaleY=".5"
-			android:background="@drawable/recipe_list_rating_background"
 			app:layout_constraintBottom_toBottomOf="@id/adjustmentView"
-			app:layout_constraintEnd_toEndOf="@id/adjustmentView" >
+			app:layout_constraintEnd_toEndOf="@id/adjustmentView">
 
 			<RatingBar
 				android:id="@+id/ratingBar"
 				style="@style/RatingBar"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:layout_marginTop="4dp"
-				android:layout_marginHorizontal="10dp"
 				android:layout_gravity="center"
+				android:layout_marginHorizontal="10dp"
+				android:layout_marginTop="4dp"
 				android:clickable="false"
 				android:isIndicator="true"
 				android:numStars="5"
 				android:rating="2.5"
-				android:stepSize="0.5"/>
+				android:stepSize="0.5" />
 
-		</FrameLayout>
+		</LinearLayout>
 
 	</androidx.constraintlayout.widget.ConstraintLayout>
 

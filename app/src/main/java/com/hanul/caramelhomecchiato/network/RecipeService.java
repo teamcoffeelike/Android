@@ -16,6 +16,7 @@ import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ExecutorService;
@@ -36,10 +37,10 @@ public interface RecipeService{
 	RecipeService INSTANCE = NetUtils.RETROFIT.create(RecipeService.class);
 
 	@GET("recipeList")
-	Call<JsonObject> recipeList(@Query("since") @Nullable Long since, @Query("pages") @Nullable Integer pages, @Query("category") RecipeCategory category);
-
-	@GET("recipeList")
-	Call<JsonObject> recipeList(@Query("since") @Nullable Long since, @Query("pages") @Nullable Integer pages, @Query("author") int author);
+	Call<JsonObject> recipeList(@Query("since") @Nullable Long since,
+	                            @Query("pages") @Nullable Integer pages,
+	                            @Nullable @Query("category") RecipeCategory category,
+	                            @Nullable @Query("author") Integer author);
 
 	@GET("recipe")
 	Call<JsonObject> recipe(@Query("id") int id);
@@ -53,13 +54,13 @@ public interface RecipeService{
 			List<Future<Entry<String, byte[]>>> holyShitThisLooksBad = new ArrayList<>();
 
 			holyShitThisLooksBad.add(executorService.submit(() ->
-					new AbstractMap.SimpleEntry<>("coverImage", IOUtils.read(contentResolver, recipe.getCover().getPhoto()))));
+					new AbstractMap.SimpleEntry<>("coverImage\"; filename=\"coverImage", IOUtils.read(contentResolver, recipe.getCover().getCoverImage()))));
 
 			for(int i = 0; i<recipe.steps().size(); i++){
 				RecipeStep step = recipe.steps().get(i);
 				Uri image = step.getImage();
 				if(image!=null){
-					String name = "image"+(i+1);
+					String name = String.format(Locale.US, "image%1$d\"; filename=\"image%1$d", i+1);
 					holyShitThisLooksBad.add(executorService.submit(() ->
 							new AbstractMap.SimpleEntry<>(name, IOUtils.read(contentResolver, image))));
 				}
@@ -96,6 +97,10 @@ public interface RecipeService{
 	Call<JsonObject> deleteRecipe(@Query("recipe") int recipe);
 
 	@FormUrlEncoded
-	@POST("deleteRecipe")
+	@POST("rateRecipe")
 	Call<JsonObject> rateRecipe(@Field("recipe") int recipe, @Field("rating") double rating);
+
+	@FormUrlEncoded
+	@POST("deleteRecipeRating")
+	Call<JsonObject> deleteRecipeRating(@Field("recipe") int recipe);
 }

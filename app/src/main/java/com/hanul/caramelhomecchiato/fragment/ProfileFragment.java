@@ -148,13 +148,12 @@ public class ProfileFragment extends Fragment implements PostScrollHandler.Liste
 
 	@Override public void append(List<Post> posts, boolean endOfList, boolean reset){
 		List<Post> elements = profilePostAdapter.elements();
-		int size = elements.size();
 		if(reset){
 			elements.clear();
-			profilePostAdapter.notifyItemRangeRemoved(0, size);
 			elements.addAll(posts);
-			profilePostAdapter.notifyItemRangeInserted(0, posts.size());
+			profilePostAdapter.notifyDataSetChanged();
 		}else{
+			int size = elements.size();
 			elements.addAll(posts);
 			profilePostAdapter.notifyItemRangeInserted(size, posts.size());
 		}

@@ -3,7 +3,6 @@ package com.hanul.caramelhomecchiato.activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.widget.ImageView;
@@ -102,7 +101,7 @@ public class MainActivity extends AppCompatActivity{
 
 		findViewById(R.id.myRecipesMenu).setOnClickListener(v -> {
 			startActivity(new Intent(this, RecipeListActivity.class)
-					.putExtra(RecipeListActivity.EXTRA_MY_RECIPE, true));
+					.putExtra(RecipeListActivity.EXTRA_AUTHOR, Auth.getInstance().expectLoginUser()));
 		});
 		findViewById(R.id.followsMenu).setOnClickListener(v -> startActivity(new Intent(this, FollowsActivity.class)));
 		findViewById(R.id.likesMenu).setOnClickListener(v -> startActivity(new Intent(this, LikesActivity.class)));

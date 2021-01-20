@@ -1,5 +1,7 @@
 package com.hanul.caramelhomecchiato.fragment;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.view.LayoutInflater;
@@ -10,11 +12,13 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.hanul.caramelhomecchiato.R;
+import com.hanul.caramelhomecchiato.activity.FullScreenImageActivity;
 import com.hanul.caramelhomecchiato.data.Recipe;
 import com.hanul.caramelhomecchiato.data.RecipeStep;
 import com.hanul.caramelhomecchiato.util.GlideUtils;
@@ -49,19 +53,29 @@ public class RecipeStepFragment extends Fragment{
 
 		RecipeStep step = recipe.steps().get(stepIndex);
 
+		View imageLayout = view.findViewById(R.id.imageLayout);
 		ImageView imageView = view.findViewById(R.id.imageView);
+		View colorLayout = view.findViewById(R.id.colorLayout);
 		TextView textViewText = view.findViewById(R.id.textViewText);
-		TextView textViewPageIndex = view.findViewById(R.id.textViewPageIndex);
 
-		Glide.with(this)
-				.load(step.getImage())
-				.apply(GlideUtils.recipeCover())
-				.transition(DrawableTransitionOptions.withCrossFade())
-				.into(imageView);
+		Uri image = step.getImage();
+		if(image==null){
+			imageLayout.setVisibility(View.GONE);
+			colorLayout.setVisibility(View.VISIBLE);
+			colorLayout.setBackgroundColor(ContextCompat.getColor(requireContext(), recipe.getCover().getCategory().getColor()));
+		}else{
+			Glide.with(this)
+					.load(image)
+					.apply(GlideUtils.recipeCover())
+					.transition(DrawableTransitionOptions.withCrossFade())
+					.into(imageView);
+			imageView.setOnClickListener(v -> {
+				startActivity(new Intent(requireContext(), FullScreenImageActivity.class)
+						.putExtra(FullScreenImageActivity.EXTRA_IMAGE_URI, image));
+			});
+		}
 
 		textViewText.setText(step.getText());
-
-		textViewPageIndex.setText(getString(R.string.recipe_index, stepIndex+2, recipe.steps().size()+1));
 
 		return view;
 	}
