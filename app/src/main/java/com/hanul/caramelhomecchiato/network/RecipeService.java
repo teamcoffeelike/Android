@@ -93,6 +93,10 @@ public interface RecipeService{
 	@POST("writeRecipe")
 	Call<JsonObject> writeRecipe(@PartMap Map<String, RequestBody> parts);
 
+	@Multipart
+	@POST("editRecipe")
+	Call<JsonObject> editRecipe(@PartMap Map<String, RequestBody> parts);
+
 	@GET("deleteRecipe")
 	Call<JsonObject> deleteRecipe(@Query("recipe") int recipe);
 

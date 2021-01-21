@@ -26,7 +26,6 @@ import com.hanul.caramelhomecchiato.data.RecipeCover;
 import com.hanul.caramelhomecchiato.data.User;
 import com.hanul.caramelhomecchiato.network.NetUtils;
 import com.hanul.caramelhomecchiato.network.RecipeService;
-import com.hanul.caramelhomecchiato.util.Auth;
 import com.hanul.caramelhomecchiato.util.BaseCallback;
 import com.hanul.caramelhomecchiato.util.lifecyclehandler.UserViewHandler;
 
@@ -119,11 +118,11 @@ public class RecipeRateFragment extends Fragment{
 		backgroundLayout.setBackgroundColor(ContextCompat.getColor(requireContext(), recipe.getCover().getCategory().getColor()));
 
 		User author = recipe.getCover().getAuthor();
-		if(author.getId()==Auth.getInstance().expectLoginUser()){
-			recipeByUserLayout.setVisibility(View.GONE);
-		}else{
-			userViewHandler.setUser(author);
-		}
+		//if(author.getId()==Auth.getInstance().expectLoginUser()){
+		//	recipeByUserLayout.setVisibility(View.GONE);
+		//}else{
+		userViewHandler.setUser(author);
+		//}
 
 		simpleRecipeAdapter = new SimpleRecipeAdapter();
 		recyclerViewOtherRecipes.setLayoutManager(new LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false));

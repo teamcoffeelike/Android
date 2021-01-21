@@ -51,6 +51,32 @@
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toBottomOf="@id/imagePlaceholderApproximate" />
 
+		<TextView
+			android:id="@+id/textViewDeleteImage"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginStart="10dp"
+			android:layout_marginBottom="10dp"
+			android:background="@drawable/recipe_category_button_background"
+			android:padding="8dp"
+			android:text="@string/delete_image"
+			android:textColor="@color/white"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintStart_toStartOf="parent" />
+
+		<TextView
+			android:id="@+id/textViewRevertImage"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginEnd="10dp"
+			android:layout_marginBottom="10dp"
+			android:background="@drawable/recipe_category_button_background"
+			android:padding="8dp"
+			android:text="@string/revert_image"
+			android:textColor="@color/white"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintEnd_toEndOf="parent" />
+
 	</androidx.constraintlayout.widget.ConstraintLayout>
 
 	<ScrollView
@@ -84,18 +110,6 @@
 					app:layout_constraintStart_toStartOf="parent"
 					app:layout_constraintTop_toTopOf="parent" />
 
-				<TextView
-					android:id="@+id/textViewDebug"
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-					android:layout_marginTop="50dp"
-					android:gravity="center"
-					android:textColor="#CCC"
-					android:textSize="12sp"
-					android:visibility="gone"
-					app:layout_constraintTop_toBottomOf="@id/editTextContent"
-					app:layout_goneMarginTop="0dp" />
-
 			</androidx.constraintlayout.widget.ConstraintLayout>
 
 		</LinearLayout>
@@ -106,8 +120,8 @@
 		android:layout_width="0dp"
 		android:layout_height="wrap_content"
 		android:layout_marginTop="10dp"
-		app:layout_constraintStart_toEndOf="@id/imageLayout"
 		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toEndOf="@id/imageLayout"
 		app:layout_constraintTop_toTopOf="parent">
 
 		<TextView

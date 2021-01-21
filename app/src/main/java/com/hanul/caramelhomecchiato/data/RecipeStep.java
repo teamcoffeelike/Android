@@ -20,29 +20,29 @@ public class RecipeStep implements Parcelable{
 	private int step;
 	@Nullable private Uri image;
 	private String text;
-	@Nullable private RecipeTask task;
 
 	public RecipeStep(int step,
 	                  @Nullable Uri image,
-	                  String text,
-	                  @Nullable RecipeTask task){
+	                  String text){
 		this.step = step;
 		this.image = image;
 		this.text = text;
-		this.task = task;
+	}
+	public RecipeStep(RecipeStep step){
+		this.step = step.step;
+		this.image = step.image;
+		this.text = step.text;
 	}
 	protected RecipeStep(Parcel in){
-		step = in.readInt();
-		image = in.readParcelable(Uri.class.getClassLoader());
-		text = in.readString();
-		task = in.readParcelable(RecipeTask.class.getClassLoader());
+		this.step = in.readInt();
+		this.image = in.readParcelable(Uri.class.getClassLoader());
+		this.text = in.readString();
 	}
 
 	@Override public void writeToParcel(Parcel dest, int flags){
 		dest.writeInt(step);
 		dest.writeParcelable(image, flags);
 		dest.writeString(text);
-		dest.writeParcelable(task, flags);
 	}
 	@Override public int describeContents(){
 		return 0;
@@ -66,19 +66,12 @@ public class RecipeStep implements Parcelable{
 	public void setText(String text){
 		this.text = text;
 	}
-	@Nullable public RecipeTask getTask(){
-		return task;
-	}
-	public void setTask(@Nullable RecipeTask task){
-		this.task = task;
-	}
 
 	@NonNull @Override public String toString(){
 		return "RecipeStep{"+
 				"step="+step+
 				", image="+image+
 				", text='"+text+'\''+
-				", task="+task+
 				'}';
 	}
 }

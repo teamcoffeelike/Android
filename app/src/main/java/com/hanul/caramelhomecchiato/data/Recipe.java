@@ -34,9 +34,16 @@ public class Recipe implements Parcelable{
 		this.steps = new ArrayList<>();
 		this.steps.addAll(Arrays.asList(steps));
 	}
+	public Recipe(Recipe recipe){
+		this.cover = new RecipeCover(recipe.getCover());
+		this.steps = new ArrayList<>();
+		for(RecipeStep step : recipe.steps()){
+			this.steps.add(new RecipeStep(step));
+		}
+	}
 	protected Recipe(Parcel in){
-		cover = in.readParcelable(RecipeCover.class.getClassLoader());
-		steps = in.createTypedArrayList(RecipeStep.CREATOR);
+		this.cover = in.readParcelable(RecipeCover.class.getClassLoader());
+		this.steps = in.createTypedArrayList(RecipeStep.CREATOR);
 	}
 
 	@Override

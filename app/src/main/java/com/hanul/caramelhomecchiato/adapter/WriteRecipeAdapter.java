@@ -20,8 +20,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.hanul.caramelhomecchiato.R;
 import com.hanul.caramelhomecchiato.data.RecipeCategory;
-import com.hanul.caramelhomecchiato.data.RecipeCover;
-import com.hanul.caramelhomecchiato.data.RecipeStep;
 import com.hanul.caramelhomecchiato.util.GlideUtils;
 import com.hanul.caramelhomecchiato.util.RecipeWriter;
 
@@ -46,12 +44,12 @@ public class WriteRecipeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 		}
 	}
 	@Override public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position){
-		if(holder instanceof Cover) ((Cover)holder).bind(writer.getRecipe().getCover());
-		else if(holder instanceof Step) ((Step)holder).bind(writer.getRecipe().steps().get(position-1));
+		if(holder instanceof Cover) ((Cover)holder).bind();
+		else if(holder instanceof Step) ((Step)holder).bind(position-1);
 		else Log.w(TAG, "onBindViewHolder: "+holder+" 얜 또 누구냐");
 	}
 	@Override public int getItemCount(){
-		return 1+writer.getRecipe().steps().size();
+		return 1+writer.getNumberOfSteps();
 	}
 	@Override public int getItemViewType(int position){
 		return position==0 ? 0 : 1;
@@ -83,9 +81,7 @@ public class WriteRecipeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 			backgroundLayout = itemView.findViewById(R.id.backgroundLayout);
 
 			imageViewCover.setOnClickListener(v -> {
-				writer.chooseCoverImage(() -> {
-					updateImage(writer.getRecipe().getCover());
-				});
+				writer.chooseCoverImage(this::updateImage);
 			});
 
 			recipeCategoryMenu = new PopupMenu(itemView.getContext(), categoryLayout);
@@ -116,21 +112,22 @@ public class WriteRecipeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 					writer.setTitle(s.toString());
 				}
 			});
-
 		}
 
-		private void bind(RecipeCover cover){
-			updateImage(cover);
-			updateCategoryLayout(cover.getCategory());
+		private void bind(){
+			updateImage();
+			updateCategoryLayout();
+
+			editTextTitle.setText(writer.getTitle());
 		}
 
 		private void setCategory(RecipeCategory category){
 			writer.setCategory(category);
-			updateCategoryLayout(category);
+			updateCategoryLayout();
 		}
 
-		private void updateImage(RecipeCover cover){
-			Uri photo = cover.getCoverImage();
+		private void updateImage(){
+			Uri photo = writer.getCoverImage();
 			Glide.with(itemView)
 					.load(photo)
 					.apply(GlideUtils.recipeCover())
@@ -139,10 +136,17 @@ public class WriteRecipeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 			textViewAttach.setVisibility(photo!=null ? View.INVISIBLE : View.VISIBLE);
 		}
 
-		private void updateCategoryLayout(RecipeCategory category){
-			imageViewCategoryIcon.setImageResource(category.getIcon());
-			textViewCategoryName.setText(category.getName());
-			backgroundLayout.setBackgroundColor(ContextCompat.getColor(Objects.requireNonNull(itemView.getContext()), category.getColor()));
+		private void updateCategoryLayout(){
+			RecipeCategory category = writer.getCategory();
+			if(category!=null){
+				imageViewCategoryIcon.setImageResource(category.getIcon());
+				textViewCategoryName.setText(category.getName());
+				backgroundLayout.setBackgroundColor(ContextCompat.getColor(Objects.requireNonNull(itemView.getContext()), category.getColor()));
+			}else{
+				imageViewCategoryIcon.setImageDrawable(null);
+				textViewCategoryName.setText("");
+				backgroundLayout.setBackgroundColor(0);
+			}
 		}
 	}
 
@@ -150,10 +154,11 @@ public class WriteRecipeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 		private final ImageView imageView;
 		private final TextView textViewAttach;
 		private final EditText editTextContent;
-		private final TextView textViewDebug;
 		private final View addPrevStepLayout;
 		private final View removeStepLayout;
 		private final View addNextStepLayout;
+		private final View textViewDeleteImage;
+		private final View textViewRevertImage;
 
 		private int index = -1;
 
@@ -163,17 +168,16 @@ public class WriteRecipeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 			imageView = itemView.findViewById(R.id.imageView);
 			textViewAttach = itemView.findViewById(R.id.textViewAttach);
 			editTextContent = itemView.findViewById(R.id.editTextContent);
-			textViewDebug = itemView.findViewById(R.id.textViewDebug);
 			addPrevStepLayout = itemView.findViewById(R.id.addPrevStepLayout);
 			addNextStepLayout = itemView.findViewById(R.id.addNextStepLayout);
 			removeStepLayout = itemView.findViewById(R.id.removeStepLayout);
+			textViewDeleteImage = itemView.findViewById(R.id.textViewDeleteImage);
+			textViewRevertImage = itemView.findViewById(R.id.textViewRevertImage);
 
 			imageView.setOnClickListener(v -> {
 				if(this.index!=-1){
 					writer.chooseStepImage(this.index, () -> {
-						if(this.index!=-1){
-							updateImage(writer.getRecipe().steps().get(this.index));
-						}
+						if(this.index!=-1) updateImage();
 					});
 				}
 			});
@@ -192,31 +196,70 @@ public class WriteRecipeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 				if(index >= 0) writer.insertStepAt(index);
 			});
 			removeStepLayout.setOnClickListener(v -> {
-				if(index >= 0){
-					writer.deleteStepAt(index);
-				}
+				if(index >= 0) writer.deleteStepAt(index);
 			});
 			addNextStepLayout.setOnClickListener(v -> {
 				if(index >= 0) writer.insertStepAt(index+1);
 			});
 
+			textViewDeleteImage.setOnClickListener(v -> {
+				if(index >= 0){
+					writer.removeStepImage(index);
+					updateImage();
+				}
+			});
+			textViewRevertImage.setOnClickListener(v -> {
+				if(index >= 0){
+					writer.revertStepImage(index);
+					updateImage();
+				}
+			});
 		}
 
-		protected void bind(RecipeStep step){
-			updateImage(step);
+		protected void bind(int index){
+			this.index = index;
 
-			this.index = step.getStep();
-			textViewDebug.setText("Step "+step.getStep());
+			updateImage();
+
+			editTextContent.setText(writer.getStepText(index));
 		}
 
-		private void updateImage(RecipeStep step){
-			Uri image = step.getImage();
-			Glide.with(itemView)
-					.load(image)
-					.apply(GlideUtils.recipeCover()) // TODO?
-					.transition(DrawableTransitionOptions.withCrossFade())
-					.into(imageView);
-			textViewAttach.setVisibility(image!=null ? View.INVISIBLE : View.VISIBLE);
+		private void updateImage(){
+			Uri image = writer.getStepImage(index);
+			if(image==null){
+				Glide.with(itemView)
+						.load((Uri)null)
+						.apply(GlideUtils.recipeCover()) // TODO?
+						.transition(DrawableTransitionOptions.withCrossFade())
+						.into(imageView);
+				textViewAttach.setVisibility(View.VISIBLE);
+
+				textViewDeleteImage.setVisibility(View.GONE);
+			}else{
+				Glide.with(itemView)
+						.load(image)
+						.apply(GlideUtils.recipeCover()) // TODO?
+						.transition(DrawableTransitionOptions.withCrossFade())
+						.into(imageView);
+				textViewAttach.setVisibility(View.INVISIBLE);
+
+				textViewDeleteImage.setVisibility(View.VISIBLE);
+			}
+			if(writer.isEditMode()){
+				RecipeWriter.ImageState stepImageState = writer.getStepImageState(index);
+				switch(stepImageState){
+					case REPLACED:
+					case REMOVED:
+						textViewRevertImage.setVisibility(View.VISIBLE);
+						break;
+					case ADDED:
+					case UNEDITED:
+						textViewRevertImage.setVisibility(View.GONE);
+						break;
+					default:
+						Log.w(TAG, "updateImage: "+stepImageState);
+				}
+			}else textViewRevertImage.setVisibility(View.GONE);
 		}
 	}
 }

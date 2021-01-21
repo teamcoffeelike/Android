@@ -1,5 +1,7 @@
 package com.hanul.caramelhomecchiato.activity;
 
+import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -9,6 +11,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
@@ -22,7 +25,11 @@ import com.hanul.caramelhomecchiato.fragment.RecipeRateFragment;
 import com.hanul.caramelhomecchiato.fragment.RecipeStepFragment;
 import com.hanul.caramelhomecchiato.network.NetUtils;
 import com.hanul.caramelhomecchiato.network.RecipeService;
+import com.hanul.caramelhomecchiato.util.Auth;
 import com.hanul.caramelhomecchiato.util.BaseCallback;
+import com.hanul.caramelhomecchiato.util.lifecyclehandler.SpinnerHandler;
+
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Response;
@@ -43,6 +50,8 @@ public class RecipeActivity extends AppCompatActivity{
 	@Nullable private Recipe recipe;
 
 	private int indexCache = -1;
+
+	private final SpinnerHandler spinnerHandler = new SpinnerHandler(this);
 
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState){
@@ -72,6 +81,30 @@ public class RecipeActivity extends AppCompatActivity{
 				}
 			}
 		});
+
+
+		PopupMenu popupMenu = new PopupMenu(this, buttonOption);
+		popupMenu.getMenuInflater().inflate(R.menu.recipe_option_menu, popupMenu.getMenu());
+
+		popupMenu.setOnMenuItemClickListener(item -> {
+			int itemId = item.getItemId();
+			if(itemId==R.id.editRecipe){
+				startActivity(new Intent(this, WriteRecipeActivity.class)
+						.putExtra(WriteRecipeActivity.EXTRA_RECIPE, recipe)
+						.putExtra(WriteRecipeActivity.EXTRA_EDITING_PAGE, viewPager.getCurrentItem()));
+			}else if(itemId==R.id.deleteRecipe) delete();
+			else{
+				Log.w(TAG, "RecipeActivity: recipe_option_menu의 알 수 없는 옵션 "+itemId);
+				return false;
+			}
+			return true;
+		});
+
+		buttonOption.setOnClickListener(v -> {
+			if(recipe!=null&&recipe.getCover().getAuthor().getId()==Auth.getInstance().expectLoginUser()){
+				popupMenu.show();
+			}
+		});
 	}
 
 	@Override protected void onSaveInstanceState(@NonNull Bundle outState){
@@ -81,9 +114,11 @@ public class RecipeActivity extends AppCompatActivity{
 
 	@Override protected void onResume(){
 		super.onResume();
+		spinnerHandler.show();
 		RecipeService.INSTANCE.recipe(recipeId).enqueue(new BaseCallback(){
 			@Override public void onSuccessfulResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response, @NonNull JsonObject result){
 				setRecipe(NetUtils.GSON.fromJson(result, Recipe.class));
+				spinnerHandler.dismiss();
 			}
 			@Override public void onErrorResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response, @NonNull String error){
 				Log.e(TAG, "recipe: "+error);
@@ -100,6 +135,7 @@ public class RecipeActivity extends AppCompatActivity{
 
 			private void error(){
 				Toast.makeText(RecipeActivity.this, "레시피를 불러오는 도중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
+				spinnerHandler.dismiss();
 			}
 		});
 	}
@@ -117,6 +153,41 @@ public class RecipeActivity extends AppCompatActivity{
 		textViewIndex.setText(getString(R.string.recipe_index, viewPager.getCurrentItem()+1, adapter.getItemCount()));
 	}
 
+	private void delete(){
+		Recipe recipe = this.recipe;
+		if(recipe==null) return;
+		new AlertDialog.Builder(this)
+				.setTitle("정말 삭제하시겠습니까?")
+				.setPositiveButton("예", (dialog, which) -> {
+					spinnerHandler.show();
+					RecipeService.INSTANCE.deleteRecipe(recipe.getCover().getId()).enqueue(new BaseCallback(){
+						@Override public void onSuccessfulResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response, @NonNull JsonObject result){
+							Toast.makeText(RecipeActivity.this, "레시피를 삭제했습니다.", Toast.LENGTH_SHORT).show();
+							finish();
+						}
+						@Override public void onErrorResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response, @NonNull String error){
+							Log.e(TAG, "deleteRecipe: 예상치 못한 오류: "+error);
+							error();
+						}
+						@Override public void onFailedResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response){
+							Log.e(TAG, "deleteRecipe: Failure : "+response.errorBody());
+							error();
+						}
+						@Override public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t){
+							Log.e(TAG, "deleteRecipe: Failure ", t);
+							error();
+						}
+
+						private void error(){
+							Toast.makeText(RecipeActivity.this, "예상치 못한 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
+							spinnerHandler.dismiss();
+						}
+					});
+				})
+				.setNegativeButton("아니오", (dialog, which) -> {})
+				.show();
+	}
+
 
 	private final class PagerAdapter extends FragmentStateAdapter{
 		public PagerAdapter(@NonNull FragmentActivity fragmentActivity){
@@ -124,6 +195,7 @@ public class RecipeActivity extends AppCompatActivity{
 		}
 
 		@NonNull @Override public Fragment createFragment(int position){
+			Objects.requireNonNull(recipe);
 			if(position==0) return RecipeCoverFragment.newInstance(recipe);
 			else if(position>recipe.steps().size()) return RecipeRateFragment.newInstance(recipe);
 			return RecipeStepFragment.newInstance(recipe, position-1);

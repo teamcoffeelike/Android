@@ -23,30 +23,28 @@ import com.hanul.caramelhomecchiato.R;
 import com.hanul.caramelhomecchiato.adapter.WriteRecipeAdapter;
 import com.hanul.caramelhomecchiato.data.Recipe;
 import com.hanul.caramelhomecchiato.data.RecipeCategory;
-import com.hanul.caramelhomecchiato.data.RecipeCover;
-import com.hanul.caramelhomecchiato.data.RecipeStep;
-import com.hanul.caramelhomecchiato.data.RecipeTask;
-import com.hanul.caramelhomecchiato.data.User;
+import com.hanul.caramelhomecchiato.data.RecipeDelta;
+import com.hanul.caramelhomecchiato.data.RecipeWriteError;
 import com.hanul.caramelhomecchiato.network.RecipeService;
-import com.hanul.caramelhomecchiato.util.RecipeWriter;
-import com.hanul.caramelhomecchiato.util.Validate;
+import com.hanul.caramelhomecchiato.util.RecipeEditorEncoder;
+import com.hanul.caramelhomecchiato.util.SimpleRecipeWriter;
 import com.hanul.caramelhomecchiato.util.lifecyclehandler.SpinnerHandler;
 
 import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
 
-import kotlin.text.StringsKt;
 import retrofit2.Call;
 import retrofit2.Response;
 
-public class WriteRecipeActivity extends AppCompatActivity implements RecipeWriter{
+public class WriteRecipeActivity extends AppCompatActivity{
 	private static final String TAG = "WriteRecipeActivity";
 	private static final Random RNG = new Random();
 
-	public static final String EXTRA_RECIPE_TO_EDIT = "recipeToEdit";
-	public static final String SAVED_RECIPE = "recipe";
+	public static final String EXTRA_RECIPE = "recipe";
+	public static final String EXTRA_EDITING_PAGE = "editingPage";
+
+	private static final String SAVED_DELTA = "recipeToSend";
 
 	private static final String[] IMAGE_MIME_TYPE = {"image/*"};
 
@@ -55,8 +53,64 @@ public class WriteRecipeActivity extends AppCompatActivity implements RecipeWrit
 
 	private WriteRecipeAdapter adapter;
 
-	private Recipe recipe;
+	@Nullable private Runnable chooseImageCallback;
 
+	private final ActivityResultLauncher<String[]> chooseCoverImage =
+			registerForActivityResult(new OpenDocument(), result -> {
+				if(result!=null){
+					this.writer.setCoverImage(result);
+					if(chooseImageCallback!=null){
+						chooseImageCallback.run();
+						chooseImageCallback = null;
+					}
+				}
+			});
+
+	private int index = -1;
+
+	private final ActivityResultLauncher<String[]> chooseStepImage =
+			registerForActivityResult(new OpenDocument(), result -> {
+				if(result!=null){
+					if(index >= 0){
+						this.writer.setStepImage(index, result);
+						index = -1;
+						if(chooseImageCallback!=null){
+							chooseImageCallback.run();
+							chooseImageCallback = null;
+						}
+					}else Log.w(TAG, "잘못된 Step "+index);
+				}
+			});
+
+	private final SimpleRecipeWriter writer = new SimpleRecipeWriter(){
+		@Override protected void insertStep(int index){
+			super.insertStep(index);
+			adapter.notifyItemInserted(index+1);
+			viewPager.setCurrentItem(index+1);
+		}
+		@Override protected void deleteStep(int index){
+			new AlertDialog.Builder(WriteRecipeActivity.this)
+					.setTitle("정말 삭제하시겠어요?")
+					.setPositiveButton("예", (dialog, which) -> {
+						super.deleteStep(index);
+						adapter.notifyItemRemoved(index+1);
+					})
+					.setNegativeButton("아니오", (dialog, which) -> {})
+					.show();
+		}
+		@Override public void chooseCoverImage(Runnable onSucceed){
+			chooseImageCallback = onSucceed;
+			chooseCoverImage.launch(IMAGE_MIME_TYPE);
+		}
+		@Override public void chooseStepImage(int index, Runnable onSucceed){
+			chooseImageCallback = onSucceed;
+			WriteRecipeActivity.this.index = index;
+			chooseStepImage.launch(IMAGE_MIME_TYPE);
+		}
+		@Override protected void error(String message){
+			super.error(message);
+		}
+	};
 	private final SpinnerHandler spinnerHandler = new SpinnerHandler(this);
 
 	@Override
@@ -68,31 +122,19 @@ public class WriteRecipeActivity extends AppCompatActivity implements RecipeWrit
 		textViewInfo = findViewById(R.id.textViewInfo);
 		Button buttonSubmit = findViewById(R.id.buttonSubmit);
 
-		Parcelable recipeExtra = getIntent().getParcelableExtra(EXTRA_RECIPE_TO_EDIT);
-		recipe = recipeExtra!=null ?
-				(Recipe)recipeExtra :
-				new Recipe(
-						new RecipeCover(0,
-								RecipeCategory.values()[RNG.nextInt(RecipeCategory.values().length)],
-								"",
-								null,
-								new User(0,
-										"",
-										null,
-										null,
-										null),
-								0,
-								null,
-								0,
-								null,
-								null),
-						new RecipeStep(0,
-								null,
-								"",
-								null)
-				);
+		Parcelable recipeExtra = getIntent().getParcelableExtra(EXTRA_RECIPE);
+		if(recipeExtra!=null){
+			Recipe recipe = (Recipe)recipeExtra;
+			writer.setEditingRecipe(recipe);
+			writer.setDelta(new RecipeDelta(recipe));
+		}else{
+			RecipeCategory category = RecipeCategory.values()[RNG.nextInt(RecipeCategory.values().length)];
+			writer.setCategory(category);
+		}
 
-		adapter = new WriteRecipeAdapter(this);
+		int editingPage = getIntent().getIntExtra(EXTRA_EDITING_PAGE, 0);
+
+		adapter = new WriteRecipeAdapter(writer);
 		adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver(){
 			@Override public void onChanged(){
 				redrawInfo();
@@ -124,28 +166,29 @@ public class WriteRecipeActivity extends AppCompatActivity implements RecipeWrit
 		textViewInfo.setOnClickListener(v -> redrawInfo());
 
 		buttonSubmit.setOnClickListener(v -> {
-			if(!validateCover()){
-				viewPager.setCurrentItem(0);
+			RecipeDelta delta = writer.getDelta();
+			if(!delta.hasChange()){
+				finish();
+				return;
+			}
+			Log.d(TAG, "onCreate: "+delta);
+
+			RecipeWriteError recipeWriteError = delta.validate();
+			if(recipeWriteError!=null){
+				Toast.makeText(this, recipeWriteError.getMessage(), Toast.LENGTH_SHORT).show();
+				viewPager.setCurrentItem(recipeWriteError.getStepIndex()==null ? 0 : recipeWriteError.getStepIndex()+1);
 				return;
 			}
 
-			for(int i = 0; i<recipe.steps().size(); i++){
-				if(!validateStep(i)){
-					viewPager.setCurrentItem(i+1);
-					return;
-				}
-			}
-
 			ExecutorService exec = ((CaramelHomecchiatoApp)getApplication()).executorService;
-			Future<Call<JsonObject>> writeRecipe =
-					RecipeService.writeRecipe(recipe, exec, getContentResolver());
-
 			spinnerHandler.show();
 
 			exec.submit(() -> {
 				Call<JsonObject> call;
 				try{
-					call = writeRecipe.get();
+					RecipeEditorEncoder encoder = new RecipeEditorEncoder();
+					delta.apply(encoder);
+					call = RecipeService.INSTANCE.editRecipe(encoder.toRequestBody(exec, getContentResolver()));
 				}catch(Exception e){
 					Log.e(TAG, "writeRecipe: During Execution", e);
 					spinnerHandler.dismiss();
@@ -177,154 +220,38 @@ public class WriteRecipeActivity extends AppCompatActivity implements RecipeWrit
 				});
 			});
 		});
+
+		if(editingPage>0&&editingPage<adapter.getItemCount()){
+			viewPager.setCurrentItem(editingPage);
+		}
 	}
 
 	@Override protected void onSaveInstanceState(@NonNull Bundle outState){
 		super.onSaveInstanceState(outState);
-		outState.putParcelable(SAVED_RECIPE, recipe);
+		outState.putParcelable(EXTRA_RECIPE, writer.getEditingRecipe());
+		outState.putParcelable(SAVED_DELTA, writer.getDelta());
 	}
 
 	@Override protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState){
 		super.onRestoreInstanceState(savedInstanceState);
-		Recipe recipeSaved = savedInstanceState.getParcelable(SAVED_RECIPE);
-		boolean flagAdapterChanged = false;
+		Recipe editingRecipe = savedInstanceState.getParcelable(EXTRA_RECIPE);
 
-		if(recipeSaved!=null){
-			recipe = recipeSaved;
-			repositionSteps();
-			flagAdapterChanged = true;
-		}
+		writer.setEditingRecipe(editingRecipe);
+		writer.setDelta(Objects.requireNonNull(savedInstanceState.getParcelable(SAVED_DELTA)));
 
-		if(flagAdapterChanged){
-			Log.d(TAG, "onRestoreInstanceState: Recipe: "+recipe);
-			adapter.notifyDataSetChanged();
-		}
+		Log.d(TAG, "onRestoreInstanceState: Recipe: "+editingRecipe);
+		adapter.notifyDataSetChanged();
 	}
 
 	@Override public void onBackPressed(){
-		new AlertDialog.Builder(this)
-				.setTitle("작성중인 레시피를 등록하지 않고 창을 닫으시겠습니까?")
-				.setPositiveButton("예", (dialog, which) -> finish())
-				.setNegativeButton("계속 작성", (dialog, which) -> {})
-				.show();
+		if(writer.getDelta().hasChange())
+			new AlertDialog.Builder(this)
+					.setTitle("작성중인 레시피를 등록하지 않고 창을 닫으시겠습니까?")
+					.setPositiveButton("예", (dialog, which) -> finish())
+					.setNegativeButton("계속 작성", (dialog, which) -> {})
+					.show();
+		else super.onBackPressed();
 	}
-
-	private void repositionSteps(){
-		for(int i = 0; i<recipe.steps().size(); i++){
-			RecipeStep step = recipe.steps().get(i);
-			if(step.getStep()!=i){
-				step.setStep(i);
-				adapter.notifyItemChanged(i+1);
-			}
-		}
-	}
-
-	private boolean validateCover(){
-		RecipeCover cover = recipe.getCover();
-		if(StringsKt.isBlank(cover.getTitle())){
-			Toast.makeText(this, "레시피 타이틀을 입력해 주세요.", Toast.LENGTH_SHORT).show();
-		}else if(!Validate.recipeTitle(cover.getTitle())){
-			Toast.makeText(this, "너무 길거나 사용할 수 없는 타이틀입니다.", Toast.LENGTH_SHORT).show();
-		}else if(cover.getCoverImage()==null){
-			Toast.makeText(this, "레시피 표지 사진을 넣어 주세요.", Toast.LENGTH_SHORT).show();
-		}else return true;
-		return false;
-	}
-
-	private boolean validateStep(int index){
-		RecipeStep step = recipe.steps().get(index);
-		if(StringsKt.isBlank(step.getText())){
-			Toast.makeText(this, "내용을 입력해 주세요.", Toast.LENGTH_SHORT).show();
-		}else if(!Validate.recipeStep(step.getText())){
-			Toast.makeText(this, "너무 길거나 잘못된 내용입니다.", Toast.LENGTH_SHORT).show();
-		}else return true;
-		return false;
-	}
-
-	@Override public Recipe getRecipe(){
-		return recipe;
-	}
-	@Override public void insertStepAt(int index){
-		if(recipe.steps().size() >= Validate.MAX_RECIPE_STEPS){
-			Toast.makeText(WriteRecipeActivity.this, "더 이상 단계를 추가할 수 없습니다.", Toast.LENGTH_SHORT).show();
-			return;
-		}
-		recipe.steps().add(index, new RecipeStep(index, null, "", null));
-		adapter.notifyItemInserted(index+1);
-		repositionSteps();
-		viewPager.setCurrentItem(index+1);
-	}
-	@Override public void deleteStepAt(int index){
-		if(recipe.steps().size()==1){
-			Toast.makeText(WriteRecipeActivity.this, "레시피에는 최소 한 개의 단계가 필요합니다.", Toast.LENGTH_SHORT).show();
-			return;
-		}
-
-		new AlertDialog.Builder(this)
-				.setTitle("정말 삭제하시겠어요?")
-				.setPositiveButton("예", (dialog, which) -> {
-					recipe.steps().remove(index);
-					adapter.notifyItemRemoved(index+1);
-					repositionSteps();
-				})
-				.setNegativeButton("아니오", (dialog, which) -> {})
-				.show();
-	}
-
-	@Override public void setCategory(RecipeCategory category){
-		if(recipe.getCover().getCategory()!=category){
-			recipe.getCover().setCategory(category);
-		}
-	}
-	@Override public void setTitle(String title){
-		recipe.getCover().setTitle(title);
-	}
-	@Override public void setStepText(int index, String text){
-		recipe.steps().get(index).setText(text);
-	}
-	@Override public void setStepTask(int index, @Nullable RecipeTask task){
-		recipe.steps().get(index).setTask(task);
-	}
-
-	@Nullable private Runnable chooseImageCallback;
-
-	private final ActivityResultLauncher<String[]> chooseCoverImage =
-			registerForActivityResult(new OpenDocument(), result -> {
-				if(result!=null){
-					recipe.getCover().setCoverImage(result);
-					if(chooseImageCallback!=null){
-						chooseImageCallback.run();
-						chooseImageCallback = null;
-					}
-				}
-			});
-
-	private int index = -1;
-
-	private final ActivityResultLauncher<String[]> chooseStepImage =
-			registerForActivityResult(new OpenDocument(), result -> {
-				if(result!=null){
-					if(index >= 0){
-						recipe.steps().get(index).setImage(result);
-						index = -1;
-						if(chooseImageCallback!=null){
-							chooseImageCallback.run();
-							chooseImageCallback = null;
-						}
-					}else Log.w(TAG, "잘못된 RecipeStep index "+index);
-				}
-			});
-
-	@Override public void chooseCoverImage(Runnable onSucceed){
-		chooseImageCallback = onSucceed;
-		chooseCoverImage.launch(IMAGE_MIME_TYPE);
-	}
-	@Override public void chooseStepImage(int index, Runnable onSucceed){
-		chooseImageCallback = onSucceed;
-		this.index = index;
-		chooseStepImage.launch(IMAGE_MIME_TYPE);
-	}
-
 
 	private void redrawInfo(){
 		int currentItem = viewPager.getCurrentItem();
@@ -342,7 +269,7 @@ public class WriteRecipeActivity extends AppCompatActivity implements RecipeWrit
 
 		// LINE 2
 
-		stb.append('\n').append(recipe.steps().size()).append(" Steps");
+		stb.append('\n').append(writer.getDelta().steps().size()).append(" Steps");
 
 		textViewInfo.setText(stb.toString());
 	}

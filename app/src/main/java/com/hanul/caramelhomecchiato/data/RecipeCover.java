@@ -51,6 +51,18 @@ public final class RecipeCover implements Parcelable{
 		this.averageRating = averageRating;
 		this.yourRating = yourRating;
 	}
+	public RecipeCover(RecipeCover cover){
+		this.id = cover.id;
+		this.category = cover.category;
+		this.title = cover.title;
+		this.coverImage = cover.coverImage;
+		this.author = cover.author;
+		this.postDate = cover.postDate;
+		this.lastEditDate = cover.lastEditDate;
+		this.ratings = cover.ratings;
+		this.averageRating = cover.averageRating;
+		this.yourRating = cover.yourRating;
+	}
 	protected RecipeCover(Parcel in){
 		id = in.readInt();
 		category = (RecipeCategory)in.readSerializable();
