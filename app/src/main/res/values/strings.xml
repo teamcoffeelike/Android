@@ -61,4 +61,5 @@
 	<string name="description_profile_image">프로필 사진</string>
 	<string name="description_post_option">포스트 옵션</string>
 	<string name="description_recipe_category_icon">레시피 카테고리 아이콘</string>
+	<string name="n_temperature">%d ℃</string>
 </resources>

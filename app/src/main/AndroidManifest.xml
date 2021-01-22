@@ -25,6 +25,11 @@
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="18" />
 
+    <!--BLUETOOTH : 커넥션 요구, 커넥션 수락, 데이터 전송 등의 블루투스 통신을 하기 위해 필요한 권한
+    BLUETOOTH_ADMIN : 디바이스 검색 시작, 블루투스 설정을 조작하기 위해 필요-->
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+
     <queries>
 
         <!-- WebView -->
@@ -92,6 +97,7 @@
         <activity android:name=".activity.SettingsActivity" />
         <activity android:name=".activity.WritePostActivity" />
         <activity android:name=".activity.WriteRecipeActivity" />
+        <activity android:name=".activity.WarmerActivity"/>
         <activity android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
