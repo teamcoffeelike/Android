@@ -6,11 +6,10 @@
 	android:layout_height="match_parent"
 	android:background="@color/OrangeYellowCrayola">
 
-	<ScrollView
+	<androidx.core.widget.NestedScrollView
 		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:orientation="vertical"
-		app:layout_constraintTop_toTopOf="parent">
+		android:layout_height="match_parent"
+		android:orientation="vertical">
 
 		<LinearLayout
 			android:layout_width="match_parent"
@@ -23,7 +22,7 @@
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:layout_gravity="center"
-				android:background="@drawable/placeholder_user_box">
+				android:background="@drawable/user_box_background">
 
 				<RatingBar
 					android:id="@+id/ratingBar"
@@ -45,8 +44,8 @@
 					style="@style/Widget.AppCompat.Button.Borderless"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
-					android:text="평가 삭제"
-					android:textColor="@color/VanDykeBrown"
+					android:text="@string/remove_rating"
+					android:textColor="@color/white"
 					app:layout_constraintBottom_toBottomOf="parent"
 					app:layout_constraintStart_toStartOf="parent"
 					app:layout_constraintTop_toBottomOf="@id/ratingBar" />
@@ -56,8 +55,8 @@
 					style="@style/Widget.AppCompat.Button.Borderless"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
-					android:text="평가하기"
-					android:textColor="@color/VanDykeBrown"
+					android:text="@string/rate"
+					android:textColor="@color/white"
 					app:layout_constraintBottom_toBottomOf="parent"
 					app:layout_constraintEnd_toEndOf="parent"
 					app:layout_constraintTop_toBottomOf="@id/ratingBar" />
@@ -65,47 +64,46 @@
 			</androidx.constraintlayout.widget.ConstraintLayout>
 
 			<LinearLayout
-				android:id="@+id/recipeByUserLayout"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:layout_gravity="center"
-				android:layout_marginHorizontal="20dp"
-				android:layout_marginTop="20dp"
-				android:background="@drawable/placeholder_user_box"
+				android:layout_marginHorizontal="10dp"
+				android:layout_marginTop="40dp"
+				android:background="@drawable/user_box_background"
 				android:orientation="vertical">
 
 				<TextView
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
-					android:layout_marginHorizontal="20dp"
-					android:layout_marginTop="20dp"
-					android:text="같은 유저의 레시피"
-					android:textColor="@color/VanDykeBrown" />
+					android:layout_marginHorizontal="10dp"
+					android:layout_marginTop="15dp"
+					android:layout_marginBottom="10dp"
+					android:text="@string/recipes_by_same_user"
+					android:textColor="@color/white" />
 
-				<LinearLayout
+				<FrameLayout
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
-					android:layout_marginHorizontal="10dp"
 					android:layout_marginTop="5dp"
 					android:layout_marginBottom="10dp"
-					android:background="@drawable/placeholder_user_box"
+					android:background="@drawable/user_box_background"
 					android:orientation="vertical">
 
 					<include layout="@layout/view_user" />
 
-					<androidx.recyclerview.widget.RecyclerView
-						android:id="@+id/recyclerViewOtherRecipes"
-						android:layout_width="match_parent"
-						android:layout_height="wrap_content"
-						android:layout_marginHorizontal="10dp"
-						android:layout_marginBottom="20dp" />
+				</FrameLayout>
 
-				</LinearLayout>
+				<androidx.recyclerview.widget.RecyclerView
+					android:id="@+id/recyclerViewOtherRecipes"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:background="@drawable/user_box_background"
+					android:nestedScrollingEnabled="false"
+					android:padding="10dp" />
 
 			</LinearLayout>
 
 		</LinearLayout>
 
-	</ScrollView>
+	</androidx.core.widget.NestedScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -110,7 +110,7 @@ public class SimpleRecipeWriter implements RecipeWriter{
 		deleteStep(index);
 	}
 	protected void deleteStep(int index){
-		delta.steps().remove(index);
+		delta.removeStep(index);
 	}
 
 	@Override public void setCategory(RecipeCategory category){

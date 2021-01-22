@@ -14,12 +14,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.Lifecycle;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.gson.JsonObject;
 import com.hanul.caramelhomecchiato.R;
 import com.hanul.caramelhomecchiato.data.Recipe;
+import com.hanul.caramelhomecchiato.event.RecipeDeleteEvent;
+import com.hanul.caramelhomecchiato.event.RecipeEditEvent;
+import com.hanul.caramelhomecchiato.event.Ticket;
 import com.hanul.caramelhomecchiato.fragment.RecipeCoverFragment;
 import com.hanul.caramelhomecchiato.fragment.RecipeRateFragment;
 import com.hanul.caramelhomecchiato.fragment.RecipeStepFragment;
@@ -45,7 +49,7 @@ public class RecipeActivity extends AppCompatActivity{
 	private ViewPager2 viewPager;
 	private TextView textViewIndex;
 
-	private PagerAdapter adapter;
+	private RecipePageAdapter adapter;
 
 	@Nullable private Recipe recipe;
 
@@ -53,11 +57,15 @@ public class RecipeActivity extends AppCompatActivity{
 
 	private final SpinnerHandler spinnerHandler = new SpinnerHandler(this);
 
+	private Ticket recipeEditTicket;
+	private boolean needsUpdate = true;
+
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
+
+		setTheme(R.style.DarkStatusBarTheme);
 		setContentView(R.layout.activity_recipe);
-		setTheme(R.style.RecipeTheme);
 
 		if(savedInstanceState!=null){
 			indexCache = savedInstanceState.getInt(SAVED_INDEX_CACHE, -1);
@@ -66,11 +74,18 @@ public class RecipeActivity extends AppCompatActivity{
 		recipeId = getIntent().getIntExtra(EXTRA_RECIPE_ID, 0);
 		if(recipeId==0) throw new IllegalStateException("RecipeActivity에 recipeId 제공되지 않음");
 
+		recipeEditTicket = RecipeEditEvent.subscribe(recipeId, id -> {
+			needsUpdate = true;
+			if(getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.RESUMED)){
+				update();
+			}
+		});
+
 		viewPager = findViewById(R.id.viewPager);
 		textViewIndex = findViewById(R.id.textViewIndex);
 		View buttonOption = findViewById(R.id.buttonOption);
 
-		adapter = new PagerAdapter(this);
+		adapter = new RecipePageAdapter(this);
 		viewPager.setAdapter(adapter);
 
 		viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback(){
@@ -81,7 +96,6 @@ public class RecipeActivity extends AppCompatActivity{
 				}
 			}
 		});
-
 
 		PopupMenu popupMenu = new PopupMenu(this, buttonOption);
 		popupMenu.getMenuInflater().inflate(R.menu.recipe_option_menu, popupMenu.getMenu());
@@ -114,35 +128,43 @@ public class RecipeActivity extends AppCompatActivity{
 
 	@Override protected void onResume(){
 		super.onResume();
-		spinnerHandler.show();
-		RecipeService.INSTANCE.recipe(recipeId).enqueue(new BaseCallback(){
-			@Override public void onSuccessfulResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response, @NonNull JsonObject result){
-				setRecipe(NetUtils.GSON.fromJson(result, Recipe.class));
-				spinnerHandler.dismiss();
-			}
-			@Override public void onErrorResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response, @NonNull String error){
-				Log.e(TAG, "recipe: "+error);
-				error();
-			}
-			@Override public void onFailedResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response){
-				Log.e(TAG, "recipe: "+response.errorBody());
-				error();
-			}
-			@Override public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t){
-				Log.e(TAG, "recipe: ", t);
-				error();
-			}
+		update();
+	}
 
-			private void error(){
-				Toast.makeText(RecipeActivity.this, "레시피를 불러오는 도중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
-				spinnerHandler.dismiss();
-			}
-		});
+	private void update(){
+		if(needsUpdate){
+			needsUpdate = false;
+			spinnerHandler.show();
+			RecipeService.INSTANCE.recipe(recipeId).enqueue(new BaseCallback(){
+				@Override public void onSuccessfulResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response, @NonNull JsonObject result){
+					setRecipe(NetUtils.GSON.fromJson(result, Recipe.class));
+					spinnerHandler.dismiss();
+				}
+				@Override public void onErrorResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response, @NonNull String error){
+					Log.e(TAG, "recipe: "+error);
+					error();
+				}
+				@Override public void onFailedResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response){
+					Log.e(TAG, "recipe: "+response.errorBody());
+					error();
+				}
+				@Override public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t){
+					Log.e(TAG, "recipe: ", t);
+					error();
+				}
+
+				private void error(){
+					Toast.makeText(RecipeActivity.this, "레시피를 불러오는 도중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
+					spinnerHandler.dismiss();
+				}
+			});
+		}
 	}
 
 	private void setRecipe(Recipe recipe){
 		this.recipe = recipe;
-		adapter.notifyDataSetChanged();
+		adapter = new RecipePageAdapter(this);
+		viewPager.setAdapter(adapter); // 걍 버려 시발
 		if(indexCache >= 0&&indexCache<adapter.getItemCount()){
 			viewPager.setCurrentItem(indexCache);
 		}
@@ -156,13 +178,15 @@ public class RecipeActivity extends AppCompatActivity{
 	private void delete(){
 		Recipe recipe = this.recipe;
 		if(recipe==null) return;
+		int id = recipe.getCover().getId();
 		new AlertDialog.Builder(this)
 				.setTitle("정말 삭제하시겠습니까?")
 				.setPositiveButton("예", (dialog, which) -> {
 					spinnerHandler.show();
-					RecipeService.INSTANCE.deleteRecipe(recipe.getCover().getId()).enqueue(new BaseCallback(){
+					RecipeService.INSTANCE.deleteRecipe(id).enqueue(new BaseCallback(){
 						@Override public void onSuccessfulResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response, @NonNull JsonObject result){
 							Toast.makeText(RecipeActivity.this, "레시피를 삭제했습니다.", Toast.LENGTH_SHORT).show();
+							RecipeDeleteEvent.dispatch(id);
 							finish();
 						}
 						@Override public void onErrorResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response, @NonNull String error){
@@ -189,8 +213,8 @@ public class RecipeActivity extends AppCompatActivity{
 	}
 
 
-	private final class PagerAdapter extends FragmentStateAdapter{
-		public PagerAdapter(@NonNull FragmentActivity fragmentActivity){
+	private final class RecipePageAdapter extends FragmentStateAdapter{
+		public RecipePageAdapter(@NonNull FragmentActivity fragmentActivity){
 			super(fragmentActivity);
 		}
 

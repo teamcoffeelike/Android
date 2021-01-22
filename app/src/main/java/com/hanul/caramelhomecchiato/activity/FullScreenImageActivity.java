@@ -3,8 +3,6 @@ package com.hanul.caramelhomecchiato.activity;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,9 +18,7 @@ public class FullScreenImageActivity extends AppCompatActivity{
 	protected void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
+		setTheme(R.style.FullScreenTheme);
 		setContentView(R.layout.activity_full_screen_image);
 
 		Parcelable uri = getIntent().getParcelableExtra(EXTRA_IMAGE_URI);

@@ -14,7 +14,11 @@
 		<!-- Customize your theme here. -->
 	</style>
 
-	<style name="RecipeTheme" parent="Theme.CaramelHOMEcchiato">
+	<style name="DarkStatusBarTheme" parent="Theme.CaramelHOMEcchiato">
+		<item name="android:statusBarColor">@android:color/black</item>
+	</style>
+
+	<style name="FullScreenTheme" parent="Theme.CaramelHOMEcchiato">
 		<item name="android:windowTranslucentStatus">true</item>
 		<item name="android:windowTranslucentNavigation">true</item>
 	</style>

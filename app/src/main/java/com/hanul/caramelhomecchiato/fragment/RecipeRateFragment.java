@@ -70,10 +70,9 @@ public class RecipeRateFragment extends Fragment{
 		ratingBar = view.findViewById(R.id.ratingBar);
 		buttonRemoveRating = view.findViewById(R.id.buttonRemoveRating);
 		Button buttonSubmitRating = view.findViewById(R.id.buttonSubmitRating);
-		View recipeByUserLayout = view.findViewById(R.id.recipeByUserLayout);
 		RecyclerView recyclerViewOtherRecipes = view.findViewById(R.id.recyclerViewOtherRecipes);
 
-		userViewHandler = new UserViewHandler(view);
+		userViewHandler = new UserViewHandler(view).setNameColor(0xFFFFFFFF);
 
 		buttonRemoveRating.setOnClickListener(v -> {
 			RecipeService.INSTANCE.deleteRecipeRating(recipe.getCover().getId()).enqueue(new BaseCallback(){
@@ -118,14 +117,10 @@ public class RecipeRateFragment extends Fragment{
 		backgroundLayout.setBackgroundColor(ContextCompat.getColor(requireContext(), recipe.getCover().getCategory().getColor()));
 
 		User author = recipe.getCover().getAuthor();
-		//if(author.getId()==Auth.getInstance().expectLoginUser()){
-		//	recipeByUserLayout.setVisibility(View.GONE);
-		//}else{
 		userViewHandler.setUser(author);
-		//}
 
 		simpleRecipeAdapter = new SimpleRecipeAdapter();
-		recyclerViewOtherRecipes.setLayoutManager(new LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false));
+		recyclerViewOtherRecipes.setLayoutManager(new LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false));
 		recyclerViewOtherRecipes.setAdapter(simpleRecipeAdapter);
 
 		updateRatingWidget();
@@ -139,13 +134,14 @@ public class RecipeRateFragment extends Fragment{
 
 	@Override public void onResume(){
 		super.onResume();
-		RecipeService.INSTANCE.recipeList(null, 6, null, recipe.getCover().getAuthor().getId()).enqueue(new BaseCallback(){
+		RecipeService.INSTANCE.recipeList(null, 10, null, recipe.getCover().getAuthor().getId()).enqueue(new BaseCallback(){
 			@Override public void onSuccessfulResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response, @NonNull JsonObject result){
 				List<RecipeCover> elements = simpleRecipeAdapter.elements();
 				elements.clear();
 
 				for(JsonElement e : result.get("recipes").getAsJsonArray()){
-					elements.add(NetUtils.GSON.fromJson(e, RecipeCover.class));
+					RecipeCover cover = NetUtils.GSON.fromJson(e, RecipeCover.class);
+					if(cover.getId()!=recipe.getCover().getId()) elements.add(cover);
 				}
 
 				simpleRecipeAdapter.notifyDataSetChanged();

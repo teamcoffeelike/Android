@@ -159,6 +159,7 @@ public class WriteRecipeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 		private final View addNextStepLayout;
 		private final View textViewDeleteImage;
 		private final View textViewRevertImage;
+		private final TextView textViewDebug;
 
 		private int index = -1;
 
@@ -173,6 +174,7 @@ public class WriteRecipeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 			removeStepLayout = itemView.findViewById(R.id.removeStepLayout);
 			textViewDeleteImage = itemView.findViewById(R.id.textViewDeleteImage);
 			textViewRevertImage = itemView.findViewById(R.id.textViewRevertImage);
+			textViewDebug = itemView.findViewById(R.id.textViewDebug);
 
 			imageView.setOnClickListener(v -> {
 				if(this.index!=-1){
@@ -218,6 +220,7 @@ public class WriteRecipeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
 		protected void bind(int index){
 			this.index = index;
+			textViewDebug.setText(Integer.toString(index));
 
 			updateImage();
 

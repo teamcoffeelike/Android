@@ -9,6 +9,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.ComponentActivity;
+import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -18,10 +19,10 @@ import com.google.gson.JsonObject;
 import com.hanul.caramelhomecchiato.R;
 import com.hanul.caramelhomecchiato.activity.ProfileActivity;
 import com.hanul.caramelhomecchiato.data.User;
+import com.hanul.caramelhomecchiato.event.FollowingEvent;
 import com.hanul.caramelhomecchiato.event.Ticket;
 import com.hanul.caramelhomecchiato.network.UserService;
 import com.hanul.caramelhomecchiato.util.BaseCallback;
-import com.hanul.caramelhomecchiato.event.FollowingEvent;
 import com.hanul.caramelhomecchiato.util.GlideUtils;
 import com.hanul.caramelhomecchiato.util.SignatureManagers;
 import com.hanul.caramelhomecchiato.widget.FollowButton;
@@ -41,6 +42,8 @@ public class UserViewHandler{
 
 	@Nullable private User user;
 	@Nullable private Ticket ticket;
+
+	@Nullable @ColorInt private Integer color;
 
 	public UserViewHandler(ComponentActivity activity){
 		this(activity,
@@ -105,6 +108,11 @@ public class UserViewHandler{
 		});
 	}
 
+	public UserViewHandler setNameColor(@ColorInt int color){
+		this.color = color;
+		return this;
+	}
+
 	@Nullable public User getUser(){
 		return this.user;
 	}
@@ -123,6 +131,7 @@ public class UserViewHandler{
 					.into(imageViewProfile);
 
 			textViewUserName.setText(user.getName());
+			if(color!=null) textViewUserName.setTextColor(color);
 
 			if(subscribeFollowEvent) subscribeFollowEvent();
 		}

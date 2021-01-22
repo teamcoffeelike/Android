@@ -8,12 +8,13 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.hanul.caramelhomecchiato.R;
-import com.hanul.caramelhomecchiato.adapter.RecipeAdapter;
+import com.hanul.caramelhomecchiato.adapter.RecipeListAdapter;
 import com.hanul.caramelhomecchiato.data.RecipeCategory;
 import com.hanul.caramelhomecchiato.data.RecipeCover;
 import com.hanul.caramelhomecchiato.event.FollowingEvent;
@@ -29,10 +30,11 @@ public class RecipeListActivity extends AppCompatActivity implements AbstractScr
 	public static final String EXTRA_RECIPE_CATEGORY = "recipeCategory";
 	public static final String EXTRA_AUTHOR = "author";
 
+	private View root;
 	private TextView textViewError;
 	private View endOfList;
 
-	private RecipeAdapter recipeAdapter;
+	private RecipeListAdapter recipeListAdapter;
 
 	@Nullable private RecipeCategory category;
 	@Nullable private Integer author;
@@ -44,6 +46,8 @@ public class RecipeListActivity extends AppCompatActivity implements AbstractScr
 	@Override
 	protected void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
+
+		setTheme(R.style.DarkStatusBarTheme);
 		setContentView(R.layout.activity_recipe_list);
 
 		//레시피 카테고리 프래그먼트의 인텐트를 받아서 Parcelable 객체 저장
@@ -55,8 +59,11 @@ public class RecipeListActivity extends AppCompatActivity implements AbstractScr
 		}
 		Log.d(TAG, "onCreate: Category = "+category+", author = "+author);
 
+		root = findViewById(R.id.root);
 		textViewError = findViewById(R.id.textViewError);
 		endOfList = findViewById(R.id.endOfList);
+
+		root.setBackgroundColor(ContextCompat.getColor(this, category.getColor()));
 
 		NestedScrollView scrollView = findViewById(R.id.scrollView);
 		scrollView.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener)(v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
@@ -73,28 +80,28 @@ public class RecipeListActivity extends AppCompatActivity implements AbstractScr
 		recyclerView.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
 
 		//레시피 어댑터 데이터 가져오기
-		recipeAdapter = new RecipeAdapter();
-		recyclerView.setAdapter(recipeAdapter);
+		recipeListAdapter = new RecipeListAdapter();
+		recyclerView.setAdapter(recipeListAdapter);
 	}
 
 	@Override protected void onResume(){
 		super.onResume();
-		recipeScrollHandler.enqueue(recipeAdapter.elements().isEmpty());
+		recipeScrollHandler.enqueue(recipeListAdapter.elements().isEmpty());
 	}
 
 	@Override public void append(List<RecipeCover> recipes, boolean endOfList, boolean reset){
 		for(RecipeCover r : recipes){
 			FollowingEvent.dispatch(r.getAuthor());
 		}
-		List<RecipeCover> elements = recipeAdapter.elements();
+		List<RecipeCover> elements = recipeListAdapter.elements();
 		if(reset){
 			elements.clear();
 			elements.addAll(recipes);
-			recipeAdapter.notifyDataSetChanged();
+			recipeListAdapter.notifyDataSetChanged();
 		}else{
 			int size = elements.size();
 			elements.addAll(recipes);
-			recipeAdapter.notifyItemRangeInserted(size, recipes.size());
+			recipeListAdapter.notifyItemRangeInserted(size, recipes.size());
 		}
 		textViewError.setVisibility(View.GONE);
 		this.endOfList.setVisibility(endOfList ? View.VISIBLE : View.GONE);

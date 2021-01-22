@@ -96,12 +96,12 @@ public final class RecipeDelta implements Parcelable{
 	public boolean hasChange(){
 		if(id!=null&&category!=null) return true;
 		if(isCoverImageEdited()) return true;
-		if(title!=null) return true;
+		if(title!=null&&!title.isEmpty()) return true;
 		if(removedSteps!=null&&!removedSteps.isEmpty()) return true;
 		for(int i = 0; i<steps.size(); i++){
 			RecipeStepDelta step = steps.get(i);
 			if(step.isImageEdited()) return true;
-			if(step.getText()!=null) return true;
+			if(step.getText()!=null&&!step.getText().isEmpty()) return true;
 			if(step.getOriginalStep()!=null&&step.getOriginalStep()!=i) return true;
 		}
 		return false;
@@ -113,6 +113,7 @@ public final class RecipeDelta implements Parcelable{
 	 * @return 에러
 	 */
 	@Nullable public RecipeWriteError validate(){
+		if(coverImage.isEmpty()) return new RecipeWriteError("레시피 표지 이미지를 선택해 주세요.");
 		if(id==null){
 			//초기 작성 시
 			if(category==null) return new RecipeWriteError("레시피 카테고리를 선택해 주세요.");
@@ -123,7 +124,6 @@ public final class RecipeDelta implements Parcelable{
 			if(!Validate.recipeTitle(title)) return new RecipeWriteError("너무 길거나 사용할 수 없는 타이틀입니다.");
 		}
 
-		if(coverImage.isEmpty()) return new RecipeWriteError("레시피 표지 이미지를 선택해 주세요.");
 		if(steps.size()<1) return new RecipeWriteError("레시피에는 적어도 한 페이지가 필요합니다.");
 		if(steps.size()>Validate.MAX_RECIPE_STEPS) return new RecipeWriteError("레시피의 페이지가 너무 많습니다.");
 		for(int i = 0; i<steps.size(); i++){

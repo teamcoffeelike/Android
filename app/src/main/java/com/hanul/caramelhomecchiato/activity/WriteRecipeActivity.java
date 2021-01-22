@@ -25,6 +25,7 @@ import com.hanul.caramelhomecchiato.data.Recipe;
 import com.hanul.caramelhomecchiato.data.RecipeCategory;
 import com.hanul.caramelhomecchiato.data.RecipeDelta;
 import com.hanul.caramelhomecchiato.data.RecipeWriteError;
+import com.hanul.caramelhomecchiato.event.RecipeEditEvent;
 import com.hanul.caramelhomecchiato.network.RecipeService;
 import com.hanul.caramelhomecchiato.util.RecipeEditorEncoder;
 import com.hanul.caramelhomecchiato.util.SimpleRecipeWriter;
@@ -86,6 +87,8 @@ public class WriteRecipeActivity extends AppCompatActivity{
 		@Override protected void insertStep(int index){
 			super.insertStep(index);
 			adapter.notifyItemInserted(index+1);
+			int after = adapter.getItemCount()-(index+2);
+			if(after>0) adapter.notifyItemRangeChanged(index+2, after);
 			viewPager.setCurrentItem(index+1);
 		}
 		@Override protected void deleteStep(int index){
@@ -94,6 +97,8 @@ public class WriteRecipeActivity extends AppCompatActivity{
 					.setPositiveButton("예", (dialog, which) -> {
 						super.deleteStep(index);
 						adapter.notifyItemRemoved(index+1);
+						int after = adapter.getItemCount()-(index+1);
+						if(after>0) adapter.notifyItemRangeChanged(index+1, after);
 					})
 					.setNegativeButton("아니오", (dialog, which) -> {})
 					.show();
@@ -108,7 +113,7 @@ public class WriteRecipeActivity extends AppCompatActivity{
 			chooseStepImage.launch(IMAGE_MIME_TYPE);
 		}
 		@Override protected void error(String message){
-			super.error(message);
+			Toast.makeText(WriteRecipeActivity.this, message, Toast.LENGTH_SHORT).show();
 		}
 	};
 	private final SpinnerHandler spinnerHandler = new SpinnerHandler(this);
@@ -116,6 +121,8 @@ public class WriteRecipeActivity extends AppCompatActivity{
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
+
+		setTheme(R.style.DarkStatusBarTheme);
 		setContentView(R.layout.activity_write_recipe);
 
 		viewPager = findViewById(R.id.viewPager);
@@ -167,16 +174,16 @@ public class WriteRecipeActivity extends AppCompatActivity{
 
 		buttonSubmit.setOnClickListener(v -> {
 			RecipeDelta delta = writer.getDelta();
-			if(!delta.hasChange()){
-				finish();
-				return;
-			}
-			Log.d(TAG, "onCreate: "+delta);
 
 			RecipeWriteError recipeWriteError = delta.validate();
 			if(recipeWriteError!=null){
 				Toast.makeText(this, recipeWriteError.getMessage(), Toast.LENGTH_SHORT).show();
 				viewPager.setCurrentItem(recipeWriteError.getStepIndex()==null ? 0 : recipeWriteError.getStepIndex()+1);
+				return;
+			}
+
+			if(!delta.hasChange()){
+				finish();
 				return;
 			}
 
@@ -204,7 +211,11 @@ public class WriteRecipeActivity extends AppCompatActivity{
 							String error = body.get("error").getAsString();
 							Log.e(TAG, "writeRecipe: "+error);
 						}else{
-							finish();
+							int id = body.get("id").getAsInt();
+							ContextCompat.getMainExecutor(this).execute(() -> {
+								RecipeEditEvent.dispatch(id);
+								finish();
+							});
 							return;
 						}
 					}else{
@@ -222,7 +233,7 @@ public class WriteRecipeActivity extends AppCompatActivity{
 		});
 
 		if(editingPage>0&&editingPage<adapter.getItemCount()){
-			viewPager.setCurrentItem(editingPage);
+			viewPager.setCurrentItem(editingPage, false);
 		}
 	}
 

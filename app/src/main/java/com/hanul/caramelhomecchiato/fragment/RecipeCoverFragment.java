@@ -1,6 +1,7 @@
 package com.hanul.caramelhomecchiato.fragment;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -20,6 +21,7 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.hanul.caramelhomecchiato.R;
 import com.hanul.caramelhomecchiato.activity.FullScreenImageActivity;
 import com.hanul.caramelhomecchiato.data.Recipe;
+import com.hanul.caramelhomecchiato.data.RecipeCover;
 import com.hanul.caramelhomecchiato.util.GlideUtils;
 import com.hanul.caramelhomecchiato.util.lifecyclehandler.UserViewHandler;
 
@@ -45,16 +47,18 @@ public class RecipeCoverFragment extends Fragment{
 			throw new IllegalStateException("RecipeCoverFragment에 Recipe 제공되지 않음");
 
 		Recipe recipe = (Recipe)recipeArg;
+		RecipeCover cover = recipe.getCover();
 
 		View backgroundLayout = view.findViewById(R.id.backgroundLayout);
 		TextView textViewTitle = view.findViewById(R.id.textViewTitle);
 		ImageView imageViewCover = view.findViewById(R.id.imageViewCover);
+		ImageView imageViewCategoryIcon = view.findViewById(R.id.imageViewCategoryIcon);
 
-		backgroundLayout.setBackgroundColor(ContextCompat.getColor(requireContext(), recipe.getCover().getCategory().getColor()));
+		backgroundLayout.setBackgroundColor(ContextCompat.getColor(requireContext(), cover.getCategory().getColor()));
 
-		textViewTitle.setText(recipe.getCover().getTitle());
+		textViewTitle.setText(cover.getTitle());
 
-		Uri photo = recipe.getCover().getCoverImage();
+		Uri photo = cover.getCoverImage();
 
 		Glide.with(this)
 				.load(photo)
@@ -67,8 +71,15 @@ public class RecipeCoverFragment extends Fragment{
 			});
 		}
 
-		userViewHandler = new UserViewHandler(view);
-		userViewHandler.setUser(recipe.getCover().getAuthor());
+		userViewHandler = new UserViewHandler(view).setNameColor(0xFFFFFFFF);
+		userViewHandler.setUser(cover.getAuthor());
+
+		imageViewCategoryIcon.setImageResource(cover.getCategory().getIcon());
+		imageViewCategoryIcon.setBackgroundTintList(new ColorStateList(
+				new int[][]{new int[0]},
+				new int[]{
+						ContextCompat.getColor(requireContext(), cover.getCategory().getColor())
+				}));
 
 		return view;
 	}

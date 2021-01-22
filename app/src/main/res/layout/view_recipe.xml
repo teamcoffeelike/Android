@@ -3,18 +3,21 @@
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
-	android:layout_marginTop="10dp"
+	android:background="@color/Asparagus"
 	android:orientation="vertical">
 
 	<androidx.constraintlayout.widget.ConstraintLayout
 		android:layout_width="match_parent"
-		android:layout_height="match_parent">
+		android:layout_height="match_parent"
+		android:background="@color/white"
+		android:translationZ="5dp">
 
 		<ImageView
 			android:id="@+id/imageViewRecipe"
 			android:layout_width="match_parent"
 			android:layout_height="300dp"
 			android:background="@color/empty_attachment"
+			android:contentDescription="@string/description_recipe_image"
 			android:scaleType="centerCrop"
 			app:layout_constraintBottom_toBottomOf="parent"
 			app:layout_constraintEnd_toEndOf="parent"
@@ -56,39 +59,108 @@
 
 	</androidx.constraintlayout.widget.ConstraintLayout>
 
-	<androidx.constraintlayout.widget.ConstraintLayout
+	<LinearLayout
 		android:layout_width="match_parent"
-		android:layout_height="wrap_content">
-
-		<TextView
-			android:id="@+id/textViewRecipeTitle"
-			android:layout_width="0dp"
-			android:layout_height="wrap_content"
-			android:layout_marginHorizontal="20dp"
-			android:layout_marginTop="8dp"
-			android:maxLines="2"
-			android:text="@string/very_long_text"
-			android:textColor="@color/VanDykeBrown"
-			android:textSize="18sp"
-			app:layout_constraintEnd_toEndOf="parent"
-			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toTopOf="parent" />
+		android:layout_height="wrap_content"
+		android:clipChildren="false"
+		android:orientation="vertical">
 
 		<View
-			android:id="@+id/view"
-			android:layout_width="0dp"
-			android:layout_height="5dp"
-			app:layout_constraintBottom_toBottomOf="@id/textViewRecipeTitle"
-			app:layout_constraintStart_toStartOf="parent" />
+			style="@style/Divider.Horizontal"
+			android:layout_height="20dp"
+			android:background="#40000000"
+			android:elevation="5dp" />
 
-		<include
-			layout="@layout/view_user"
+		<androidx.constraintlayout.widget.ConstraintLayout
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			app:layout_constraintTop_toTopOf="@id/view" />
+			android:background="@color/white"
+			android:clipChildren="false"
+			android:elevation="5dp"
+			app:layout_constraintTop_toTopOf="parent">
+
+			<FrameLayout
+				android:id="@+id/frameLayout"
+				android:layout_width="40dp"
+				android:layout_height="40dp"
+				android:layout_marginStart="5dp"
+				android:layout_marginTop="5dp"
+				android:clipChildren="false"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintTop_toTopOf="parent">
+
+				<ImageView
+					android:id="@+id/imageViewCategoryIcon"
+					android:layout_width="130dp"
+					android:layout_height="130dp"
+					android:layout_gravity="center"
+					android:background="@drawable/icon_background_40dp"
+					android:backgroundTint="@color/Asparagus"
+					android:contentDescription="@string/description_recipe_category_icon"
+					android:elevation="10dp"
+					android:src="@drawable/tea" />
+
+			</FrameLayout>
+
+			<TextView
+				android:id="@+id/textViewRecipeTitle"
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:layout_marginStart="100dp"
+				android:layout_marginEnd="10dp"
+				android:gravity="center|start"
+				android:maxLines="2"
+				android:minLines="2"
+				android:text="@string/description_logo"
+				android:textColor="@color/VanDykeBrown"
+				android:textSize="18sp"
+				app:layout_constraintBottom_toBottomOf="parent"
+				app:layout_constraintEnd_toStartOf="@+id/buttonRecipeOption"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintTop_toTopOf="parent" />
+
+			<ImageButton
+				android:id="@+id/buttonRecipeOption"
+				style="?android:attr/borderlessButtonStyle"
+				android:layout_width="30dp"
+				android:layout_height="wrap_content"
+				android:layout_marginEnd="8dp"
+				android:contentDescription="@string/description_recipe_option"
+				android:src="@drawable/ic_button"
+				android:tint="@color/VanDykeBrown"
+				app:layout_constraintBottom_toBottomOf="parent"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintTop_toTopOf="parent"
+				app:layout_goneMarginEnd="0dp" />
+
+		</androidx.constraintlayout.widget.ConstraintLayout>
+
+	</LinearLayout>
+
+	<androidx.constraintlayout.widget.ConstraintLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:clipChildren="false">
+
+		<FrameLayout
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_margin="10dp"
+			android:background="@drawable/user_box_background"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="parent">
+
+			<include
+				layout="@layout/view_user"
+				android:layout_width="match_parent"
+				android:layout_height="60dp"
+				android:layout_gravity="center"
+				android:layout_marginEnd="8dp" />
+
+		</FrameLayout>
 
 	</androidx.constraintlayout.widget.ConstraintLayout>
-
-	<View style="@style/Divider.Horizontal" />
 
 </LinearLayout>

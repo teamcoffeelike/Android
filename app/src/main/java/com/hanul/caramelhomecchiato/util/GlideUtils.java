@@ -20,6 +20,7 @@ public final class GlideUtils{
 	private static RequestOptions postImage;
 	private static RequestOptions fullScreenPostImage;
 	private static RequestOptions recipeCover;
+	private static RequestOptions recipeCoverNoCenterCrop;
 
 	public static void init(Application app){
 		Context ctx = app.getApplicationContext();
@@ -52,6 +53,11 @@ public final class GlideUtils{
 				.fallback(emptyAttachment)
 				.error(emptyAttachment)
 				.centerCrop();
+
+		recipeCoverNoCenterCrop = new RequestOptions()
+				.placeholder(emptyAttachment)
+				.fallback(emptyAttachment)
+				.error(emptyAttachment);
 	}
 
 	public static RequestOptions profileImage(){
@@ -68,5 +74,9 @@ public final class GlideUtils{
 
 	public static RequestOptions recipeCover(){
 		return Objects.requireNonNull(recipeCover);
+	}
+
+	public static RequestOptions recipeCoverNoCenterCrop(){
+		return Objects.requireNonNull(recipeCoverNoCenterCrop);
 	}
 }

@@ -29,36 +29,71 @@
 
 	</androidx.constraintlayout.widget.ConstraintLayout>
 
-	<androidx.constraintlayout.widget.ConstraintLayout
+	<LinearLayout
 		android:layout_width="0dp"
 		android:layout_height="0dp"
-		android:paddingHorizontal="10dp"
+		android:orientation="vertical"
 		app:layout_constraintBottom_toBottomOf="parent"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toEndOf="@id/imageLayout"
 		app:layout_constraintTop_toTopOf="parent">
 
-		<TextView
-			android:id="@+id/textViewTitle"
+		<androidx.constraintlayout.widget.ConstraintLayout
 			android:layout_width="match_parent"
-			android:layout_height="100dp"
-			android:layout_marginTop="10dp"
-			android:gravity="center"
-			android:maxLines="3"
-			android:text="@string/very_long_text"
-			android:textColor="@color/VanDykeBrown"
-			android:textStyle="bold"
-			app:autoSizeMaxTextSize="48sp"
-			app:autoSizeMinTextSize="20sp"
-			app:autoSizeTextType="uniform"
-			app:layout_constraintEnd_toEndOf="parent"
-			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toTopOf="parent" />
+			android:layout_height="150dp"
+			android:background="@color/white"
+			android:clipChildren="false">
+
+			<FrameLayout
+				android:id="@+id/categoryLayout"
+				android:layout_width="100dp"
+				android:layout_height="100dp"
+				android:clipChildren="false"
+				android:clipToPadding="false"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintTop_toTopOf="parent">
+
+				<ImageView
+					android:id="@+id/imageViewCategoryIcon"
+					android:layout_width="160dp"
+					android:layout_height="160dp"
+					android:layout_gravity="center"
+					android:background="@drawable/icon_background_30dp"
+					android:backgroundTint="@color/OrangeYellowCrayola"
+					android:contentDescription="@string/description_recipe_category_icon"
+					android:cropToPadding="false"
+					android:src="@drawable/ade" />
+
+			</FrameLayout>
+
+			<TextView
+				android:id="@+id/textViewTitle"
+				android:layout_width="0dp"
+				android:layout_height="100dp"
+				android:layout_marginVertical="10dp"
+				android:layout_marginStart="20dp"
+				android:layout_marginEnd="20dp"
+				android:gravity="center"
+				android:maxLines="2"
+				android:text="@string/post_list_error"
+				android:textColor="@color/VanDykeBrown"
+				android:textStyle="bold"
+				app:autoSizeMaxTextSize="30sp"
+				app:autoSizeMinTextSize="20sp"
+				app:autoSizeTextType="uniform"
+				app:layout_constraintBottom_toBottomOf="parent"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintStart_toEndOf="@id/categoryLayout"
+				app:layout_constraintTop_toTopOf="parent" />
+
+		</androidx.constraintlayout.widget.ConstraintLayout>
 
 		<FrameLayout
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:background="@drawable/placeholder_user_box"
+			android:layout_marginHorizontal="10dp"
+			android:layout_marginTop="30dp"
+			android:background="@drawable/user_box_background"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toBottomOf="@+id/textViewTitle">
@@ -70,6 +105,6 @@
 
 		</FrameLayout>
 
-	</androidx.constraintlayout.widget.ConstraintLayout>
+	</LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

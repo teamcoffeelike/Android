@@ -47,6 +47,11 @@ import okhttp3.RequestBody;
  *   | REMOVE_STEP_IMAGE
  *   | SET_STEP_TEXT S
  *   ;
+ *
+ * S : (DataInput에서 정의된 Modified UTF-8 String)
+ * B : (uint8)
+ * I : (int32)
+ * NULL : (uint8 0)
  * </pre>
  * ㅅㅂㅋㅋ<br>
  * 레시피 수정을 위한 작은 domain specific regular language.<br>
@@ -67,7 +72,11 @@ import okhttp3.RequestBody;
  * 리소스 간의 연결은 1바이트의 index 번호로 전달됩니다.<br>
  * <br>
  * step count는 무조건 제공되어야 하며, 모든 추가/삭제/유지되는 step은 각자 한 번씩 '선택'되어야 합니다.
- * 비어 있는 인덱스가 있거나 기존에 존재하던 step이 아무런 작업이 이루어지지 않았다면 불완전한 작업으로 간주하게 됩니다.
+ * 비어 있는 인덱스가 있거나 기존에 존재하던 step이 아무런 작업이 이루어지지 않았다면 불완전한 작업으로 간주하게 됩니다.<br>
+ * step count는 step의 선택 이전에 제공되어야 하며, step 내부 값을 수정하는 작업(내용 수정, 이미지 수정/삭제)은 step의 선택 이후에 이루어져야 합니다.
+ * 모든 step 수정 작업은 마지막으로 선택한 step을 대상으로 이루어집니다.<br>
+ * <br>
+ * 모든 수정 작업에 대해, 두 번 이상의 값 제공 또는 이미 선택된 step의 재선택은 작업 요청에서의 오류로 간주하여 에러를 일으킵니다.
  */
 public class RecipeEditorEncoder{
 	private static final byte MODE_WRITE = '1';
