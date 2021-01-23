@@ -9,9 +9,11 @@ import android.os.Parcelable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -53,6 +55,7 @@ public class WritePostActivity extends AppCompatActivity{
 	private static final int PICK_IMAGE = 4;
 
 	private ImageView imageViewPostImage;
+	private TextView textViewAttach;
 	private EditText editTextPost;
 	private Button buttonSubmit;
 
@@ -77,6 +80,7 @@ public class WritePostActivity extends AppCompatActivity{
 		}
 
 		imageViewPostImage = findViewById(R.id.imageViewPostImage);
+		textViewAttach = findViewById(R.id.textViewAttach);
 		editTextPost = findViewById(R.id.editTextPost);
 		buttonSubmit = findViewById(R.id.buttonSubmit);
 
@@ -99,6 +103,9 @@ public class WritePostActivity extends AppCompatActivity{
 					.signature(SignatureManagers.POST_IMAGE.getKeyForId(post.getId()))
 					.transition(DrawableTransitionOptions.withCrossFade())
 					.into(imageViewPostImage);
+			if(post.getImage()!=null){
+				textViewAttach.setVisibility(View.INVISIBLE);
+			}
 		}else{
 			Glide.with(this)
 					.load((Uri)null)
@@ -180,6 +187,7 @@ public class WritePostActivity extends AppCompatActivity{
 						finish();
 					}
 					@Override public void onErrorResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response, @NonNull String error){
+						// TODO
 						Log.e(TAG, "profile: Error: "+error);
 						error();
 					}
@@ -199,6 +207,18 @@ public class WritePostActivity extends AppCompatActivity{
 				});
 			}
 		});
+
+		updateSubmitButton();
+	}
+
+	@Override public void onBackPressed(){
+		if(image!=null||editTextPost.getText().length()>0)
+			new AlertDialog.Builder(this)
+					.setTitle("작성중인 포스트를 등록하지 않고 창을 닫으시겠습니까?")
+					.setPositiveButton("예", (dialog, which) -> finish())
+					.setNegativeButton("계속 작성", (dialog, which) -> {})
+					.show();
+		else super.onBackPressed();
 	}
 
 	@WorkerThread
@@ -257,6 +277,7 @@ public class WritePostActivity extends AppCompatActivity{
 							.transition(DrawableTransitionOptions.withCrossFade())
 							.into(imageViewPostImage);
 					updateSubmitButton();
+					textViewAttach.setVisibility(View.INVISIBLE);
 				}
 			}
 		}

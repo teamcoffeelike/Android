@@ -1,6 +1,5 @@
 package com.hanul.caramelhomecchiato.fragment;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,14 +34,11 @@ public class PostListFragment extends Fragment implements PostScrollHandler.List
 	@Override public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState){
 		View view = inflater.inflate(R.layout.fragment_post_list, container, false);
 
-		Context context = getContext();
-		if(context==null) throw new IllegalStateException("RecentPostFragment에 context 없음");
-
 		textViewError = view.findViewById(R.id.textViewError);
 		endOfList = view.findViewById(R.id.endOfList);
 
 		RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
-		recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
+		recyclerView.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false));
 
 		postAdapter = new PostAdapter();
 		recyclerView.setAdapter(postAdapter);
@@ -70,13 +66,12 @@ public class PostListFragment extends Fragment implements PostScrollHandler.List
 			FollowingEvent.dispatch(post.getAuthor());
 		}
 		List<Post> elements = postAdapter.elements();
-		int size = elements.size();
 		if(reset){
 			elements.clear();
-			postAdapter.notifyItemRangeRemoved(0, size);
 			elements.addAll(posts);
-			postAdapter.notifyItemRangeInserted(0, posts.size());
+			postAdapter.notifyDataSetChanged();
 		}else{
+			int size = elements.size();
 			elements.addAll(posts);
 			postAdapter.notifyItemRangeInserted(size, posts.size());
 		}

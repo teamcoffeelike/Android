@@ -17,10 +17,10 @@ public final class PostEditEvent{
 	private static final Map<Integer, WeakReference<PostEditEventBus>> busMap = new LinkedHashMap<>();
 	@Nullable private static WeakReference<PostEditEventBus> globalBus;
 
-	@MainThread public static Ticket subscribe(int postId, OnPostDeleted listener){
+	@MainThread public static Ticket subscribe(int postId, OnPostEdited listener){
 		return getBus(postId).subscribe(listener);
 	}
-	@MainThread public static Ticket subscribeAll(OnPostDeleted listener){
+	@MainThread public static Ticket subscribeAll(OnPostEdited listener){
 		return getGlobalBus().subscribe(listener);
 	}
 
@@ -53,11 +53,11 @@ public final class PostEditEvent{
 
 
 	private static final class PostEditEventBus implements Bus{
-		private final WeakHashMap<Ticket, OnPostDeleted> listenerMap = new WeakHashMap<>();
+		private final WeakHashMap<Ticket, OnPostEdited> listenerMap = new WeakHashMap<>();
 
 		private int idIncrement;
 
-		public Ticket subscribe(OnPostDeleted listener){
+		public Ticket subscribe(OnPostEdited listener){
 			int id = idIncrement++;
 			Ticket ticket = new Ticket(this, id);
 			if(listenerMap.put(ticket, Objects.requireNonNull(listener))!=null) throw new IllegalStateException("Unexpected");
@@ -65,8 +65,8 @@ public final class PostEditEvent{
 		}
 
 		public void dispatch(int postId){
-			for(OnPostDeleted listener : listenerMap.values()){
-				listener.onPostDeleted(postId);
+			for(OnPostEdited listener : listenerMap.values()){
+				listener.onPostEdited(postId);
 			}
 		}
 

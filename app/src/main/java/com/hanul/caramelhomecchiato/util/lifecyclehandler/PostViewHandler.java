@@ -129,14 +129,15 @@ public class PostViewHandler{
 		}
 
 		PopupMenu popupMenu = new PopupMenu(context, buttonPostOption);
-		popupMenu.getMenuInflater().inflate(R.menu.post_menu, popupMenu.getMenu());
+		popupMenu.getMenuInflater().inflate(R.menu.post_option_menu, popupMenu.getMenu());
 
 		popupMenu.setOnMenuItemClickListener(item -> {
 			int itemId = item.getItemId();
-			if(itemId==R.id.postModify){
-				context.startActivity(new Intent(context, WritePostActivity.class).putExtra(WritePostActivity.EXTRA_POST, post));
-			}else if(itemId==R.id.postDelete){
-				deletePost();
+			if(itemId==R.id.editPost) context.startActivity(new Intent(context, WritePostActivity.class).putExtra(WritePostActivity.EXTRA_POST, post));
+			else if(itemId==R.id.deletePost) deletePost();
+			else{
+				Log.w(TAG, "PostViewHandler: post_option_menu의 알 수 없는 옵션 "+itemId);
+				return false;
 			}
 			return true;
 		});
@@ -145,10 +146,10 @@ public class PostViewHandler{
 		buttonPostOption.setOnClickListener(v -> popupMenu.show());
 
 		buttonLike.setOnClickListener(v -> {
-			if(this.post != null){
+			if(this.post!=null){
 				Boolean likedByYou = this.post.getLikedByYou();
 				if(likedByYou!=null){
-					Log.d(TAG, "PostViewHandler: " + likedByYou);
+					Log.d(TAG, "PostViewHandler: "+likedByYou);
 					boolean newLike = !likedByYou;
 					PostService.INSTANCE.likePost(this.post.getId(), newLike).enqueue(new BaseCallback(){
 						@Override public void onSuccessfulResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response, @NonNull JsonObject result){

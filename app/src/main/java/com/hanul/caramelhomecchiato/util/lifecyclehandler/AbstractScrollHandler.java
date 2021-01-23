@@ -125,7 +125,7 @@ public abstract class AbstractScrollHandler<T> extends LifecycleHandler{
 	}
 
 	public interface Listener<T>{
-		void append(List<T> posts, boolean endOfList, boolean reset);
+		void append(List<T> list, boolean endOfList, boolean reset);
 		void error();
 	}
 

@@ -29,4 +29,5 @@
 
 	<color name="empty_attachment">#ecdbcb</color>
 	<color name="BlueTooth">#3D90C3</color>
+	<color name="placeholder">#d8b8a1</color>
 </resources>

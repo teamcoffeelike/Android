@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+	<item
+		android:id="@+id/hotCoffee"
+		android:title="@string/recipe_category_hot_coffee" />
+
+	<item
+		android:id="@+id/iceCoffee"
+		android:title="@string/recipe_category_ice_coffee" />
+
+	<item
+		android:id="@+id/tea"
+		android:title="@string/recipe_category_tea" />
+
+	<item
+		android:id="@+id/ade"
+		android:title="@string/recipe_category_ade" />
+
+	<item
+		android:id="@+id/smoothie"
+		android:title="@string/recipe_category_smoothie" />
+
+	<item
+		android:id="@+id/etc"
+		android:title="@string/recipe_category_etc" />
+
+</menu>

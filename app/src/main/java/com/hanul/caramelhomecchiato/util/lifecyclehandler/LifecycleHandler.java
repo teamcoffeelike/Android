@@ -35,7 +35,7 @@ public abstract class LifecycleHandler implements LifecycleEventObserver{
 	public Context getContext(){
 		if(context==null){
 			if(fragment!=null){
-				context = Objects.requireNonNull(fragment.getContext());
+				context = fragment.requireContext();
 			}else{
 				throw new IllegalStateException("Context 제공 불가능");
 			}

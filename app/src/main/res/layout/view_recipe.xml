@@ -1,80 +1,197 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
-	android:layout_marginBottom="10dp"
+	android:background="@color/Asparagus"
 	android:orientation="vertical">
 
 	<androidx.constraintlayout.widget.ConstraintLayout
 		android:layout_width="match_parent"
-		android:layout_height="match_parent">
+		android:layout_height="match_parent"
+		android:background="@color/white"
+		android:translationZ="5dp">
 
 		<ImageView
 			android:id="@+id/imageViewRecipe"
 			android:layout_width="match_parent"
 			android:layout_height="300dp"
 			android:background="@color/empty_attachment"
+			android:contentDescription="@string/description_recipe_image"
 			android:scaleType="centerCrop"
 			app:layout_constraintBottom_toBottomOf="parent"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toTopOf="parent" />
 
-		<RatingBar
-			android:id="@+id/ratingBar"
-			style="?android:attr/ratingBarStyleIndicator"
+		<View
+			android:id="@+id/adjustmentView"
+			android:layout_width="48dp"
+			android:layout_height="1dp"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintStart_toEndOf="parent" />
+
+		<LinearLayout
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:layout_gravity="center"
-			android:layout_marginBottom="10dp"
-			android:clickable="false"
-			android:isIndicator="true"
-			android:numStars="5"
-			android:progressBackgroundTint="@color/MinionYellow"
-			android:progressTint="@color/MinionYellow"
-			android:rating="2.5"
-			android:scaleX=".75"
-			android:scaleY=".75"
-			android:stepSize="0.5"
-			app:layout_constraintBottom_toBottomOf="parent"
-			app:layout_constraintEnd_toEndOf="parent" />
+			android:background="@drawable/recipe_list_rating_background"
+			android:orientation="horizontal"
+			android:scaleX=".5"
+			android:scaleY=".5"
+			app:layout_constraintBottom_toBottomOf="@id/adjustmentView"
+			app:layout_constraintEnd_toEndOf="@id/adjustmentView">
+
+			<RatingBar
+				android:id="@+id/ratingBar"
+				style="@style/RatingBar"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_gravity="center"
+				android:layout_marginHorizontal="10dp"
+				android:layout_marginTop="4dp"
+				android:clickable="false"
+				android:isIndicator="true"
+				android:numStars="5"
+				android:rating="2.5"
+				android:stepSize="0.5" />
+
+		</LinearLayout>
 
 	</androidx.constraintlayout.widget.ConstraintLayout>
 
 	<androidx.constraintlayout.widget.ConstraintLayout
 		android:layout_width="match_parent"
-		android:layout_height="wrap_content">
+		android:layout_height="wrap_content"
+		android:clipChildren="false">
 
-		<TextView
-			android:id="@+id/textViewRecipeTitle"
-			android:layout_width="0dp"
-			android:layout_height="wrap_content"
-			android:layout_marginHorizontal="20dp"
-			android:layout_marginTop="8dp"
-			android:maxLines="2"
-			android:text="@string/very_long_text"
-			android:textColor="@color/VanDykeBrown"
-			android:textSize="18sp"
-			app:layout_constraintEnd_toEndOf="parent"
-			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toTopOf="parent" />
-
-		<View
-			android:id="@+id/view"
-			android:layout_width="0dp"
-			android:layout_height="10dp"
-			app:layout_constraintBottom_toBottomOf="@id/textViewRecipeTitle"
-			app:layout_constraintStart_toStartOf="parent" />
-
-		<include
-			layout="@layout/view_user"
+		<FrameLayout
+			android:id="@+id/linearLayout"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			app:layout_constraintTop_toTopOf="@id/view" />
+			app:layout_constraintTop_toTopOf="parent">
+
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:clipChildren="false"
+				android:orientation="vertical"
+				tools:ignore="UselessParent">
+
+				<View
+					android:id="@+id/divider"
+					style="@style/Divider.Horizontal"
+					android:layout_width="match_parent"
+					android:layout_height="20dp"
+					android:background="#40000000" />
+
+				<androidx.constraintlayout.widget.ConstraintLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:background="@color/white"
+					android:clipChildren="false">
+
+					<FrameLayout
+						android:layout_width="40dp"
+						android:layout_height="40dp"
+						android:layout_marginStart="5dp"
+						app:layout_constraintBottom_toBottomOf="parent"
+						app:layout_constraintStart_toStartOf="parent"
+						app:layout_constraintTop_toTopOf="parent">
+
+						<View
+							android:id="@+id/coloredCircleLayout"
+							android:layout_width="130dp"
+							android:layout_height="130dp"
+							android:layout_gravity="center"
+							android:background="@drawable/icon_background_30dp"
+							android:backgroundTint="@color/Asparagus"
+							android:elevation="10dp" />
+
+					</FrameLayout>
+
+					<TextView
+						android:id="@+id/textViewRecipeTitle"
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:layout_marginStart="100dp"
+						android:layout_marginEnd="10dp"
+						android:gravity="center|start"
+						android:maxLines="2"
+						android:minLines="2"
+						android:text="@string/description_logo"
+						android:textColor="@color/VanDykeBrown"
+						android:textSize="18sp"
+						app:layout_constraintBottom_toBottomOf="parent"
+						app:layout_constraintEnd_toStartOf="@+id/buttonRecipeOption"
+						app:layout_constraintStart_toStartOf="parent"
+						app:layout_constraintTop_toTopOf="parent" />
+
+					<ImageButton
+						android:id="@+id/buttonRecipeOption"
+						style="?android:attr/borderlessButtonStyle"
+						android:layout_width="30dp"
+						android:layout_height="wrap_content"
+						android:layout_marginEnd="8dp"
+						android:contentDescription="@string/description_recipe_option"
+						android:src="@drawable/ic_button"
+						android:tint="@color/VanDykeBrown"
+						app:layout_constraintBottom_toBottomOf="parent"
+						app:layout_constraintEnd_toEndOf="parent"
+						app:layout_constraintTop_toTopOf="parent"
+						app:layout_goneMarginEnd="0dp" />
+
+				</androidx.constraintlayout.widget.ConstraintLayout>
+
+			</LinearLayout>
+
+		</FrameLayout>
+
+		<FrameLayout
+			android:id="@+id/iconContainer"
+			android:layout_width="40dp"
+			android:layout_height="40dp"
+			android:layout_marginStart="15dp"
+			android:layout_marginTop="20dp"
+			android:clipChildren="false"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="parent">
+
+			<ImageView
+				android:id="@+id/imageViewCategoryIcon"
+				android:layout_width="64dp"
+				android:layout_height="64dp"
+				android:layout_gravity="center"
+				android:contentDescription="@string/description_recipe_category_icon"
+				android:src="@drawable/tea" />
+
+		</FrameLayout>
+
+		<androidx.constraintlayout.widget.ConstraintLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			app:layout_constraintTop_toBottomOf="@id/linearLayout">
+
+			<FrameLayout
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:layout_margin="10dp"
+				android:background="@drawable/user_box_background"
+				app:layout_constraintBottom_toBottomOf="parent"
+				app:layout_constraintEnd_toEndOf="parent"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintTop_toTopOf="parent">
+
+				<include
+					layout="@layout/view_user"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:layout_gravity="center" />
+
+			</FrameLayout>
+
+		</androidx.constraintlayout.widget.ConstraintLayout>
 
 	</androidx.constraintlayout.widget.ConstraintLayout>
-
-	<View style="@style/Divider.Horizontal" />
 
 </LinearLayout>

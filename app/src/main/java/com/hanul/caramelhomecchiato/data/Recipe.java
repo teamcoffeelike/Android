@@ -3,7 +3,10 @@ package com.hanul.caramelhomecchiato.data;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.annotation.NonNull;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Recipe implements Parcelable{
@@ -26,9 +29,21 @@ public class Recipe implements Parcelable{
 		this.cover = cover;
 		this.steps = new ArrayList<>(steps);
 	}
+	public Recipe(RecipeCover cover, RecipeStep... steps){
+		this.cover = cover;
+		this.steps = new ArrayList<>();
+		this.steps.addAll(Arrays.asList(steps));
+	}
+	public Recipe(Recipe recipe){
+		this.cover = new RecipeCover(recipe.getCover());
+		this.steps = new ArrayList<>();
+		for(RecipeStep step : recipe.steps()){
+			this.steps.add(new RecipeStep(step));
+		}
+	}
 	protected Recipe(Parcel in){
-		cover = in.readParcelable(RecipeCover.class.getClassLoader());
-		steps = in.createTypedArrayList(RecipeStep.CREATOR);
+		this.cover = in.readParcelable(RecipeCover.class.getClassLoader());
+		this.steps = in.createTypedArrayList(RecipeStep.CREATOR);
 	}
 
 	@Override
@@ -49,5 +64,12 @@ public class Recipe implements Parcelable{
 	}
 	public List<RecipeStep> steps(){
 		return steps;
+	}
+
+	@NonNull @Override public String toString(){
+		return "Recipe{"+
+				"cover="+cover+
+				", steps="+steps+
+				'}';
 	}
 }

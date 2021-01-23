@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent">
+
+	<ScrollView
+		android:layout_width="match_parent"
+		android:layout_height="0dp"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintTop_toTopOf="parent">
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="vertical">
+
+			<androidx.constraintlayout.widget.ConstraintLayout
+				android:id="@+id/imageLayout"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:background="@color/white"
+				android:translationZ="10dp">
+
+				<ImageView
+					android:id="@+id/imageView"
+					android:layout_width="0dp"
+					android:layout_height="0dp"
+					android:background="@color/empty_attachment"
+					android:contentDescription="@string/description_recipe_image"
+					android:scaleType="centerCrop"
+					app:layout_constraintBottom_toBottomOf="parent"
+					app:layout_constraintDimensionRatio="H,4:3"
+					app:layout_constraintEnd_toEndOf="parent"
+					app:layout_constraintStart_toStartOf="parent"
+					app:layout_constraintTop_toTopOf="parent" />
+
+				<View
+					android:id="@+id/imagePlaceholderApproximate"
+					android:layout_width="0dp"
+					android:layout_height="100dp"
+					android:clickable="false"
+					android:visibility="invisible"
+					app:layout_constraintBottom_toBottomOf="parent"
+					app:layout_constraintEnd_toEndOf="parent"
+					app:layout_constraintStart_toStartOf="parent"
+					app:layout_constraintTop_toTopOf="parent" />
+
+				<TextView
+					android:id="@+id/textViewAttach"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:layout_marginTop="30dp"
+					android:clickable="false"
+					android:gravity="center"
+					android:text="@string/click_to_select_image"
+					android:textColor="@color/placeholder"
+					android:textSize="18sp"
+					android:textStyle="bold"
+					app:layout_constraintTop_toBottomOf="@id/imagePlaceholderApproximate" />
+
+				<TextView
+					android:id="@+id/textViewDeleteImage"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginStart="10dp"
+					android:layout_marginBottom="10dp"
+					android:background="@drawable/recipe_category_button_background"
+					android:padding="8dp"
+					android:text="@string/delete_image"
+					android:textColor="@color/white"
+					app:layout_constraintBottom_toBottomOf="parent"
+					app:layout_constraintStart_toStartOf="parent" />
+
+				<TextView
+					android:id="@+id/textViewRevertImage"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginEnd="10dp"
+					android:layout_marginBottom="10dp"
+					android:background="@drawable/recipe_category_button_background"
+					android:padding="8dp"
+					android:text="@string/revert_image"
+					android:textColor="@color/white"
+					app:layout_constraintBottom_toBottomOf="parent"
+					app:layout_constraintEnd_toEndOf="parent" />
+
+			</androidx.constraintlayout.widget.ConstraintLayout>
+
+			<androidx.constraintlayout.widget.ConstraintLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:paddingHorizontal="10dp"
+				android:paddingTop="10dp"
+				android:paddingBottom="100dp">
+
+				<EditText
+					android:id="@+id/editTextContent"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:hint="@string/hint_edit_post"
+					android:importantForAutofill="no"
+					android:inputType="textMultiLine"
+					android:textColor="@color/VanDykeBrown"
+					android:textSize="18sp"
+					app:layout_constraintEnd_toEndOf="parent"
+					app:layout_constraintStart_toStartOf="parent"
+					app:layout_constraintTop_toTopOf="parent" />
+
+			</androidx.constraintlayout.widget.ConstraintLayout>
+
+			<TextView
+				android:id="@+id/textViewDebug"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_gravity="center" />
+
+		</LinearLayout>
+
+	</ScrollView>
+
+	<androidx.constraintlayout.widget.ConstraintLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="10dp"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent">
+
+		<TextView
+			android:id="@+id/addPrevStepLayout"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:background="@drawable/write_recipe_button_left"
+			android:foreground="?attr/selectableItemBackground"
+			android:gravity="center"
+			android:paddingStart="10dp"
+			android:paddingTop="4dp"
+			android:paddingEnd="12dp"
+			android:paddingBottom="8dp"
+			android:text="+"
+			android:textColor="@color/white"
+			android:textSize="18sp"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="parent" />
+
+		<TextView
+			android:id="@+id/removeStepLayout"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:background="@drawable/write_recipe_remove_step_button"
+			android:foreground="?attr/selectableItemBackground"
+			android:gravity="center"
+			android:paddingStart="10dp"
+			android:paddingTop="4dp"
+			android:paddingEnd="12dp"
+			android:paddingBottom="8dp"
+			android:text="페이지 지우기"
+			android:textColor="@color/white"
+			android:textSize="18sp"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="parent" />
+
+		<TextView
+			android:id="@+id/addNextStepLayout"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:background="@drawable/write_recipe_button_right"
+			android:foreground="?attr/selectableItemBackground"
+			android:gravity="center"
+			android:paddingStart="10dp"
+			android:paddingTop="4dp"
+			android:paddingEnd="12dp"
+			android:paddingBottom="8dp"
+			android:text="+"
+			android:textColor="@color/white"
+			android:textSize="18sp"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintTop_toTopOf="parent" />
+
+	</androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
