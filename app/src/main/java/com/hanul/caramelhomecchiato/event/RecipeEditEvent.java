@@ -3,6 +3,8 @@ package com.hanul.caramelhomecchiato.event;
 import androidx.annotation.MainThread;
 import androidx.annotation.Nullable;
 
+import com.hanul.caramelhomecchiato.data.RecipeCategory;
+
 import java.lang.ref.WeakReference;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -22,9 +24,9 @@ public final class RecipeEditEvent{
 		return getGlobalBus().subscribe(listener);
 	}
 
-	@MainThread public static void dispatch(int recipeId){
-		getBus(recipeId).dispatch(recipeId);
-		getGlobalBus().dispatch(recipeId);
+	@MainThread public static void dispatch(int recipeId, @Nullable RecipeCategory newCategory){
+		getBus(recipeId).dispatch(recipeId, newCategory);
+		getGlobalBus().dispatch(recipeId, newCategory);
 	}
 
 	private static RecipeEditEventBus getBus(int recipeId){
@@ -59,9 +61,9 @@ public final class RecipeEditEvent{
 			return ticket;
 		}
 
-		public void dispatch(int recipeId){
+		public void dispatch(int recipeId, @Nullable RecipeCategory newCategory){
 			for(OnRecipeEdited listener : listenerMap.values()){
-				listener.onRecipeEdited(recipeId);
+				listener.onRecipeEdited(recipeId, newCategory);
 			}
 		}
 

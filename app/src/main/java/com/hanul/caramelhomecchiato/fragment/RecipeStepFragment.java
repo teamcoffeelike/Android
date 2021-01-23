@@ -22,6 +22,7 @@ import com.hanul.caramelhomecchiato.activity.FullScreenImageActivity;
 import com.hanul.caramelhomecchiato.data.Recipe;
 import com.hanul.caramelhomecchiato.data.RecipeStep;
 import com.hanul.caramelhomecchiato.util.GlideUtils;
+import com.hanul.caramelhomecchiato.util.SignatureManagers;
 
 public class RecipeStepFragment extends Fragment{
 	public static final String ARG_RECIPE = "recipe";
@@ -66,8 +67,9 @@ public class RecipeStepFragment extends Fragment{
 		}else{
 			Glide.with(this)
 					.load(image)
-					.apply(GlideUtils.recipeCover())
+					.apply(GlideUtils.recipeImage())
 					.transition(DrawableTransitionOptions.withCrossFade())
+					.signature(SignatureManagers.RECIPE_IMAGE.getKeyForId(recipe.getCover().getId()))
 					.into(imageView);
 			imageView.setOnClickListener(v -> {
 				startActivity(new Intent(requireContext(), FullScreenImageActivity.class)

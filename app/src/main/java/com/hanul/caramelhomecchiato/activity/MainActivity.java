@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -46,6 +45,8 @@ public class MainActivity extends AppCompatActivity{
 
 	private static final String SAVED_STATE_MENU_INDEX = "menuIndex";
 
+	private static final long BACK_PRESS_TIME = 10000;
+
 	private PostListFragment postListFragment;
 	private RecipeCategoryFragment recipeCategoryFragment;
 	private TimerFragment timerFragment;
@@ -61,6 +62,8 @@ public class MainActivity extends AppCompatActivity{
 	@SuppressWarnings("unused") private final Ticket profileImageChangedTicket = ProfileImageChangeEvent.subscribe(this::redrawProfileImage);
 
 	private int menuIndex = -1;
+
+	@Nullable private Long backPressedTime;
 
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState){
@@ -159,6 +162,20 @@ public class MainActivity extends AppCompatActivity{
 		});
 	}
 
+	@Override public void onBackPressed(){
+		if(drawerLayout.isDrawerVisible(GravityCompat.END)){
+			drawerLayout.closeDrawer(GravityCompat.END);
+			return;
+		}
+		long time = System.currentTimeMillis();
+		if(backPressedTime==null||(time-backPressedTime)>BACK_PRESS_TIME){
+			backPressedTime = time;
+			Toast.makeText(this, "뒤로가기 버튼을 한 번 더 누르면 종료됩니다.", Toast.LENGTH_SHORT).show();
+			return;
+		}
+		super.onBackPressed();
+	}
+
 	public void setProfile(@Nullable UserProfile profile){
 		this.profile = profile;
 		textViewProfileName.setText(profile==null ? "" : this.profile.getUser().getName());
@@ -166,13 +183,6 @@ public class MainActivity extends AppCompatActivity{
 		redrawProfileImage();
 
 		profileFragment.setProfile(profile);
-	}
-
-	@Override public boolean onKeyDown(int keyCode, KeyEvent event){
-		if(keyCode==KeyEvent.KEYCODE_BACK&&drawerLayout.isDrawerVisible(GravityCompat.END)){
-			drawerLayout.closeDrawer(GravityCompat.END);
-			return true;
-		}else return super.onKeyDown(keyCode, event);
 	}
 
 	private void show(int menuIndex){

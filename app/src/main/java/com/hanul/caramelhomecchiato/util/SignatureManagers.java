@@ -5,4 +5,5 @@ public final class SignatureManagers{
 
 	public static final IntSignatureManager PROFILE_IMAGE = new IntSignatureManager();
 	public static final IntSignatureManager POST_IMAGE = new IntSignatureManager();
+	public static final IntSignatureManager RECIPE_IMAGE = new IntSignatureManager();
 }

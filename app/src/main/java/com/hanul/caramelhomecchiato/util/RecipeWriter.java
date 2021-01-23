@@ -4,11 +4,11 @@ import android.net.Uri;
 
 import androidx.annotation.Nullable;
 
-import com.hanul.caramelhomecchiato.data.Recipe;
 import com.hanul.caramelhomecchiato.data.RecipeCategory;
 
 public interface RecipeWriter{
 	boolean isEditMode();
+	@Nullable Integer getEditingRecipeId();
 
 	@Nullable RecipeCategory getCategory();
 	String getTitle();

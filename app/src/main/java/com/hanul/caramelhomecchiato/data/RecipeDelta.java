@@ -80,7 +80,7 @@ public final class RecipeDelta implements Parcelable{
 		dest.writeByte(category==null ? (byte)-1 : (byte)category.ordinal());
 		dest.writeString(title);
 		dest.writeParcelable(coverImage, flags);
-		dest.writeParcelableList(steps, flags);
+		dest.writeTypedList(steps);
 		if(removedSteps==null){
 			dest.writeByte((byte)0);
 		}else{
@@ -198,6 +198,9 @@ public final class RecipeDelta implements Parcelable{
 	public boolean isCoverImageEdited(){
 		return this.coverImage.isDirty();
 	}
+	public boolean isCoverImageReplaced(){
+		return coverImage.isDirty()&&coverImage.isOverriding();
+	}
 	public void revertCoverImageEdited(){
 		this.coverImage.revertEdited();
 	}
@@ -206,6 +209,14 @@ public final class RecipeDelta implements Parcelable{
 	}
 	public RecipeStepDelta step(int index){
 		return steps.get(index);
+	}
+
+	public boolean isAnyImageReplaced(){
+		if(isCoverImageReplaced()) return true;
+		for(RecipeStepDelta step : steps){
+			if(step.isImageReplaced()) return true;
+		}
+		return false;
 	}
 
 	public void removeStep(int index){

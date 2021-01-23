@@ -78,4 +78,5 @@
 	<string name="remove_rating">평가 삭제</string>
 	<string name="rate">평가하기</string>
 	<string name="recipes_by_same_user">같은 유저의 레시피</string>
+	<string name="update_rating">평가 수정</string>
 </resources>

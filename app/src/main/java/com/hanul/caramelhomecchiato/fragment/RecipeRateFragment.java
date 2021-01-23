@@ -24,6 +24,7 @@ import com.hanul.caramelhomecchiato.adapter.SimpleRecipeAdapter;
 import com.hanul.caramelhomecchiato.data.Recipe;
 import com.hanul.caramelhomecchiato.data.RecipeCover;
 import com.hanul.caramelhomecchiato.data.User;
+import com.hanul.caramelhomecchiato.event.RecipeRateEvent;
 import com.hanul.caramelhomecchiato.network.NetUtils;
 import com.hanul.caramelhomecchiato.network.RecipeService;
 import com.hanul.caramelhomecchiato.util.BaseCallback;
@@ -49,6 +50,7 @@ public class RecipeRateFragment extends Fragment{
 
 	private RatingBar ratingBar;
 	private Button buttonRemoveRating;
+	private Button buttonSubmitRating;
 
 	private Recipe recipe;
 
@@ -69,14 +71,18 @@ public class RecipeRateFragment extends Fragment{
 		View backgroundLayout = view.findViewById(R.id.backgroundLayout);
 		ratingBar = view.findViewById(R.id.ratingBar);
 		buttonRemoveRating = view.findViewById(R.id.buttonRemoveRating);
-		Button buttonSubmitRating = view.findViewById(R.id.buttonSubmitRating);
+		buttonSubmitRating = view.findViewById(R.id.buttonSubmitRating);
 		RecyclerView recyclerViewOtherRecipes = view.findViewById(R.id.recyclerViewOtherRecipes);
 
 		userViewHandler = new UserViewHandler(view).setNameColor(0xFFFFFFFF);
 
 		buttonRemoveRating.setOnClickListener(v -> {
-			RecipeService.INSTANCE.deleteRecipeRating(recipe.getCover().getId()).enqueue(new BaseCallback(){
-				@Override public void onSuccessfulResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response, @NonNull JsonObject result){}
+			int id = recipe.getCover().getId();
+			RecipeService.INSTANCE.deleteRecipeRating(id).enqueue(new BaseCallback(){
+				@Override public void onSuccessfulResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response, @NonNull JsonObject result){
+					RecipeRateEvent.dispatch(id);
+					Toast.makeText(requireContext(), "평가를 삭제했습니다.", Toast.LENGTH_SHORT).show();
+				}
 				@Override public void onErrorResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response, @NonNull String error){
 					Log.e(TAG, "removeRecipeRating: "+error);
 					rateError();
@@ -91,12 +97,17 @@ public class RecipeRateFragment extends Fragment{
 				}
 			});
 			recipe.getCover().setYourRating(null);
-			updateRatingWidget();
+			updateRatingWidget(true);
 		});
 		buttonSubmitRating.setOnClickListener(v -> {
+			boolean edit = recipe.getCover().getYourRating()!=null;
 			float rating = ratingBar.getRating();
-			RecipeService.INSTANCE.rateRecipe(recipe.getCover().getId(), rating).enqueue(new BaseCallback(){
-				@Override public void onSuccessfulResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response, @NonNull JsonObject result){}
+			int id = recipe.getCover().getId();
+			RecipeService.INSTANCE.rateRecipe(id, rating).enqueue(new BaseCallback(){
+				@Override public void onSuccessfulResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response, @NonNull JsonObject result){
+					RecipeRateEvent.dispatch(id);
+					Toast.makeText(requireContext(), edit ? "평가를 수정했습니다." : "레시피를 평가해 주셔서 감사합니다!", Toast.LENGTH_SHORT).show();
+				}
 				@Override public void onErrorResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response, @NonNull String error){
 					Log.e(TAG, "rateRecipe: "+error);
 					rateError();
@@ -111,7 +122,7 @@ public class RecipeRateFragment extends Fragment{
 				}
 			});
 			recipe.getCover().setYourRating((double)rating);
-			updateRatingWidget();
+			updateRatingWidget(true);
 		});
 
 		backgroundLayout.setBackgroundColor(ContextCompat.getColor(requireContext(), recipe.getCover().getCategory().getColor()));
@@ -123,7 +134,9 @@ public class RecipeRateFragment extends Fragment{
 		recyclerViewOtherRecipes.setLayoutManager(new LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false));
 		recyclerViewOtherRecipes.setAdapter(simpleRecipeAdapter);
 
-		updateRatingWidget();
+		ratingBar.setOnRatingBarChangeListener((ratingBar1, rating, fromUser) -> updateRatingWidget(false));
+
+		updateRatingWidget(true);
 
 		return view;
 	}
@@ -165,14 +178,24 @@ public class RecipeRateFragment extends Fragment{
 		});
 	}
 
-	private void updateRatingWidget(){
+	private void updateRatingWidget(boolean overwriteRatingBarValue){
 		Double rating = recipe.getCover().getYourRating();
 		if(rating==null){
 			buttonRemoveRating.setVisibility(View.INVISIBLE);
-			ratingBar.setRating(2.5f);
+			buttonSubmitRating.setVisibility(View.VISIBLE);
+			buttonSubmitRating.setText(R.string.rate);
+			if(overwriteRatingBarValue) ratingBar.setRating(0);
 		}else{
 			buttonRemoveRating.setVisibility(View.VISIBLE);
-			ratingBar.setRating(rating.floatValue());
+			if(overwriteRatingBarValue){
+				ratingBar.setRating(rating.floatValue());
+				buttonSubmitRating.setVisibility(View.INVISIBLE);
+			}else{
+				if(Float.compare(rating.floatValue(), ratingBar.getRating())==0){
+					buttonSubmitRating.setVisibility(View.INVISIBLE);
+					buttonSubmitRating.setText(R.string.update_rating);
+				}else buttonSubmitRating.setVisibility(View.VISIBLE);
+			}
 		}
 	}
 }

@@ -32,6 +32,9 @@ public class SimpleRecipeWriter implements RecipeWriter{
 	@Override public boolean isEditMode(){
 		return editingRecipe!=null;
 	}
+	@Nullable @Override public Integer getEditingRecipeId(){
+		return editingRecipe==null ? null : editingRecipe.getCover().getId();
+	}
 
 	@Nullable @Override public RecipeCategory getCategory(){
 		if(delta.getCategory()!=null) return delta.getCategory();

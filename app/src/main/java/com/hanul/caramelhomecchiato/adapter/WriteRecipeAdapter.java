@@ -1,5 +1,6 @@
 package com.hanul.caramelhomecchiato.adapter;
 
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -12,16 +13,20 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestBuilder;
+import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.hanul.caramelhomecchiato.R;
 import com.hanul.caramelhomecchiato.data.RecipeCategory;
 import com.hanul.caramelhomecchiato.util.GlideUtils;
 import com.hanul.caramelhomecchiato.util.RecipeWriter;
+import com.hanul.caramelhomecchiato.util.SignatureManagers;
 
 import java.util.Objects;
 
@@ -128,11 +133,7 @@ public class WriteRecipeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
 		private void updateImage(){
 			Uri photo = writer.getCoverImage();
-			Glide.with(itemView)
-					.load(photo)
-					.apply(GlideUtils.recipeCover())
-					.transition(DrawableTransitionOptions.withCrossFade())
-					.into(imageViewCover);
+			updateRecipeImageView(photo, imageViewCover, Glide.with(itemView));
 			textViewAttach.setVisibility(photo!=null ? View.INVISIBLE : View.VISIBLE);
 		}
 
@@ -220,7 +221,7 @@ public class WriteRecipeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
 		protected void bind(int index){
 			this.index = index;
-			textViewDebug.setText(Integer.toString(index));
+			// textViewDebug.setText(Integer.toString(index));
 
 			updateImage();
 
@@ -229,25 +230,16 @@ public class WriteRecipeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
 		private void updateImage(){
 			Uri image = writer.getStepImage(index);
-			if(image==null){
-				Glide.with(itemView)
-						.load((Uri)null)
-						.apply(GlideUtils.recipeCover()) // TODO?
-						.transition(DrawableTransitionOptions.withCrossFade())
-						.into(imageView);
-				textViewAttach.setVisibility(View.VISIBLE);
+			updateRecipeImageView(image, imageView, Glide.with(itemView));
 
+			if(image==null){
+				textViewAttach.setVisibility(View.VISIBLE);
 				textViewDeleteImage.setVisibility(View.GONE);
 			}else{
-				Glide.with(itemView)
-						.load(image)
-						.apply(GlideUtils.recipeCover()) // TODO?
-						.transition(DrawableTransitionOptions.withCrossFade())
-						.into(imageView);
 				textViewAttach.setVisibility(View.INVISIBLE);
-
 				textViewDeleteImage.setVisibility(View.VISIBLE);
 			}
+
 			if(writer.isEditMode()){
 				RecipeWriter.ImageState stepImageState = writer.getStepImageState(index);
 				switch(stepImageState){
@@ -264,5 +256,19 @@ public class WriteRecipeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 				}
 			}else textViewRevertImage.setVisibility(View.GONE);
 		}
+	}
+
+	private void updateRecipeImageView(@Nullable Uri image, ImageView imageView, RequestManager requestManager){
+		RequestBuilder<Drawable> request;
+		if(image==null){
+			request = requestManager.load((Uri)null);
+		}else{
+			request = requestManager.load(image);
+			if(writer.isEditMode())
+				request = request.signature(SignatureManagers.RECIPE_IMAGE.getKeyForId(writer.getEditingRecipeId()));
+		}
+		request.apply(GlideUtils.recipeImage())
+				.transition(DrawableTransitionOptions.withCrossFade())
+				.into(imageView);
 	}
 }

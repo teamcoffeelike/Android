@@ -61,6 +61,9 @@ public final class RecipeStepDelta implements Parcelable{
 	public boolean isImageEdited(){
 		return image.isDirty();
 	}
+	public boolean isImageReplaced(){
+		return image.isDirty()&&image.isOverriding();
+	}
 	public void revertImageEdited(){
 		this.image.revertEdited();
 	}
@@ -70,6 +73,7 @@ public final class RecipeStepDelta implements Parcelable{
 	public void setText(@Nullable String text){
 		this.text = text;
 	}
+
 
 	@Override public String toString(){
 		return "RecipeStepDelta{"+

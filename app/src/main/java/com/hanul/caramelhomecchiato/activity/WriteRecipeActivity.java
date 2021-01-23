@@ -28,6 +28,7 @@ import com.hanul.caramelhomecchiato.data.RecipeWriteError;
 import com.hanul.caramelhomecchiato.event.RecipeEditEvent;
 import com.hanul.caramelhomecchiato.network.RecipeService;
 import com.hanul.caramelhomecchiato.util.RecipeEditorEncoder;
+import com.hanul.caramelhomecchiato.util.SignatureManagers;
 import com.hanul.caramelhomecchiato.util.SimpleRecipeWriter;
 import com.hanul.caramelhomecchiato.util.lifecyclehandler.SpinnerHandler;
 
@@ -197,7 +198,7 @@ public class WriteRecipeActivity extends AppCompatActivity{
 					delta.apply(encoder);
 					call = RecipeService.INSTANCE.editRecipe(encoder.toRequestBody(exec, getContentResolver()));
 				}catch(Exception e){
-					Log.e(TAG, "writeRecipe: During Execution", e);
+					Log.e(TAG, "editRecipe: During Execution", e);
 					spinnerHandler.dismiss();
 					return;
 				}
@@ -207,22 +208,24 @@ public class WriteRecipeActivity extends AppCompatActivity{
 
 					if(response.isSuccessful()){
 						JsonObject body = Objects.requireNonNull(response.body());
-						if(body.has("error")){
-							String error = body.get("error").getAsString();
-							Log.e(TAG, "writeRecipe: "+error);
-						}else{
-							int id = body.get("id").getAsInt();
+						if(!body.has("error")){
 							ContextCompat.getMainExecutor(this).execute(() -> {
-								RecipeEditEvent.dispatch(id);
+								if(delta.getId()!=null){
+									int id = delta.getId();
+									if(delta.isAnyImageReplaced()) SignatureManagers.RECIPE_IMAGE.updateKeyForId(id);
+									RecipeEditEvent.dispatch(id, delta.getCategory());
+								}
 								finish();
 							});
 							return;
 						}
+						String error = body.get("error").getAsString();
+						Log.e(TAG, "editRecipe: "+error);
 					}else{
-						Log.e(TAG, "writeRecipe: "+response.errorBody());
+						Log.e(TAG, "editRecipe: "+response.errorBody());
 					}
 				}catch(Exception ex){
-					Log.e(TAG, "writeRecipe: ", ex);
+					Log.e(TAG, "editRecipe: ", ex);
 				}
 
 				ContextCompat.getMainExecutor(this).execute(() -> {

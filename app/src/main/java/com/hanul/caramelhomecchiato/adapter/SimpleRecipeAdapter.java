@@ -18,6 +18,7 @@ import com.hanul.caramelhomecchiato.R;
 import com.hanul.caramelhomecchiato.activity.RecipeActivity;
 import com.hanul.caramelhomecchiato.data.RecipeCover;
 import com.hanul.caramelhomecchiato.util.GlideUtils;
+import com.hanul.caramelhomecchiato.util.SignatureManagers;
 
 public class SimpleRecipeAdapter extends BaseAdapter<RecipeCover>{
 	@NonNull @Override public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType){
@@ -43,20 +44,21 @@ public class SimpleRecipeAdapter extends BaseAdapter<RecipeCover>{
 			});
 		}
 
-		@Override protected void setItem(int position, RecipeCover element){
+		@Override protected void setItem(int position, RecipeCover cover){
 			Glide.with(itemView)
-					.load(element.getCoverImage())
-					.apply(GlideUtils.recipeCoverNoCenterCrop())
+					.load(cover.getCoverImage())
+					.apply(GlideUtils.recipeImageNoCenterCrop())
 					.transition(DrawableTransitionOptions.withCrossFade())
+					.signature(SignatureManagers.RECIPE_IMAGE.getKeyForId(cover.getId()))
 					.into(imageViewCover);
-			textViewTitle.setText(element.getTitle());
+			textViewTitle.setText(cover.getTitle());
 
-			imageViewCategoryIcon.setImageResource(element.getCategory().getIcon());
+			imageViewCategoryIcon.setImageResource(cover.getCategory().getIcon());
 			imageViewCategoryIcon.setBackgroundTintList(
 					new ColorStateList(
 							new int[][]{new int[0]},
 							new int[]{
-									ContextCompat.getColor(itemView.getContext(), element.getCategory().getColor())
+									ContextCompat.getColor(itemView.getContext(), cover.getCategory().getColor())
 							}));
 		}
 	}

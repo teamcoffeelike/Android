@@ -62,7 +62,7 @@ public class RecipeCoverFragment extends Fragment{
 
 		Glide.with(this)
 				.load(photo)
-				.apply(GlideUtils.recipeCover())
+				.apply(GlideUtils.recipeImage())
 				.transition(DrawableTransitionOptions.withCrossFade())
 				.into(imageViewCover);
 		if(photo!=null){

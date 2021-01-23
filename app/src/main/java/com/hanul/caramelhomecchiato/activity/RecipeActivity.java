@@ -48,6 +48,7 @@ public class RecipeActivity extends AppCompatActivity{
 
 	private ViewPager2 viewPager;
 	private TextView textViewIndex;
+	private View buttonOption;
 
 	private RecipePageAdapter adapter;
 
@@ -74,7 +75,7 @@ public class RecipeActivity extends AppCompatActivity{
 		recipeId = getIntent().getIntExtra(EXTRA_RECIPE_ID, 0);
 		if(recipeId==0) throw new IllegalStateException("RecipeActivity에 recipeId 제공되지 않음");
 
-		recipeEditTicket = RecipeEditEvent.subscribe(recipeId, id -> {
+		recipeEditTicket = RecipeEditEvent.subscribe(recipeId, (recipeId, newCategory) -> {
 			needsUpdate = true;
 			if(getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.RESUMED)){
 				update();
@@ -83,7 +84,7 @@ public class RecipeActivity extends AppCompatActivity{
 
 		viewPager = findViewById(R.id.viewPager);
 		textViewIndex = findViewById(R.id.textViewIndex);
-		View buttonOption = findViewById(R.id.buttonOption);
+		buttonOption = findViewById(R.id.buttonOption);
 
 		adapter = new RecipePageAdapter(this);
 		viewPager.setAdapter(adapter);
@@ -115,7 +116,7 @@ public class RecipeActivity extends AppCompatActivity{
 		});
 
 		buttonOption.setOnClickListener(v -> {
-			if(recipe!=null&&recipe.getCover().getAuthor().getId()==Auth.getInstance().expectLoginUser()){
+			if(recipe!=null){
 				popupMenu.show();
 			}
 		});
@@ -168,6 +169,7 @@ public class RecipeActivity extends AppCompatActivity{
 		if(indexCache >= 0&&indexCache<adapter.getItemCount()){
 			viewPager.setCurrentItem(indexCache);
 		}
+		buttonOption.setVisibility(recipe.getCover().getAuthor().getId()==Auth.getInstance().expectLoginUser() ? View.VISIBLE : View.INVISIBLE);
 		updateIndex();
 	}
 
