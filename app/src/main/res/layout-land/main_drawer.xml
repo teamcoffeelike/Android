@@ -107,6 +107,16 @@
 					app:layout_constraintTop_toBottomOf="@+id/likesMenu" />
 
 				<TextView
+					android:id="@+id/warmerMenu"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginTop="15dp"
+					android:text="@string/warmer"
+					android:textSize="20sp"
+					app:layout_constraintEnd_toEndOf="parent"
+					app:layout_constraintTop_toBottomOf="@+id/searchFriendsMenu" />
+
+				<TextView
 					android:id="@+id/settingsMenu"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
