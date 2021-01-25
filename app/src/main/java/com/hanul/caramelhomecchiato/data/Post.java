@@ -25,8 +25,17 @@ public class Post implements Parcelable{
 	private int likes;
 	private int reactions;
 	@Nullable private Boolean likedByYou;
+	@Nullable private Long likedDate;
 
-	public Post(int id, User author, @Nullable Uri image, String text, long postDate, int likes, int reactions, @Nullable Boolean likedByYou){
+	public Post(int id,
+	            User author,
+	            @Nullable Uri image,
+	            String text,
+	            long postDate,
+	            int likes,
+	            int reactions,
+	            @Nullable Boolean likedByYou,
+	            @Nullable Long likedDate){
 		this.id = id;
 		this.author = author;
 		this.image = image;
@@ -35,6 +44,7 @@ public class Post implements Parcelable{
 		this.likes = likes;
 		this.reactions = reactions;
 		this.likedByYou = likedByYou;
+		this.likedDate = likedDate;
 	}
 
 	protected Post(Parcel parcel){
@@ -50,6 +60,7 @@ public class Post implements Parcelable{
 			case 0: this.likedByYou = false; break;
 			default: this.likedByYou = true;
 		}
+		this.likedDate = parcel.readByte()==0 ? null : parcel.readLong();
 	}
 
 	@Override public int describeContents(){
@@ -64,6 +75,11 @@ public class Post implements Parcelable{
 		dest.writeInt(likes);
 		dest.writeInt(reactions);
 		dest.writeByte((byte)(likedByYou==null ? -1 : likedByYou ? 1 : 0));
+		if(likedDate==null) dest.writeByte((byte)0);
+		else{
+			dest.writeByte((byte)1);
+			dest.writeLong(likedDate);
+		}
 	}
 
 	public int getId(){
@@ -114,6 +130,12 @@ public class Post implements Parcelable{
 	public void setLikedByYou(@Nullable Boolean likedByYou){
 		this.likedByYou = likedByYou;
 	}
+	@Nullable public Long getLikedDate(){
+		return likedDate;
+	}
+	public void setLikedDate(@Nullable Long likedDate){
+		this.likedDate = likedDate;
+	}
 
 	@NonNull @Override public String toString(){
 		return "Post{"+
@@ -125,6 +147,7 @@ public class Post implements Parcelable{
 				", likes="+likes+
 				", reactions="+reactions+
 				", likedByYou="+likedByYou+
+				", likedDate="+likedDate+
 				'}';
 	}
 }

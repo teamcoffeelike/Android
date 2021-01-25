@@ -107,7 +107,8 @@ public class MainActivity extends AppCompatActivity{
 					.putExtra(RecipeListActivity.EXTRA_AUTHOR, Auth.getInstance().expectLoginUser()));
 		});
 		findViewById(R.id.followsMenu).setOnClickListener(v -> startActivity(new Intent(this, FollowsActivity.class)));
-		findViewById(R.id.likesMenu).setOnClickListener(v -> startActivity(new Intent(this, LikesActivity.class)));
+		findViewById(R.id.likesMenu).setOnClickListener(v -> startActivity(new Intent(this, LikesActivity.class)
+				.putExtra(LikesActivity.EXTRA_USER, Auth.getInstance().expectLoginUser())));
 		findViewById(R.id.searchFriendsMenu).setOnClickListener(v -> startActivity(new Intent(this, SearchFriendActivity.class)));
 		findViewById(R.id.settingsMenu).setOnClickListener(v -> startActivity(new Intent(this, SettingsActivity.class)));
 		findViewById(R.id.warmerMenu).setOnClickListener(v -> startActivity(new Intent(this, WarmerActivity.class)));

@@ -11,7 +11,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.gson.JsonObject;
 import com.hanul.caramelhomecchiato.R;
 import com.hanul.caramelhomecchiato.data.Post;
+import com.hanul.caramelhomecchiato.event.FollowingEvent;
 import com.hanul.caramelhomecchiato.event.PostDeleteEvent;
+import com.hanul.caramelhomecchiato.event.PostLikeEvent;
 import com.hanul.caramelhomecchiato.event.Ticket;
 import com.hanul.caramelhomecchiato.network.NetUtils;
 import com.hanul.caramelhomecchiato.network.PostService;
@@ -50,6 +52,8 @@ public class PostActivity extends AppCompatActivity{
 		PostService.INSTANCE.post(postId).enqueue(new BaseCallback(){
 			@Override public void onSuccessfulResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response, @NonNull JsonObject result){
 				Post post = NetUtils.GSON.fromJson(result, Post.class);
+				FollowingEvent.dispatch(post.getAuthor());
+				PostLikeEvent.dispatch(post);
 				postViewHandler.setPost(post);
 			}
 			@Override public void onErrorResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response, @NonNull String error){

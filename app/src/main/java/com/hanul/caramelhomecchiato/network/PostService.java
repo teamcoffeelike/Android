@@ -16,7 +16,7 @@ import retrofit2.http.POST;
 import retrofit2.http.Part;
 import retrofit2.http.Query;
 
-public interface PostService {
+public interface PostService{
 	PostService INSTANCE = NetUtils.RETROFIT.create(PostService.class);
 
 	@GET("recentPosts")
@@ -25,13 +25,16 @@ public interface PostService {
 	@GET("usersPosts")
 	Call<JsonObject> usersPosts(@Query("since") @Nullable Long since, @Query("pages") @Nullable Integer pages, @Query("id") int id);
 
+	@GET("likedPosts")
+	Call<JsonObject> likedPosts(@Query("since") @Nullable Long since, @Query("pages") @Nullable Integer pages, @Query("likedBy") int likedBy);
+
 	@GET("post")
 	Call<JsonObject> post(@Query("id") int id);
 
 	/*
 	 * static으로 안 하면 retrofit이 지랄발광함. https://github.com/square/retrofit/issues/1768
 	 */
-	static Call<JsonObject> writePost(String text, byte[] image) {
+	static Call<JsonObject> writePost(String text, byte[] image){
 		return INSTANCE.writePost(
 				MultipartBody.Part.createFormData("text", text),
 				MultipartBody.Part.createFormData("image", "image",

@@ -42,15 +42,10 @@ public class WarmerActivity extends AppCompatActivity{
 		textViewWarmer = findViewById(R.id.textViewWarmer);
 		textViewTemperature = findViewById(R.id.textViewTemperature);
 
-		buttonBluetooth.setOnClickListener(v -> {
-			BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-			if(!bluetoothAdapter.isEnabled()){
-				Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-				startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-			}
-		});
+		buttonBluetooth.setOnClickListener(v -> tryConnectToWarmer());
 
 		buttonWarmer.setOnClickListener(v -> {
+			if(!bluetoothHandler.isConnected()) return;
 			if(warmerOn){
 				bluetoothHandler.setWarmerOn(false);
 				warmerOn = false;
@@ -62,19 +57,16 @@ public class WarmerActivity extends AppCompatActivity{
 		});
 
 		bluetoothHandler.setOnStateChanged(state -> {
+			updateBluetoothButton();
 			switch(state){
-				case LOADING:
-					break;
 				case FAIL:
 					Toast.makeText(this, "블루투스 연결에 실패하였습니다.", Toast.LENGTH_SHORT).show();
-					buttonBluetooth.setBackgroundTintList(null);
-					textViewBluetooth.setText("블루투스 상태 : 비활성화");
 					this.warmerOn = false;
 					updateWarmerButtonState();
 					break;
+				case LOADING:
 				case WARMER_ON:
 				case WARMER_OFF:
-					bluetoothIcon();
 					break;
 			}
 		});
@@ -83,11 +75,12 @@ public class WarmerActivity extends AppCompatActivity{
 			textViewTemperature.setText(getString(R.string.n_temperature, temperature));
 		});
 
-		checkBluetooth();
+		tryConnectToWarmer();
 		requestTemperature();
 	}
 
-	private void checkBluetooth(){
+	private void tryConnectToWarmer(){
+		if(bluetoothHandler.isConnected()) return;
 		BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 		if(bluetoothAdapter==null){
 			Toast.makeText(getApplicationContext(), "기기가 블루투스를 지원하지 않습니다.", Toast.LENGTH_LONG).show();
@@ -97,13 +90,7 @@ public class WarmerActivity extends AppCompatActivity{
 		if(!bluetoothAdapter.isEnabled()){
 			Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
 			startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-		}else selectDevice(bluetoothAdapter);
-	}
-
-	// 블루투스 지원하며 활성 상태인 경우.
-	private void selectDevice(BluetoothAdapter bluetoothAdapter){
-		bluetoothHandler.searchDeviceAndRun(bluetoothAdapter);
-		bluetoothIcon();
+		}else bluetoothHandler.searchDeviceAndRun(bluetoothAdapter);
 	}
 
 	private void requestTemperature(){
@@ -113,10 +100,15 @@ public class WarmerActivity extends AppCompatActivity{
 				3000);
 	}
 
-	private void bluetoothIcon(){
-		buttonBluetooth.setBackgroundTintList(new ColorStateList(new int[][]{new int[0]},
-				new int[]{ContextCompat.getColor(this, R.color.BlueTooth)}));
-		textViewBluetooth.setText("블루투스 상태 : 활성화");
+	private void updateBluetoothButton(){
+		if(bluetoothHandler.isConnected()){
+			buttonBluetooth.setBackgroundTintList(new ColorStateList(new int[][]{new int[0]},
+					new int[]{ContextCompat.getColor(this, R.color.BlueTooth)}));
+			textViewBluetooth.setText("블루투스 상태 : 활성화");
+		}else{
+			buttonBluetooth.setBackgroundTintList(null);
+			textViewBluetooth.setText("블루투스 상태 : 비활성화");
+		}
 	}
 
 	private void updateWarmerButtonState(){
@@ -144,7 +136,7 @@ public class WarmerActivity extends AppCompatActivity{
 					return;
 				}
 
-				selectDevice(bluetoothAdapter);
+				bluetoothHandler.searchDeviceAndRun(bluetoothAdapter);
 			}else if(resultCode==RESULT_CANCELED){ // 블루투스 비활성화 상태 (종료)
 				Toast.makeText(getApplicationContext(), "블루투스 비활성화 상태이므로 \n워머를 사용할 수 없습니다.",
 						Toast.LENGTH_LONG).show();

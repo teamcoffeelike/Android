@@ -139,6 +139,10 @@ public class BluetoothHandler extends LifecycleHandler{
 		closeSocket();
 	}
 
+	public boolean isConnected(){
+		return socket!=null;
+	}
+
 	@MainThread
 	public void setWarmerOn(boolean warmerOn){
 		if(socket!=null){

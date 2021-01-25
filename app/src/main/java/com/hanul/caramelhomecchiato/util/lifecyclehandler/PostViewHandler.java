@@ -26,6 +26,8 @@ import com.hanul.caramelhomecchiato.activity.PostActivity;
 import com.hanul.caramelhomecchiato.activity.WritePostActivity;
 import com.hanul.caramelhomecchiato.data.Post;
 import com.hanul.caramelhomecchiato.event.PostDeleteEvent;
+import com.hanul.caramelhomecchiato.event.PostLikeEvent;
+import com.hanul.caramelhomecchiato.event.Ticket;
 import com.hanul.caramelhomecchiato.network.PostService;
 import com.hanul.caramelhomecchiato.util.Auth;
 import com.hanul.caramelhomecchiato.util.BaseCallback;
@@ -55,9 +57,12 @@ public class PostViewHandler{
 
 	@Nullable private Post post;
 
+	private Ticket postLikeTicket;
+
 	public PostViewHandler(ComponentActivity activity, boolean fullScreenMode){
 		this(activity,
 				new UserViewHandler(activity),
+				activity.findViewById(R.id.postContentLayout),
 				activity.findViewById(R.id.imageViewPost),
 				activity.findViewById(R.id.textViewPost),
 				activity.findViewById(R.id.buttonLike),
@@ -69,6 +74,7 @@ public class PostViewHandler{
 	public PostViewHandler(View rootView, boolean fullScreenMode){
 		this(rootView.getContext(),
 				new UserViewHandler(rootView),
+				rootView.findViewById(R.id.postContentLayout),
 				rootView.findViewById(R.id.imageViewPost),
 				rootView.findViewById(R.id.textViewPost),
 				rootView.findViewById(R.id.buttonLike),
@@ -79,6 +85,7 @@ public class PostViewHandler{
 	}
 	public PostViewHandler(Context context,
 	                       UserViewHandler userViewHandler,
+	                       View postContentLayout,
 	                       ImageView imageViewPost,
 	                       TextView textViewPost,
 	                       SmallBangView buttonLike,
@@ -120,7 +127,7 @@ public class PostViewHandler{
 			divider.setVisibility(View.GONE);
 		}else{
 			imageViewPost.setScaleType(ImageView.ScaleType.CENTER_CROP);
-			imageViewPost.setOnClickListener(v -> {
+			postContentLayout.setOnClickListener(v -> {
 				if(post!=null){
 					context.startActivity(new Intent(context, PostActivity.class)
 							.putExtra(PostActivity.EXTRA_POST_ID, post.getId()));
@@ -149,11 +156,13 @@ public class PostViewHandler{
 			if(this.post!=null){
 				Boolean likedByYou = this.post.getLikedByYou();
 				if(likedByYou!=null){
-					Log.d(TAG, "PostViewHandler: "+likedByYou);
 					boolean newLike = !likedByYou;
-					PostService.INSTANCE.likePost(this.post.getId(), newLike).enqueue(new BaseCallback(){
+					int id = this.post.getId();
+					PostService.INSTANCE.likePost(id, newLike).enqueue(new BaseCallback(){
 						@Override public void onSuccessfulResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response, @NonNull JsonObject result){
 							Log.d(TAG, "likePost: success");
+							int likes = result.get("likes").getAsInt();
+							PostLikeEvent.dispatch(id, newLike, likes);
 						}
 						@Override public void onErrorResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response, @NonNull String error){
 							Log.e(TAG, "likePost: "+error);
@@ -165,13 +174,6 @@ public class PostViewHandler{
 							Log.e(TAG, "likePost: ", t);
 						}
 					});
-					this.post.setLikedByYou(newLike);
-					this.post.setLikes(this.post.getLikes()+(newLike ? 1 : -1));
-					buttonLike.setSelected(newLike);
-					textViewLikes.setText(context.getString(R.string.n_likes, this.post.getLikes()));
-					if(newLike){
-						buttonLike.likeAnimation();
-					}
 				}
 			}
 		});
@@ -184,6 +186,7 @@ public class PostViewHandler{
 		this.post = post;
 
 		userViewHandler.setUser(post==null ? null : post.getAuthor());
+		if(this.postLikeTicket!=null) postLikeTicket.unsubscribe();
 
 		if(post!=null){
 			Glide.with(context)
@@ -200,12 +203,29 @@ public class PostViewHandler{
 			buttonPostOption.setVisibility(
 					post.getAuthor().getId()!=Auth.getInstance().expectLoginUser() ?
 							View.GONE : View.VISIBLE); // TODO ????
+
+			this.postLikeTicket = PostLikeEvent.subscribe(post.getId(), this::onPostLiked);
 		}else{
 			Glide.with(context)
 					.load((Uri)null)
 					.apply(fullScreenMode ? GlideUtils.fullScreenPostImage() : GlideUtils.postImage())
 					.transition(DrawableTransitionOptions.withCrossFade())
 					.into(imageViewPost);
+		}
+	}
+
+	private void onPostLiked(boolean liked, int likes){
+		if(this.post!=null){
+			this.post.setLikedByYou(liked);
+			this.post.setLikes(likes);
+			textViewLikes.setText(context.getString(R.string.n_likes, likes));
+			setButtonLikeState(liked);
+		}
+	}
+	private void setButtonLikeState(boolean liked){
+		if(buttonLike.isSelected()!=liked){
+			buttonLike.setSelected(liked);
+			if(liked) buttonLike.likeAnimation();
 		}
 	}
 
