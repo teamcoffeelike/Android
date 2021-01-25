@@ -224,7 +224,13 @@ public class PostViewHandler{
 	private void setButtonLikeState(boolean liked){
 		if(buttonLike.isSelected()!=liked){
 			buttonLike.setSelected(liked);
-			if(liked) buttonLike.likeAnimation();
+			if(liked){
+				try{
+					buttonLike.likeAnimation();
+				}catch(NullPointerException npe){
+					Log.e(TAG, "setButtonLikeState: 야이 xx xxx아!!!", npe);
+				}
+			}
 		}
 	}
 
