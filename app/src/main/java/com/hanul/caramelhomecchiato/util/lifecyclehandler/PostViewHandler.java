@@ -149,7 +149,6 @@ public class PostViewHandler{
 			return true;
 		});
 
-		// TODO 작성자에게만 수정/삭제 권한이 있어야함!
 		buttonPostOption.setOnClickListener(v -> popupMenu.show());
 
 		buttonLike.setOnClickListener(v -> {
@@ -202,7 +201,7 @@ public class PostViewHandler{
 
 			buttonPostOption.setVisibility(
 					post.getAuthor().getId()!=Auth.getInstance().expectLoginUser() ?
-							View.GONE : View.VISIBLE); // TODO ????
+							View.GONE : View.VISIBLE);
 
 			this.postLikeTicket = PostLikeEvent.subscribe(post.getId(), this::onPostLiked);
 		}else{

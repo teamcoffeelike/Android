@@ -45,7 +45,7 @@ public class WriteRecipeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 					.inflate(R.layout.view_write_recipe_cover, parent, false));
 		}else{
 			return new Step(LayoutInflater.from(parent.getContext())
-					.inflate(R.layout.view_write_recipe_step, parent, false)); // TODO
+					.inflate(R.layout.view_write_recipe_step, parent, false));
 		}
 	}
 	@Override public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position){

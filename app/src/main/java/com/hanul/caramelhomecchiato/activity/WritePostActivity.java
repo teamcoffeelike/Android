@@ -187,7 +187,6 @@ public class WritePostActivity extends AppCompatActivity{
 						finish();
 					}
 					@Override public void onErrorResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response, @NonNull String error){
-						// TODO
 						Log.e(TAG, "profile: Error: "+error);
 						error();
 					}
