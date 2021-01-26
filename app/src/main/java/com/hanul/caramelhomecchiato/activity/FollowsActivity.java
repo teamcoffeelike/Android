@@ -43,8 +43,8 @@ public class FollowsActivity extends AppCompatActivity{
 
 		@Override public CharSequence getPageTitle(int position){
 			switch(position){
-				case 0: return "팔로워";
-				case 1: return "팔로잉";
+				case 0: return getString(R.string.tab_follower);
+				case 1: return getString(R.string.tab_following);
 				default: throw new IndexOutOfBoundsException("position");
 			}
 		}
