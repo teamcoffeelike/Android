@@ -48,7 +48,7 @@
 	<string name="button_write_post">글쓰기</string>
 	<string name="button_edit_profile">프로필 편집</string>
 	<string name="tab_follower">팔로워</string>
-	<string name="tab_following">팔로잉</string>
+	<string name="tab_following">팔로우</string>
 	<string name="post_list_error">포스트를 불러오는 도중 에러가 발생했습니다.</string>
 	<string name="post_list_end">.</string>
 	<string name="recipe_category_hot_coffee">HOT Coffee</string>
