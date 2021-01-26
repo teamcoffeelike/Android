@@ -11,8 +11,11 @@
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:layout_margin="8dp"
+		android:hint="@string/hint_search_name"
+		android:importantForAutofill="no"
+		android:maxLines="1"
+		android:paddingHorizontal="15dp"
 		android:theme="@style/EditText"
-		android:paddingLeft="15dp"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toTopOf="parent" />
@@ -22,9 +25,9 @@
 		android:layout_width="match_parent"
 		android:layout_height="0dp"
 		android:layout_margin="8dp"
+		app:layout_constraintBottom_toBottomOf="parent"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintBottom_toBottomOf="parent"
-		app:layout_constraintTop_toBottomOf="@+id/editTextSearchName"/>
+		app:layout_constraintTop_toBottomOf="@+id/editTextSearchName" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
