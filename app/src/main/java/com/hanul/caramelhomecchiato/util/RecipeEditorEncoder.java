@@ -52,6 +52,21 @@ import okhttp3.RequestBody;
  * B : (uint8)
  * I : (int32)
  * NULL : (uint8 0)
+ *
+ * # 바이트 상수
+ * MODE_WRITE : '1';
+ * MODE_EDIT : '2';
+ * SET_CATEGORY : 'c';
+ * SET_TITLE : 't';
+ * SET_COVER_IMAGE : 'i';
+ * SET_TOTAL_STEP_COUNT : 'q';
+ * NEW_STEP : 'n';
+ * SELECT_STEP : 's';
+ * MOVE_STEP : 'm';
+ * REMOVE_STEP : 'r';
+ * SET_STEP_IMAGE : 'z';
+ * REMOVE_STEP_IMAGE : 'x';
+ * SET_STEP_TEXT : 'v';
  * </pre>
  * ㅅㅂㅋㅋ<br>
  * 레시피 수정을 위한 작은 domain specific regular language.<br>
