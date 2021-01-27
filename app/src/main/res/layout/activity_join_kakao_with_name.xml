@@ -15,34 +15,25 @@
 		app:layout_constraintStart_toStartOf="parent"
 		app:layout_constraintTop_toTopOf="parent">
 
-		<TextView
-			android:id="@+id/textView3"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:text="이름을 입력하세요."
-			app:layout_constraintEnd_toEndOf="parent"
-			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toTopOf="parent" />
-
 		<EditText
 			android:id="@+id/editTextName"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:layout_marginTop="80dp"
 			android:ems="10"
 			android:gravity="center"
 			android:inputType="textPersonName"
-			android:text="Name"
+			android:hint="이름을 입력하세요."
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toBottomOf="@id/textView3" />
+			app:layout_constraintTop_toTopOf="parent"/>
 
 		<Button
 			android:id="@+id/buttonJoin"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:layout_marginTop="80dp"
-			android:text="ㅇㅋ"
+			android:text="확인"
+			android:backgroundTint="@color/TerraCotta"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toBottomOf="@id/editTextName"/>

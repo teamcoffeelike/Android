@@ -19,8 +19,9 @@
 		<!-- 로고 -->
 		<ImageView
 			android:id="@+id/imageViewLogo"
-			android:layout_width="wrap_content"
+			android:layout_width="100dp"
 			android:layout_height="100dp"
+			android:layout_marginLeft="7dp"
 			android:src="@drawable/logo"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintStart_toStartOf="parent"
@@ -56,8 +57,7 @@
 				android:inputType="textPersonName"
 				android:paddingStart="10dp"
 				android:paddingEnd="10dp"
-				android:textSize="16sp"
-				android:theme="@style/EditText" />
+				android:textSize="16sp" />
 		</LinearLayout>
 
 		<!-- 로그인 PW 폼 -->
@@ -90,7 +90,6 @@
 				android:paddingStart="10dp"
 				android:paddingEnd="10dp"
 				android:textSize="16sp"
-				android:theme="@style/EditText"
 				app:layout_constraintEnd_toEndOf="parent"
 				app:layout_constraintStart_toStartOf="parent"
 				app:layout_constraintTop_toBottomOf="@+id/editTextId" />

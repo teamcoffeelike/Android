@@ -19,8 +19,9 @@
 
 		<ImageView
 			android:id="@+id/imageView"
-			android:layout_width="wrap_content"
+			android:layout_width="100dp"
 			android:layout_height="100dp"
+			android:layout_marginLeft="7dp"
 			android:contentDescription="@string/description_logo"
 			android:src="@drawable/logo"
 			app:layout_constraintBottom_toTopOf="@id/textView"
