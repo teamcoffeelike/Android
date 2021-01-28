@@ -138,7 +138,7 @@ public class WarmerActivity extends AppCompatActivity{
 
 				bluetoothHandler.searchDeviceAndRun(bluetoothAdapter);
 			}else if(resultCode==RESULT_CANCELED){ // 블루투스 비활성화 상태 (종료)
-				Toast.makeText(getApplicationContext(), "블루투스 비활성화 상태이므로 \n워머를 사용할 수 없습니다.",
+				Toast.makeText(getApplicationContext(), "블루투스 비활성화 상태이므로 \nMiniOn을 사용할 수 없습니다.",
 						Toast.LENGTH_LONG).show();
 			}
 		}
