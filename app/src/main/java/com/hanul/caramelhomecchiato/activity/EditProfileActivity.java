@@ -1,6 +1,7 @@
 package com.hanul.caramelhomecchiato.activity;
 
 import android.Manifest;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -327,8 +328,25 @@ public class EditProfileActivity extends AppCompatActivity{
 		}
 	}
 
+	private Uri generatePublicImageFile(String type){
+		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q){
+			ContentValues contentValues = new ContentValues();
+			contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, generateFilename(type));
+			contentValues.put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg");
+			contentValues.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES);
+			return getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues);
+		}else{
+			@SuppressWarnings("deprecation") File image = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), generateFilename(type));
+			return FileProvider.getUriForFile(this, FILE_PROVIDER_AUTH, image);
+		}
+	}
+
 	private File generateNewImageFile(String type){
-		return new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), "Caramel_"+type+"_"+DATE_FORMAT.format(new Date())+".jpg");
+		return new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), generateFilename(type));
+	}
+
+	private String generateFilename(String type){
+		return "Caramel_"+type+"_"+DATE_FORMAT.format(new Date())+".jpg";
 	}
 
 	// TODO 작동안함
@@ -393,7 +411,7 @@ public class EditProfileActivity extends AppCompatActivity{
 	}
 
 	public void cropImage(Uri photoUri){
-		Uri output = FileProvider.getUriForFile(this, FILE_PROVIDER_AUTH, generateNewImageFile("Cropped"));
+		Uri output = generatePublicImageFile("Cropped");
 		Log.i(TAG, "cropImage: photoUri : "+photoUri+" / outputUri : "+output);
 
 		Intent intent = new Intent("com.android.camera.action.CROP")
