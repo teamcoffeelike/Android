@@ -21,7 +21,7 @@ android {
             minifyEnabled false
             // shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            buildConfigField("String", "API_ADDRESS", '"¯\\_(ツ)_/¯"') // TODO
+            buildConfigField("String", "API_ADDRESS", '"192.168.0.21"')
         }
         debug {
             // InetAccess.getLocalHost()는 실패할 수 있다고 하는데 그건 잘 모르겠고ㅎ
