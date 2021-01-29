@@ -275,20 +275,15 @@ public class EditProfileActivity extends AppCompatActivity{
 
 	/* 갤러리에서 이미지 가져오기 */
 	private void pickImage(boolean requestPermission){
-		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
-			if(checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)!=PackageManager.PERMISSION_GRANTED){
-				if(requestPermission){
-					requestPermissions(new String[]{
-							Manifest.permission.READ_EXTERNAL_STORAGE
-					}, GRANT_IMAGE_PERMS);
-				}else new AlertDialog.Builder(this)
-						.setMessage("요청을 처리하기 위한 권한이 없습니다.")
-						.setPositiveButton("OK", null)
-						.show();
-				return;
-			}
+		boolean permission;
+		if(requestPermission) permission = checkPermissionForRequest(GRANT_IMAGE_PERMS,
+				Manifest.permission.READ_EXTERNAL_STORAGE,
+				Manifest.permission.WRITE_EXTERNAL_STORAGE);
+		else permission = checkPermission(
+				Manifest.permission.READ_EXTERNAL_STORAGE,
+				Manifest.permission.WRITE_EXTERNAL_STORAGE);
+		if(!permission) return;
 
-		}
 		spinnerHandler.show();
 		startActivityForResult(
 				new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
@@ -302,20 +297,17 @@ public class EditProfileActivity extends AppCompatActivity{
 			Toast.makeText(this, "저장 불가", Toast.LENGTH_SHORT).show();
 			return;
 		}
-		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
-			if(checkSelfPermission(Manifest.permission.CAMERA)!=PackageManager.PERMISSION_GRANTED||
-					checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)!=PackageManager.PERMISSION_GRANTED){
-				if(requestPermission){
-					requestPermissions(new String[]{
-							Manifest.permission.CAMERA,
-							Manifest.permission.READ_EXTERNAL_STORAGE
-					}, GRANT_CAMERA_PERMS);
-				}else new AlertDialog.Builder(this)
-						.setMessage("요청을 처리하기 위한 권한이 없습니다.")
-						.setPositiveButton("OK", null).show();
-				return;
-			}
-		}
+		boolean permission;
+		if(requestPermission) permission = checkPermissionForRequest(GRANT_CAMERA_PERMS,
+				Manifest.permission.CAMERA,
+				Manifest.permission.READ_EXTERNAL_STORAGE,
+				Manifest.permission.WRITE_EXTERNAL_STORAGE);
+		else permission = checkPermission(
+				Manifest.permission.CAMERA,
+				Manifest.permission.READ_EXTERNAL_STORAGE,
+				Manifest.permission.WRITE_EXTERNAL_STORAGE);
+		if(!permission) return;
+
 		spinnerHandler.show();
 		Intent takePhotoIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 		if(takePhotoIntent.resolveActivity(getPackageManager())!=null){
@@ -328,17 +320,36 @@ public class EditProfileActivity extends AppCompatActivity{
 		}
 	}
 
-	private Uri generatePublicImageFile(String type){
-		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q){
-			ContentValues contentValues = new ContentValues();
-			contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, generateFilename(type));
-			contentValues.put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg");
-			contentValues.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES);
-			return getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues);
-		}else{
-			@SuppressWarnings("deprecation") File image = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), generateFilename(type));
-			return FileProvider.getUriForFile(this, FILE_PROVIDER_AUTH, image);
+	private boolean checkPermissionForRequest(int permissionRequestCode, String... permissions){
+		if(Build.VERSION.SDK_INT<Build.VERSION_CODES.M) return true;
+		for(String permission : permissions){
+			if(checkSelfPermission(permission)!=PackageManager.PERMISSION_GRANTED){
+				requestPermissions(permissions, permissionRequestCode);
+				return false;
+			}
 		}
+		return true;
+	}
+
+	private boolean checkPermission(String... permissions){
+		if(Build.VERSION.SDK_INT<Build.VERSION_CODES.M) return true;
+		for(String permission : permissions){
+			if(checkSelfPermission(permission)!=PackageManager.PERMISSION_GRANTED){
+				new AlertDialog.Builder(this)
+						.setMessage("요청을 처리하기 위한 권한이 없습니다.")
+						.setPositiveButton("OK", null).show();
+				return false;
+			}
+		}
+		return true;
+	}
+
+	private Uri generatePublicImageFile(String type){
+		ContentValues contentValues = new ContentValues();
+		contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, generateFilename(type));
+		contentValues.put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg");
+		contentValues.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES);
+		return getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues);
 	}
 
 	private File generateNewImageFile(String type){
@@ -423,8 +434,6 @@ public class EditProfileActivity extends AppCompatActivity{
 				.putExtra("scale", true)
 				.putExtra(MediaStore.EXTRA_OUTPUT, output)
 				.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
-
-		permissionHandler.grantPermissions(intent, output, Intent.FLAG_GRANT_READ_URI_PERMISSION|Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
 
 		startActivityForResult(intent, REQUEST_CROP);
 	}
