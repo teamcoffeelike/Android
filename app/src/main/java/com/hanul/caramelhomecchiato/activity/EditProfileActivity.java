@@ -336,7 +336,7 @@ public class EditProfileActivity extends AppCompatActivity{
 			contentValues.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES);
 			return getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues);
 		}else{
-			@SuppressWarnings("deprecation") File image = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), generateFilename(type));
+			@SuppressWarnings("deprecation") File image = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), generateFilename(type));
 			return FileProvider.getUriForFile(this, FILE_PROVIDER_AUTH, image);
 		}
 	}
