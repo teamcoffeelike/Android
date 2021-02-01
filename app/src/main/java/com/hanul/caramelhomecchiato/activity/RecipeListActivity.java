@@ -128,9 +128,6 @@ public class RecipeListActivity extends AppCompatActivity implements AbstractScr
 	}
 
 	@Override public void append(List<RecipeCover> recipes, boolean endOfList, boolean reset){
-		for(RecipeCover r : recipes){
-			FollowingEvent.dispatch(r.getAuthor());
-		}
 		List<RecipeCover> elements = recipeListAdapter.elements();
 		if(reset){
 			elements.clear();
@@ -140,6 +137,9 @@ public class RecipeListActivity extends AppCompatActivity implements AbstractScr
 			int size = elements.size();
 			elements.addAll(recipes);
 			recipeListAdapter.notifyItemRangeInserted(size, recipes.size());
+		}
+		for(RecipeCover r : recipes){
+			FollowingEvent.dispatch(r.getAuthor());
 		}
 		textViewError.setVisibility(View.GONE);
 		this.endOfList.setVisibility(endOfList ? View.VISIBLE : View.GONE);

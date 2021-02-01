@@ -52,9 +52,9 @@ public class PostActivity extends AppCompatActivity{
 		PostService.INSTANCE.post(postId).enqueue(new BaseCallback(){
 			@Override public void onSuccessfulResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response, @NonNull JsonObject result){
 				Post post = NetUtils.GSON.fromJson(result, Post.class);
+				postViewHandler.setPost(post);
 				FollowingEvent.dispatch(post.getAuthor());
 				PostLikeEvent.dispatch(post);
-				postViewHandler.setPost(post);
 			}
 			@Override public void onErrorResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response, @NonNull String error){
 				if("no_post".equals(error)){

@@ -20,10 +20,10 @@ import com.hanul.caramelhomecchiato.R;
 import com.hanul.caramelhomecchiato.adapter.BaseAdapter;
 import com.hanul.caramelhomecchiato.adapter.UserViewAdapter;
 import com.hanul.caramelhomecchiato.data.User;
+import com.hanul.caramelhomecchiato.event.FollowingEvent;
 import com.hanul.caramelhomecchiato.network.NetUtils;
 import com.hanul.caramelhomecchiato.network.UserService;
 import com.hanul.caramelhomecchiato.util.BaseCallback;
-import com.hanul.caramelhomecchiato.event.FollowingEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,7 +82,6 @@ public class FollowerFragment extends Fragment{
 				for(JsonElement userElement : users){
 					User user = NetUtils.GSON.fromJson(userElement, User.class);
 					usersList.add(user);
-					FollowingEvent.dispatch(user);
 				}
 				setUsers(usersList);
 			}
@@ -106,5 +105,10 @@ public class FollowerFragment extends Fragment{
 		elements.clear();
 		if(users!=null) elements.addAll(users);
 		adapter.notifyDataSetChanged();
+		if(users!=null){
+			for(User user : users){
+				FollowingEvent.dispatch(user);
+			}
+		}
 	}
 }

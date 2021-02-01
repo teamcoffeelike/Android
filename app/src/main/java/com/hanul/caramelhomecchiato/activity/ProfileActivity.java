@@ -51,8 +51,8 @@ public class ProfileActivity extends AppCompatActivity{
 		UserService.INSTANCE.profile(userId).enqueue(new BaseCallback(){
 			@Override public void onSuccessfulResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response, @NonNull JsonObject result){
 				UserProfile profile = NetUtils.GSON.fromJson(result, UserProfile.class);
-				FollowingEvent.dispatch(profile);
 				fragment.setProfile(profile);
+				FollowingEvent.dispatch(profile);
 			}
 			@Override public void onErrorResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response, @NonNull String error){
 				Log.e(TAG, "profile: Error: "+error);

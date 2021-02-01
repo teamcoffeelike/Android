@@ -65,10 +65,6 @@ public abstract class AbstractPostListFragment extends Fragment implements PostS
 	}
 
 	@Override public void append(List<Post> posts, boolean endOfList, boolean reset){
-		for(Post post : posts){
-			FollowingEvent.dispatch(post.getAuthor());
-			PostLikeEvent.dispatch(post);
-		}
 		List<Post> elements = postAdapter.elements();
 		if(reset){
 			elements.clear();
@@ -78,6 +74,10 @@ public abstract class AbstractPostListFragment extends Fragment implements PostS
 			int size = elements.size();
 			elements.addAll(posts);
 			postAdapter.notifyItemRangeInserted(size, posts.size());
+		}
+		for(Post post : posts){
+			FollowingEvent.dispatch(post.getAuthor());
+			PostLikeEvent.dispatch(post);
 		}
 		textViewError.setVisibility(View.GONE);
 		this.endOfList.setVisibility(endOfList ? View.VISIBLE : View.GONE);
