@@ -3,6 +3,16 @@ plugins {
 }
 
 android {
+    signingConfigs {
+        release {
+            Properties properties = new Properties()
+            properties.load(project.rootProject.file('local.properties').newDataInputStream())
+            storeFile file('caramel.jks')
+            storePassword properties.get('storePassword')
+            keyAlias properties.get('keyAlias')
+            keyPassword properties.get('keyPassword')
+        }
+    }
     compileSdkVersion 30
     buildToolsVersion "30.0.2"
 
@@ -14,6 +24,7 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        signingConfig signingConfigs.release
     }
 
     buildTypes {
@@ -21,7 +32,8 @@ android {
             minifyEnabled false
             // shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            buildConfigField("String", "API_ADDRESS", '"192.168.0.21"')
+            buildConfigField("String", "API_ADDRESS", '"115.23.60.116:81"')
+            signingConfig signingConfigs.release
         }
         debug {
             // InetAccess.getLocalHost()는 실패할 수 있다고 하는데 그건 잘 모르겠고ㅎ
