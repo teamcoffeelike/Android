@@ -9,38 +9,38 @@
 	<LinearLayout
 		android:layout_width="match_parent"
 		android:layout_height="0dp"
-		android:orientation="horizontal"
 		android:layout_weight="0.8"
+		android:orientation="horizontal"
 		android:weightSum="3">
 
 		<Button
 			android:id="@+id/buttonTimerFiveMin"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:text="+5분"
-			android:layout_weight="1"
 			android:layout_gravity="center"
+			android:layout_margin="10dp"
+			android:layout_weight="1"
 			android:backgroundTint="@color/CadetBlueCrayola"
-			android:layout_margin="10dp"/>
+			android:text="+5분" />
 
 		<Button
 			android:id="@+id/buttonTimerOneMin"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:text="+1분"
-			android:layout_weight="1"
 			android:layout_gravity="center"
-			android:backgroundTint="@color/CadetBlueCrayola"/>
+			android:layout_weight="1"
+			android:backgroundTint="@color/CadetBlueCrayola"
+			android:text="+1분" />
 
 		<Button
 			android:id="@+id/buttonTimerSec"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:text="+15초"
-			android:layout_weight="1"
 			android:layout_gravity="center"
+			android:layout_margin="10dp"
+			android:layout_weight="1"
 			android:backgroundTint="@color/CadetBlueCrayola"
-			android:layout_margin="10dp"/>
+			android:text="+15초" />
 
 	</LinearLayout>
 
@@ -55,29 +55,31 @@
 			android:id="@+id/textTimerCountdown"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
+			android:layout_weight="1.5"
+			android:autoSizeTextType="uniform"
 			android:gravity="center"
-			android:text="00:00"
+			android:maxLines="1"
+			android:text="00:00:000"
 			android:textColor="@color/CadetBlueCrayola"
-			android:textSize="120sp"
-			android:layout_weight="1.5"/>
+			android:textSize="120sp" />
 
 		<ImageButton
 			android:id="@+id/imgBtnReset"
+			style="?android:attr/borderlessButtonStyle"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:src="@drawable/ic_timer_reset"
-			style="?android:attr/borderlessButtonStyle"
 			android:layout_gravity="center"
 			android:layout_marginTop="10dp"
-			android:layout_weight="0.5"/>
+			android:layout_weight="0.5"
+			android:src="@drawable/ic_timer_reset" />
 
 	</LinearLayout>
 
 	<LinearLayout
 		android:layout_width="match_parent"
 		android:layout_height="0dp"
-		android:orientation="horizontal"
 		android:layout_weight="0.8"
+		android:orientation="horizontal"
 		android:weightSum="2">
 
 		<Button

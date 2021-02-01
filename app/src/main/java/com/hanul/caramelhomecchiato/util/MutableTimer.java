@@ -4,26 +4,27 @@ import android.os.CountDownTimer;
 
 import androidx.annotation.Nullable;
 
-public class MutableTimer {
+public class MutableTimer{
 	private static final long TIME_INTERVAL = 100;
 
-	private CountDownTimer timer;
+	@Nullable private CountDownTimer timer;
 
 	private long initialTime;
 	private long mostRecentTime;
 
-	@Nullable private OnTimeUpdatedListener onTimeUpdatedListener;
+	@Nullable private OnTimeUpdatedListener listener;
 
-	public long getInitialTime() {
+	public long getInitialTime(){
 		return initialTime;
 	}
-	public void setInitialTime(long initialTime) {
+	public void setInitialTime(long initialTime){
 		this.initialTime = initialTime;
-		if(mostRecentTime==0) notifyTime();
+		if(mostRecentTime==0)
+			listener.onStopped(initialTime);
 	}
 
 	public void setOnTimeUpdatedListener(@Nullable OnTimeUpdatedListener listener){
-		onTimeUpdatedListener = listener;
+		this.listener = listener;
 	}
 
 	public boolean isRunning(){
@@ -44,20 +45,20 @@ public class MutableTimer {
 
 	private void start(long userSettingTime){
 		if(timer!=null) timer.cancel();
-		timer = new CountDownTimer(userSettingTime, TIME_INTERVAL) {
+		timer = new CountDownTimer(userSettingTime, TIME_INTERVAL){
 			@Override
-			public void onTick(long millisUntilFinished) {
+			public void onTick(long millisUntilFinished){
 				mostRecentTime = millisUntilFinished;
-				notifyTime();
+				listener.onResumed(mostRecentTime);
 			}
 
 			@Override
-			public void onFinish() {
+			public void onFinish(){
 				stop();
 			}
 		};
-		mostRecentTime = initialTime;
-		notifyTime();
+		mostRecentTime = userSettingTime;
+		listener.onResumed(mostRecentTime);
 		timer.start();
 	}
 
@@ -66,36 +67,36 @@ public class MutableTimer {
 			timer.cancel();
 			timer = null;
 			mostRecentTime = 0;
-			notifyTime();
+			listener.onStopped(initialTime);
 		}
 	}
 
 	public void pause(){
-		if (timer!=null){
+		if(timer!=null){
 			timer.cancel();
 			timer = null;
+			listener.onPaused(mostRecentTime);
 		}
 	}
 
 	/*시간을 더했을때 멈추고 멈추었을때 시간을 저장하고있어야하고 멈춘시간+시간더하기 하고 다시 시작하는 메소드...^^...*/
-	public void addTime(long time) {
+	public void addTime(long time){
 		if(isRunning()){
 			pause();
 			mostRecentTime += time;
 			resume();
 		}else if(isPaused()){
 			mostRecentTime += time;
-			notifyTime();
+			listener.onPaused(mostRecentTime);
 		}else{
 			setInitialTime(initialTime+time);
 		}
 	}
 
-	private void notifyTime(){
-		if(onTimeUpdatedListener!=null) onTimeUpdatedListener.onTimeUpdated(mostRecentTime==0 ? initialTime : mostRecentTime);
-	}
 
-	public interface OnTimeUpdatedListener {
-		void onTimeUpdated(long t);
+	public interface OnTimeUpdatedListener{
+		void onStopped(long t);
+		void onResumed(long t);
+		void onPaused(long t);
 	}
 }

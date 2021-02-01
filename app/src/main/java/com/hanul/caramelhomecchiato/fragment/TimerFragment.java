@@ -18,112 +18,71 @@ import com.hanul.caramelhomecchiato.util.MutableTimer;
 import java.util.Locale;
 
 public class TimerFragment extends Fragment{
-
-	private Button btnFiveMin;
-	private Button btnOneMin;
-	private Button btnSec;
-	private Button btnStartPause;
-	private Button btnStop;
-	private TextView tvCountDown;
-	private ImageButton ImgBtnReset;
+	private Button buttonTimerFiveMin;
+	private Button buttonTimerOneMin;
+	private Button buttonTimerSec;
+	private Button buttonTimerStartPause;
+	private Button buttonTimerStop;
+	private TextView textTimerCountdown;
+	private ImageButton imgBtnReset;
 
 	private final MutableTimer timer = new MutableTimer();
 
 	@Nullable @Override public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState){
 		View view = inflater.inflate(R.layout.fragment_timer, container, false);
 
-		tvCountDown = view.findViewById(R.id.textTimerCountdown);
+		textTimerCountdown = view.findViewById(R.id.textTimerCountdown);
+		buttonTimerFiveMin = view.findViewById(R.id.buttonTimerFiveMin);
+		buttonTimerOneMin = view.findViewById(R.id.buttonTimerOneMin);
+		buttonTimerSec = view.findViewById(R.id.buttonTimerSec);
+		buttonTimerStartPause = view.findViewById(R.id.buttonTimerStartPause);
+		buttonTimerStop = view.findViewById(R.id.buttonTimerStop);
+		imgBtnReset = view.findViewById(R.id.imgBtnReset);
 
-		//5분 추가 버튼
-		btnFiveMin = view.findViewById(R.id.buttonTimerFiveMin);
-		btnFiveMin.setOnClickListener(v -> timer.addTime(300000));
+		buttonTimerFiveMin.setOnClickListener(v -> timer.addTime(300000));
+		buttonTimerOneMin.setOnClickListener(v -> timer.addTime(60000));
+		buttonTimerSec.setOnClickListener(v -> timer.addTime(15000));
 
-		//1분 추가버튼
-		btnOneMin = view.findViewById(R.id.buttonTimerOneMin);
-		btnOneMin.setOnClickListener(v -> timer.addTime(60000));
-
-		//15초 추가버튼
-		btnSec = view.findViewById(R.id.buttonTimerSec);
-		btnSec.setOnClickListener(v -> timer.addTime(15000));
-
-		//시작/일시정지버튼
-		btnStartPause = view.findViewById(R.id.buttonTimerStartPause);
-		btnStartPause.setOnClickListener(v -> {
-			if (timer.isRunning()) pauseTimer();
-			else if(timer.isPaused()) resumeTimer();
-			else startTimer();
+		buttonTimerStartPause.setOnClickListener(v -> {
+			if(timer.isRunning()) timer.pause();
+			else if(timer.isPaused()) timer.resume();
+			else timer.start();
 		});
 
-		//정지버튼
-		btnStop = view.findViewById(R.id.buttonTimerStop);
-		btnStop.setOnClickListener(v -> stopTimer());
+		buttonTimerStop.setOnClickListener(v -> timer.stop());
 
-		//시간 리셋버튼
-		ImgBtnReset = view.findViewById(R.id.imgBtnReset);
-		ImgBtnReset.setOnClickListener(v -> resetTime());
+		imgBtnReset.setOnClickListener(v -> {
+			timer.setInitialTime(0);
+			timer.stop();
+		});
 
-		timer.setOnTimeUpdatedListener(t -> updateCountDownText(t));
+		timer.setOnTimeUpdatedListener(new MutableTimer.OnTimeUpdatedListener(){
+			@Override public void onStopped(long t){
+				buttonTimerStartPause.setText("시작");
+				updateCountDownText(t);
+			}
+			@Override public void onResumed(long t){
+				buttonTimerStartPause.setText("일시정지");
+				updateCountDownText(t);
+			}
+			@Override public void onPaused(long t){
+				buttonTimerStartPause.setText("계속");
+				updateCountDownText(t);
+			}
+		});
 
 		updateCountDownText(0);
 
 		return view;
 	}
 
-	private void setTime(long time){
-		timer.setInitialTime(time);
-	}
+	private void updateCountDownText(long t){
+		long seconds = t/1000;
+		long minutes = seconds/60;
 
-	//타이머 시작
-	private void startTimer() {
-		timer.start();
-		btnStartPause.setText("일시정지");
-	}
-
-	private void resumeTimer() {
-		timer.resume();
-		btnStartPause.setText("일시정지");
-	}
-
-	//타이머 일시정지
-	private void pauseTimer() {
-		timer.pause();
-		btnStartPause.setText("계속");
-	}
-
-	//타이머 중지
-	private void stopTimer() {
-		timer.stop();
-		btnStartPause.setText("시작");
-	}
-
-	//시간 리셋
-	private void resetTime() {
-		timer.stop();
-		btnStartPause.setText("시작");
-		timer.setInitialTime(0);
-	}
-
-	//시간부분
-	private void updateCountDownText(long t) {
-		int	minutes = (int) (t / 1000) / 60;
-		int	seconds = (int) (t / 1000) % 60;
-
-		String timeLeftFormatted;
-
-		if(seconds < 10) {
-			if (minutes < 10 ) {
-				timeLeftFormatted = String.format(Locale.getDefault(), "0" + minutes + ":0" + seconds, minutes, seconds);
-			}else{
-				timeLeftFormatted = String.format(Locale.getDefault(),  minutes + ":0" + seconds, minutes, seconds);
-			}
-		}else {
-			if (minutes < 10) {
-				timeLeftFormatted = String.format(Locale.getDefault(), "0" + minutes + ":" + seconds, minutes, seconds);
-			}else {
-				timeLeftFormatted = String.format(Locale.getDefault(),  minutes + ":" + seconds, minutes, seconds);
-			}
-		}
-
-		tvCountDown.setText(timeLeftFormatted);
+		textTimerCountdown.setText(
+				minutes >= 60 ?
+						String.format(Locale.ENGLISH, "%d:%02d:%02d", minutes/60, minutes%60, seconds%60) :
+						String.format(Locale.ENGLISH, "%02d:%02d", minutes, seconds%60));
 	}
 }
