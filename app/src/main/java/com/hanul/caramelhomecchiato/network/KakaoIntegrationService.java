@@ -18,6 +18,6 @@ public interface KakaoIntegrationService{
 
 	@FormUrlEncoded
 	@POST("joinWithKakao")
-	Call<JsonObject> joinWithKakao(@Field("joinWithKakao") String kakaoLoginToken,
+	Call<JsonObject> joinWithKakao(@Field("kakaoLoginToken") String kakaoLoginToken,
 	                               @Nullable @Field("name") String name);
 }
