@@ -92,6 +92,7 @@ import okhttp3.RequestBody;
  * 모든 step 수정 작업은 마지막으로 선택한 step을 대상으로 이루어집니다.<br>
  * <br>
  * 모든 수정 작업에 대해, 두 번 이상의 값 제공 또는 이미 선택된 step의 재선택은 작업 요청에서의 오류로 간주하여 에러를 일으킵니다.
+ * @see <a href="https://gist.github.com/iwasamistake/aef0409a7df3111c26e8e91cba2bbcf8">https://gist.github.com/iwasamistake/aef0409a7df3111c26e8e91cba2bbcf8</a>
  */
 public class RecipeEditorEncoder{
 	private static final byte MODE_WRITE = '1';
