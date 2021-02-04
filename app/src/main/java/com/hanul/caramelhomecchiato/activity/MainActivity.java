@@ -16,6 +16,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Lifecycle;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.Key;
@@ -220,6 +221,8 @@ public class MainActivity extends AppCompatActivity{
 	}
 
 	private void redrawProfileImage(){
+		if(!getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.CREATED)) return;
+
 		Uri profileImage = profile==null ? null : profile.getUser().getProfileImage();
 
 		if(profileImage!=null){
