@@ -56,6 +56,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
@@ -209,6 +210,7 @@ public class EditProfileActivity extends AppCompatActivity{
 			finish();
 			return;
 		}
+		Executor mainExecutor = ContextCompat.getMainExecutor(this);
 		spinnerHandler.show();
 		executorService.submit(() -> {
 			List<String> toasts = new ArrayList<>();
@@ -229,7 +231,7 @@ public class EditProfileActivity extends AppCompatActivity{
 							"소개글",
 							toasts);
 
-			ContextCompat.getMainExecutor(this).execute(() -> {
+			mainExecutor.execute(() -> {
 				for(String toast : toasts){
 					Toast.makeText(this, toast, Toast.LENGTH_SHORT).show();
 				}
